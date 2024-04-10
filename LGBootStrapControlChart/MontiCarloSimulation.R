@@ -1,3 +1,4 @@
+source("LGBootStrapControlChart.R")
 results_df <- data.frame()
 n_values <- c(4,5,6)
 u_values <- c(0.01, 0.1, 0.9, 0.99)
