@@ -47,6 +47,28 @@ this Monte Carlo simulation works as follows:
 In summary, this script systematically explores various combinations of parameters for the control chart analysis using a Monte Carlo simulation approach. It captures the results of each simulation run and aggregates them into a CSV file for further analysis and interpretation.
 
 
+## Example
+# Load the LGBootStrapControlChart function from the sourced file
+source("LGBootStrapControlChart.R")
+
+# Example of using LGBootStrapControlChart function:
+# Perform a control chart analysis with the following parameters:
+# - Quantile value (u) = 0.99
+# - Significance level (alpha) = 0.07
+# - Parameter of the probability distribution (theta) = 2
+# - Another parameter of the probability distribution (p) = 0.8
+# - Sample size (n) = 5
+# - Number of iterations for Bootstrap resampling = 10000
+# - Number of iterations for Monte Carlo simulation = 20
+# - Number of repetitions for calculating Average Run Length (ARL) = 1000
+# - Verbose mode enabled (verbos = TRUE), to display results during fitting
+result <- LGBootStrapControlChart(
+  u = 0.99, alpha = 0.07,
+  theta = 2, p = 0.8, n = 5,
+  BootStrap_iterations = 10000,
+  MontiCarlo_iter = 20,
+  ARL_rep = 1000, verbos = TRUE
+)
 
 
 
