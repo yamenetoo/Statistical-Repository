@@ -20,6 +20,35 @@ Output is a list with the following components:
 - `SDUCL`: Standard Deviation of the Upper Control Limit (UCL).
 - `MARL`: Mean Average Run Length (ARL) across generations.
 - `SDARL`: Standard Deviation of Average Run Length (ARL) across generations.
+# MontiCarloSimulation
+This R script is conducting a Monte Carlo simulation to evaluate the performance of a control chart using the `LGBootStrapControlChart` function from the sourced file `LGBootStrapControlChart.R`.
+
+this Monte Carlo simulation works as follows:
+
+1. **Setup and Parameters**: 
+   - `n_values`, `u_values`, `p_values`, and `theta_values` are vectors defining the values of different parameters to be tested.
+   - `LGBootStrapControlChart` function requires parameters such as `u`, `alpha`, `theta`, `p`, `n`, `BootStrap_iterations`, `MontiCarlo_iter`, `ARL_rep`, and `verbos`. These parameters control various aspects of the control chart analysis.
+
+2. **Nested Loops**:
+   - Four nested loops iterate through different combinations of `n`, `u`, `p`, and `theta` values. 
+   - For each combination, the `LGBootStrapControlChart` function is called with the specified parameters.
+   - Inside the innermost loop, the function's result is captured, and information about the parameters and results is printed (`cat()` function).
+   
+3. **Data Collection**:
+   - For each iteration, the results of the control chart analysis, including `MLCL`, `MUCL`, `SDLCL`, `SDUCL`, `MARL`, and `SDARL`, are stored in a data frame called `results_df`.
+   - This data frame accumulates results from all iterations.
+
+4. **Writing Results to File**:
+   - After all iterations are completed, the `results_df` data frame is written to a CSV file named "res.csv" using the `write.csv()` function.
+
+5. **Output**:
+   - The output CSV file contains columns representing the different parameters (`u`, `p`, `theta`) and the corresponding control chart analysis results (`MLCL`, `MUCL`, `SDLCL`, `SDUCL`, `MARL`, `SDARL`).
+
+In summary, this script systematically explores various combinations of parameters for the control chart analysis using a Monte Carlo simulation approach. It captures the results of each simulation run and aggregates them into a CSV file for further analysis and interpretation.
+
+
+
+
 
 # Citation
 
