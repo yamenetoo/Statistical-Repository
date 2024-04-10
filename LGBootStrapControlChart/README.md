@@ -74,6 +74,6 @@ result <- LGBootStrapControlChart(
 
 # Citation
 
-[Prof Dr Ali Akbar Heydari](https://scholar.google.com/citations?user=68RAHCoAAAAJ&hl=en).,
+[Prof Dr Ali Akbar Heydari](https://scholar.google.com/citations?user=68RAHCoAAAAJ&hl=en),
 University of Tabriz ·
 Department of Statistics.
