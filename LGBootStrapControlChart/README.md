@@ -48,20 +48,20 @@ In summary, this script systematically explores various combinations of paramete
 
 
 ## Example
-# Load the LGBootStrapControlChart function from the sourced file
+Load the LGBootStrapControlChart function from the sourced file
 source("LGBootStrapControlChart.R")
 
-# Example of using LGBootStrapControlChart function:
-# Perform a control chart analysis with the following parameters:
-# - Quantile value (u) = 0.99
-# - Significance level (alpha) = 0.07
-# - Parameter of the probability distribution (theta) = 2
-# - Another parameter of the probability distribution (p) = 0.8
-# - Sample size (n) = 5
-# - Number of iterations for Bootstrap resampling = 10000
-# - Number of iterations for Monte Carlo simulation = 20
-# - Number of repetitions for calculating Average Run Length (ARL) = 1000
-# - Verbose mode enabled (verbos = TRUE), to display results during fitting
+Example of using LGBootStrapControlChart function:
+Perform a control chart analysis with the following parameters:
+- Quantile value (u) = 0.99
+- Significance level (alpha) = 0.07
+- Parameter of the probability distribution (theta) = 2
+- Another parameter of the probability distribution (p) = 0.8
+- Sample size (n) = 5
+- Number of iterations for Bootstrap resampling = 10000
+- Number of iterations for Monte Carlo simulation = 20
+- Number of repetitions for calculating Average Run Length (ARL) = 1000
+- Verbose mode enabled (verbos = TRUE), to display results during fitting
 result <- LGBootStrapControlChart(
   u = 0.99, alpha = 0.07,
   theta = 2, p = 0.8, n = 5,
