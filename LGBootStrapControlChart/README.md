@@ -1,5 +1,6 @@
 This repository is dedicated to the LG BootStrap Control Chart. 
-# Function Hyperparameters
+# LG BootStrapControlChart
+## Function Hyperparameters
 
 - `u`: Quantile value used in the analysis.
 - `alpha`: Significance level or Type I error rate, controlling parameter in Control Chart analysis. (Also known as "significance level" or "alpha level".)
@@ -10,7 +11,7 @@ This repository is dedicated to the LG BootStrap Control Chart.
 - `ARL_repetition`: Number of repetitions/generations for calculating Average Run Length (ARL). Default is 100.
 - `verbos`: Boolean parameter controlling whether to display results during fitting. Default is FALSE.
 
-# Function Output
+## Function Output
 
 Output is a list with the following components:
 - `MLCL`: Mean of the Lower Control Limit (LCL).
