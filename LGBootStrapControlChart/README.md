@@ -1,4 +1,3 @@
-This repository is dedicated to the LG BootStrap Control Chart. 
 # LG BootStrapControlChart
 ## Function Hyperparameters
 
