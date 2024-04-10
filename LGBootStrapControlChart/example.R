@@ -1,3 +1,4 @@
+source("LGBootStrapControlChart.R")
 result <-LGBootStrapControlChart(
                                     u = 0.99, alpha = 0.07,
                                     theta = 2, p = 0.8, n = 5,
