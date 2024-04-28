@@ -1,4 +1,4 @@
-# Bayesian Estimation for Loss Functions
+# Bayesian Estimation for Topp-Leone Distribution
 
 This repository contains R functions for computing Bayesian estimators under different loss functions and prior distributions for n for Topp-Leone Distribution. The implemented loss functions include:
 
