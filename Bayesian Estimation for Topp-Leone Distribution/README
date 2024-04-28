@@ -1,6 +1,6 @@
 # Bayesian Estimation for Loss Functions
 
-This repository contains R functions for computing Bayesian estimators under different loss functions and prior distributions. The implemented loss functions include:
+This repository contains R functions for computing Bayesian estimators under different loss functions and prior distributions for n for Topp-Leone Distribution. The implemented loss functions include:
 
 1. **Pointwise Logarithmic Loss Function (PLF)**
 2. **Weighted Loss Function (WLF)**
