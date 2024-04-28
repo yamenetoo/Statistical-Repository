@@ -13,6 +13,98 @@ These functions are designed to estimate parameters in a Bayesian setting under 
 - **Jeffreys prior**
 - **Exponential prior**
 - **Gamma prior**
+## NOTE
+	Let $x_{(1)}, x_{(2)}, x_{(3)}, \ldots, x_{(r)}$ be the ordered observations. Then $$\xi_{ir} = -\left\{\sum_{i=1}^{r} \ln(2x_{(i)} - x_{(i)}^2) + k \ln(2x_{(r)} - x_{(r)}^2)\right\}$$.
+	
+	\textbf{PLF loss function}
+	
+	The Bayes estimator under uniform prior is:
+	$
+	\hat{V}_{plf\_U} = \sqrt{\frac{\sum_{k=0}^{n-r} (-1)^k \binom{n-r}{k} \frac{\Gamma(r+3)}{\xi_{ir}^{r+3}}}{\sum_{k=0}^{n-r} (-1)^k \binom{n-r}{k} \frac{\Gamma(r+1)}{\xi_{ir}^{r+1}}}}
+	$
+	
+	The Bayes estimator under Jeffreys prior is:
+	$
+	\hat{V}_{\text{plf\_Jeffreys}} = \sqrt{\frac{\sum_{k=0}^{n-r} (-1)^k \binom{n-r}{k} \frac{\Gamma(r+2)}{\xi_{ir}^{r+2}}}{\sum_{k=0}^{n-r} (-1)^k \binom{n-r}{k} \frac{\Gamma(r)}{\xi_{ir}^r}}}
+	$
+	
+	The Bayes estimator under exponential prior is:
+	$
+	\hat{V}_{\text{PLF\_EXP}} = \sqrt{\frac{\sum_{k=0}^{n-r} (-1)^k \binom{n-r}{k} \frac{\Gamma(r+3)}{(w + \xi_{ir})^{r+3}}}{\sum_{k=0}^{n-r} (-1)^k \binom{n-r}{k} \frac{\Gamma(r+1)}{(w + \xi_{ir})^{r+1}}}}
+	$
+	
+	The Bayes estimator under gamma prior is:
+	$
+	\hat{V}_{\text{PLF\_gamma}} = \sqrt{\frac{\sum_{k=0}^{n-r} (-1)^k \binom{n-r}{k} \frac{\Gamma(r+a+2)}{(b + \xi_{ir})^{r+a+2}}}{\sum_{k=0}^{n-r} (-1)^k \binom{n-r}{k} \frac{\Gamma(r+a)}{(b + \xi_{ir})^{r+a}}}}
+	$
+	
+	\textbf{Weighted Loss Function (WLF)}
+	
+	The Bayes estimator under uniform prior is:
+	$
+	\hat{V}_{\text{WLF\_UNI}} = \frac{\sum_{k=0}^{n-r} (-1)^k \binom{n-r}{k} \frac{\Gamma(r+1)}{\xi_{ir}^{r+1}}}{\sum_{k=0}^{n-r} (-1)^k \binom{n-r}{k} \frac{\Gamma(r)}{\xi_{ir}^r}}
+	$
+	
+	The Bayes estimator under Jeffreys prior is:
+	$
+	\hat{V}_{\text{WLF\_Jeffreys}} = \frac{\sum_{k=0}^{n-r} (-1)^k \binom{n-r}{k} \frac{\Gamma(r)}{\xi_{ir}^r}}{\sum_{k=0}^{n-r} (-1)^k \binom{n-r}{k} \frac{\Gamma(r-1)}{\xi_{ir}^{r-1}}}
+	$
+	
+	The Bayes estimator under exponential prior is:
+	$
+	\hat{V}_{\text{WLF\_EXP}} = \frac{\sum_{k=0}^{n-r} (-1)^k \binom{n-r}{k} \frac{\Gamma(r+1)}{(w + \xi_{ir})^{r+1}}}{\sum_{k=0}^{n-r} (-1)^k \binom{n-r}{k} \frac{\Gamma(r)}{(w + \xi_{ir})^r}}
+	$
+	
+	The Bayes estimator under gamma prior is:
+	$
+	\hat{V}_{\text{WLF\_GAMMa}} = \frac{\sum_{k=0}^{n-r} (-1)^k \binom{n-r}{k} \frac{\Gamma(r+a)}{(b + \xi_{ir})^{r+a}}}{\sum_{k=0}^{n-r} (-1)^k \binom{n-r}{k} \frac{\Gamma(r+a-1)}{(b + \xi_{ir})^{r+a-1}}}
+	$
+	
+	\textbf{Entropy Loss Function (ELF)}
+	
+	The Bayes estimator under uniform prior is:
+	$
+	\hat{V}_{\text{ENT\_UNI}} = \frac{\sum_{k=0}^{n-r} (-1)^k \binom{n-r}{k} \frac{\Gamma(r+1)}{\xi_{ir}^{r+1}}}{\sum_{k=0}^{n-r} (-1)^k \binom{n-r}{k} \frac{\Gamma(r)}{\xi_{ir}^{r}}}
+	$
+	
+	The Bayes estimator under Jeffreys prior is:
+	$
+	\hat{V}_{\text{ENT\_Jeffreys}} = \frac{\sum_{k=0}^{n-r} (-1)^k \binom{n-r}{k} \frac{\Gamma(r)}{\xi_{ir}^{r+1}}}{\sum_{k=0}^{n-r} (-1)^k \binom{n-r}{k} \frac{\Gamma(r-1)}{\xi_{ir}^{r-1}}}
+	$
+	
+	The Bayes estimator under exponential prior is:
+	$
+	\hat{V}_{\text{ENT\_EXP}} = \frac{\sum_{k=0}^{n-r} (-1)^k \binom{n-r}{k} \frac{\Gamma(r+1)}{(w + \xi_{ir})^{r+1}}}{\sum_{k=0}^{n-r} (-1)^k \binom{n-r}{k} \frac{\Gamma(r)}{(w + \xi_{ir})^{r}}}
+	$
+	
+	The Bayes estimator under gamma prior is:
+	$
+	\hat{V}_{\text{ENT\_Gamma}} = \frac{\sum_{k=0}^{n-r} (-1)^k \binom{n-r}{k} \frac{\Gamma(r+a)}{(b + \xi_{ir})^{r+a}}}{\sum_{k=0}^{n-r} (-1)^k \binom{n-r}{k} \frac{\Gamma(r+a-1)}{(b + \xi_{ir})^{r+a-1}}}
+	$
+	
+	Where $\psi(x) = \frac{\Gamma'(x)}{\Gamma(x)}$ is the digamma function.
+	
+	\textbf{Squared-Log Error Loss Function (SLELF)}
+	
+	The Bayes estimator under uniform prior is:
+	$
+	\hat{V}_{\text{SLELF\_UNI}} = \frac{\sum_{k=0}^{n-r} (-1)^k \binom{n-r}{k} \frac{\Gamma(r+1)}{\xi_{ir}^{r+1}} \left(\frac{\exp(\psi(r+1))}{\xi_{ir}}\right)}{\sum_{k=0}^{n-r} (-1)^k \binom{n-r}{k} \frac{\Gamma(r+1)}{\xi_{ir}^{r+1}}}
+	$
+	
+	The Bayes estimator under Jeffreys prior is:
+	$
+	\hat{V}_{\text{SLELF\_Jeffreys}} = \frac{\sum_{k=0}^{n-r} (-1)^k \binom{n-r}{k} \frac{\Gamma(r)}{\xi_{ir}^{r}} \left(\frac{\exp(\psi(r))}{\xi_{ir}}\right)}{\sum_{k=0}^{n-r} (-1)^k \binom{n-r}{k} \frac{\Gamma(r)}{\xi_{ir}^{r}}}
+	$
+	
+	The Bayes estimator under exponential prior is:
+	$
+	\hat{V}_{\text{SLELF\_EXP}} = \frac{\sum_{k=0}^{n-r} (-1)^k \binom{n-r}{k} \frac{\Gamma(r+1)}{(w + \xi_{ir})^{r+1}} \left(\frac{\exp(\psi(r+1))}{w + \xi_{ir}}\right)}{\sum_{k=0}^{n-r} (-1)^k \binom{n-r}{k} \frac{\Gamma(r+1)}{(w + \xi_{ir})^{r+1}}}
+	$
+	
+	The Bayes estimator under gamma prior is:
+	$
+	\hat{V}_{\text{SLELF\_gamma}} = \frac{\sum_{k=0}^{n-r} (-1)^k \binom{n-r}{k} \frac{\Gamma(r+a)}{(b + \xi_{ir})^{r+a}} \left(\frac{\exp(\psi(r+a))}{b + \xi_{ir}}\right)}{\sum_{k=0}^{n-r} (-1)^k \binom{n-r}{k} \frac{\Gamma(r+a)}{(b + \xi_{ir})^{r+a}}}
+	$
 
 ## How to Use
 
