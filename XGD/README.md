@@ -18,14 +18,9 @@ Contributions to the XGD distribution module are welcome! If you have suggestion
 
 **License:**
 
-The XGD distribution module is provided under the [] license.
+The XGD distribution module is provided under the [..] license.
 
 **Acknowledgments:**
 
-Special thanks to [INSERT CONTRIBUTORS HERE] for their contributions to this module.
+Special thanks to [] for their contributions to this module.
 
-**Contact:**
-
-For questions, feedback, or support, please contact [INSERT CONTACT INFORMATION HERE].
-
-Thank you for using the XGD distribution module! Happy modeling!
