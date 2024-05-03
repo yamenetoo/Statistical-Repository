@@ -1,5 +1,5 @@
 # Statistical Repository 
-**Statistical Repository**
+
 
 Welcome to the ST, Statistical Repository! This repository contains implementations and tools related to various statistical methods and distributions. Below is a brief overview of the contents of this repository:
 
