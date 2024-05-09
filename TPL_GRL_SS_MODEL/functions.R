@@ -59,3 +59,42 @@ R3 <- function(theta1, theta2, theta3, c_value = 1){
 #Y~theta3 
 #R3(0.7,0.3,c(0.1,0.1))
 
+
+###########################
+########## casecade #######
+###########################
+Ri_casecade <- function(i, Theta1, Theta2, c_value) {
+  if (i == 1) {
+    theta1_1 <- as.numeric(Theta1[1])
+    theta2_1 <- as.numeric(Theta2[1, ])
+    return(R(theta1_1, theta2_1))
+  }
+  
+  # Define Theta2_star values
+  Theta2_star_alpha <- Theta2[i, "alpha"]/ c_value^(i-1)
+  Theta2_star_beta <- Theta2[i, "beta"] 
+  
+  R_values <- 1
+  for (j in 1:(i-1))
+  {
+    theta1_j <- as.numeric(Theta1[j])
+    theta2_j_alpha <- Theta2[j, "alpha"]/ c_value^(j-1)
+    theta2_j_beta <- Theta2[j, "beta"] 
+    
+    R_values <- R_values * (1 - R(theta1_j, c(theta2_j_alpha, theta2_j_beta),c_value^(j-1)))
+  }
+  theta1_i <- as.numeric(Theta1[i])
+  R_values <- R_values * R(theta1_i, c(Theta2_star_alpha, Theta2_star_beta),c_value^(i-1))
+  
+  return(R_values)
+}
+
+casecade=function(n, Theta1, Theta2,c_value){
+  Ri_values <- c()
+  for (i in 1:n) {
+    Ri_values[i] <- Ri_casecade(i, Theta1, Theta2,c_value)
+  }
+  return(sum(Ri_values))
+}
+
+
