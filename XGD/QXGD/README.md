@@ -1,6 +1,4 @@
-# The Quasi XGamma Distribution
-
-## Introduction
+# The Quasi XGamma Distribution 
 This document explains the implementation  of the Quasi XGamma Distribution (QXGD).
 ---
 
