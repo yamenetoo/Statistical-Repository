@@ -1,8 +1,7 @@
-# Monte Carlo Simulation for Parameter Estimation of the Quasi XGamma Distribution
+# The Quasi XGamma Distribution
 
 ## Introduction
-This document explains the implementation of a Monte Carlo simulation for the estimation of parameters (α and θ) of the Quasi XGamma Distribution (QXGD). The code uses Maximum Likelihood Estimation (MLE) to estimate these parameters, and Monte Carlo simulations are performed to analyze the bias and mean square error (MSE) of the parameter estimates.
-
+This document explains the implementation  of the Quasi XGamma Distribution (QXGD).
 ---
 
 ## Modules and Libraries Used
