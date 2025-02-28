@@ -1,6 +1,6 @@
- #GXGD Distribution
+# GXGD Distribution
 
-The \textbf{GXGD (Generalized XGamma-Geometric Distribution)} is defined by the following probability density function (PDF):
+The GXGD (Generalized XGamma- Distribution)} is defined by the following probability density function (PDF):
 
 \[
 f_X(x; \theta, a, b, w) = \frac{w}{1 + w} \cdot \theta e^{-\theta x} + \frac{1}{1 + w} \cdot \frac{b^a}{\Gamma(a)} x^{a-1} e^{-b x}, \quad x > 0, \, \theta > 0, \, a > 0, \, b > 0, \, w > 0,
