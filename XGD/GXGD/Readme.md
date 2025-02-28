@@ -1,24 +1,85 @@
+Below is the `README` file formatted in Markdown for the GXGD distribution. This version avoids LaTeX-specific syntax and uses plain text and Markdown formatting to ensure readability across platforms.
+
+---
+
 # GXGD Distribution
 
-The GXGD (Generalized XGamma- Distribution)} is defined by the following probability density function (PDF):
+The **GXGD (Generalized XGamma-Geometric Distribution)** is a flexible probability distribution that arises as a mixture of an **exponential distribution** and a **gamma distribution**, weighted by parameters derived from a geometric mixing mechanism.
 
-\[
-f_X(x; \theta, a, b, w) = \frac{w}{1 + w} \cdot \theta e^{-\theta x} + \frac{1}{1 + w} \cdot \frac{b^a}{\Gamma(a)} x^{a-1} e^{-b x}, \quad x > 0, \, \theta > 0, \, a > 0, \, b > 0, \, w > 0,
-\]
+## Probability Density Function (PDF)
 
-where:
-\begin{itemize}
-    \item $\frac{w}{1 + w}$ and $\frac{1}{1 + w}$ are the mixing weights for the exponential and gamma components, respectively.
-    \item $\theta e^{-\theta x}$ is the PDF of the exponential distribution.
-    \item $\frac{b^a}{\Gamma(a)} x^{a-1} e^{-b x}$ is the PDF of the gamma distribution.
-    \item $\Gamma(a)$ is the complete gamma function.
-\end{itemize}
+The PDF of the GXGD distribution is defined as:
 
-The cumulative distribution function (CDF) of the GXGD distribution is:
+```
+f_X(x; θ, a, b, w) = (w / (1 + w)) * θ * e^(-θ * x) 
+                   + (1 / (1 + w)) * (b^a / Γ(a)) * x^(a-1) * e^(-b * x),
+                   where x > 0, θ > 0, a > 0, b > 0, w > 0.
+```
 
-\[
-F_X(x; \theta, a, b, w) = \frac{w}{1 + w} \left(1 - e^{-\theta x}\right) + \frac{1}{1 + w} \cdot \frac{\gamma(a, b x)}{\Gamma(a)}, \quad x > 0,
-\]
+Where:
+- `(w / (1 + w))` and `(1 / (1 + w))` are the mixing weights for the exponential and gamma components, respectively.
+- `θ * e^(-θ * x)` is the PDF of the exponential distribution.
+- `(b^a / Γ(a)) * x^(a-1) * e^(-b * x)` is the PDF of the gamma distribution.
+- `Γ(a)` is the complete gamma function.
 
-where $\gamma(a, b x)$ is the lower incomplete gamma function.
+## Cumulative Distribution Function (CDF)
+
+The CDF of the GXGD distribution is given by:
+
+```
+F_X(x; θ, a, b, w) = (w / (1 + w)) * (1 - e^(-θ * x)) 
+                   + (1 / (1 + w)) * (γ(a, b * x) / Γ(a)),
+                   where x > 0.
+```
+
+Where:
+- `γ(a, b * x)` is the lower incomplete gamma function.
+- `Γ(a)` is the complete gamma function.
+
+## Key Properties
+
+1. **Support**:  
+   The GXGD distribution is defined for `x > 0`, making it suitable for modeling positive-valued data such as survival times, waiting times, or other non-negative random variables.
+
+2. **Mixing Mechanism**:  
+   The parameter `w > 0` controls the relative contribution of the exponential and gamma components:
+   - When `w → 0`, the GXGD distribution approaches the gamma distribution (`X ~ Gamma(a, b)`).
+   - When `w → ∞`, the GXGD distribution approaches the exponential distribution (`X ~ Exp(θ)`).
+
+3. **Moments**:  
+   The moments of the GXGD distribution can be derived as weighted sums of the moments of the exponential and gamma components:
+   - Mean:  
+     ```
+     E[X] = (w / (1 + w)) * (1 / θ) + (1 / (1 + w)) * (a / b)
+     ```
+   - Variance:  
+     ```
+     Var(X) = (w / (1 + w)) * (1 / θ^2) + (1 / (1 + w)) * (a / b^2)
+     ```
+
+4. **Flexibility**:  
+   The GXGD distribution combines the simplicity of the exponential distribution with the flexibility of the gamma distribution, allowing it to model a wide range of data shapes, including right-skewed distributions commonly observed in survival analysis and reliability studies.
+
+## Applications
+
+The GXGD distribution is particularly useful in scenarios where the data exhibit characteristics of both exponential and gamma distributions, such as:
+- **Survival Analysis**: Modeling time-to-event data where early failures may follow an exponential pattern, while later failures follow a gamma pattern.
+- **Queueing Theory**: Modeling service times or inter-arrival times with varying degrees of variability.
+- **Reliability Engineering**: Capturing systems with mixed failure modes.
+
+## Parameters
+
+- `θ > 0`: The rate parameter of the exponential component.
+- `a > 0`: The shape parameter of the gamma component.
+- `b > 0`: The rate parameter of the gamma component.
+- `w > 0`: The mixing weight parameter controlling the balance between the exponential and gamma components.
+
+## Usage
+
+The GXGD distribution can be used for:
+- Parameter estimation using Maximum Likelihood Estimation (MLE).
+- Monte Carlo simulations to evaluate the performance of estimators.
+- Goodness-of-fit testing for real-world datasets.
+
+## References
  
