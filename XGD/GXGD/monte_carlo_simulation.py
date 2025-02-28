@@ -1,5 +1,6 @@
 import torch
 import numpy as np
+from  tqdm import tqdm
 epsilon = 1e-5
 def mixture_pdf(x, params, epsilon=epsilon):
     theta, a, b, w = params
@@ -81,22 +82,16 @@ def monte_carlo_simulation(
     Returns:
         dict: A dictionary containing the mean and standard deviation of estimated parameters.
     """
-    # Arrays to store results
     estimated_theta = []
     estimated_a = []
     estimated_b = []
     estimated_w = []
 
-    for i in range(n_simulations):
+    for i in tqdm(range(n_simulations)):
         if verbose:
             print(f"Simulation {i + 1}/{n_simulations}")
-
-        # Generate a new dataset
         data = generate_mixture_samples(theta_true, a_true, b_true, w_true, n_samples=n_samples_per_simulation)
-
-        # Perform parameter estimation
         final_params = SGD(data, initial_params, learning_rate=learning_rate, epochs=epochs, ver=False)
-
         if final_params is not None:
             th, a_est, b_est, w_est = final_params
             estimated_theta.append(th)
@@ -106,21 +101,14 @@ def monte_carlo_simulation(
         else:
             if verbose:
                 print(f"Optimization failed for simulation {i + 1}. Skipping...")
-
-    # Convert results to NumPy arrays
     estimated_theta = np.array(estimated_theta)
     estimated_a = np.array(estimated_a)
     estimated_b = np.array(estimated_b)
     estimated_w = np.array(estimated_w)
-
-    # Compute mean and standard deviation of estimates
     results = {
         "theta": {"mean": np.mean(estimated_theta), "std": np.std(estimated_theta)},
         "a": {"mean": np.mean(estimated_a), "std": np.std(estimated_a)},
         "b": {"mean": np.mean(estimated_b), "std": np.std(estimated_b)},
         "w": {"mean": np.mean(estimated_w), "std": np.std(estimated_w)},
     }
-
     return results
-
- 
