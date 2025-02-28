@@ -77,6 +77,13 @@ The GXGD distribution is particularly useful in scenarios where the data exhibit
 
 The GXGD distribution can be used for:
 - Parameter estimation using Maximum Likelihood Estimation (MLE).
+  ```
+  data=[]
+  initial_params=[0.5, 1.0, 1.5, 1.0]
+  learning_rate=0.01,
+  epochs=1000,
+  fit_params = SGD(data, initial_params, learning_rate=learning_rate, epochs=epochs, ver=False)
+  ```
 - Monte Carlo simulations to evaluate the performance of estimators.
  ```
 theta_true = 0.5
