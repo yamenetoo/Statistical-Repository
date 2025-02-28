@@ -78,6 +78,22 @@ The GXGD distribution is particularly useful in scenarios where the data exhibit
 The GXGD distribution can be used for:
 - Parameter estimation using Maximum Likelihood Estimation (MLE).
 - Monte Carlo simulations to evaluate the performance of estimators.
+ ```
+theta_true = 0.5
+a_true = 1.5
+b_true = 1.5
+w_true = 2.5
+results = monte_carlo_simulation(theta_true, a_true, b_true, w_true,n_simulations=100,
+                                  n_samples_per_simulation=50,initial_params=[0.5, 1.0, 1.5, 1.0],
+                                  learning_rate=0.01, epochs=1000,
+                                  verbose=False)
+print("\nMonte Carlo Simulation Results:")
+print(f"True Parameters: θ={theta_true}, a={a_true}, b={b_true}, w={w_true}")
+print(f"Estimated θ: Mean={results['theta']['mean']:.4f}, Std={results['theta']['std']:.4f}")
+print(f"Estimated a: Mean={results['a']['mean']:.4f}, Std={results['a']['std']:.4f}")
+print(f"Estimated b: Mean={results['b']['mean']:.4f}, Std={results['b']['std']:.4f}")
+print(f"Estimated w: Mean={results['w']['mean']:.4f}, Std={results['w']['std']:.4f}")
+ ```
 - Goodness-of-fit testing for real-world datasets.
 
 ## References
