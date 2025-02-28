@@ -1,6 +1,5 @@
-Below is the `README` file formatted in Markdown for the GXGD distribution. This version avoids LaTeX-specific syntax and uses plain text and Markdown formatting to ensure readability across platforms.
+ 
 
----
 
 # GXGD Distribution
 
