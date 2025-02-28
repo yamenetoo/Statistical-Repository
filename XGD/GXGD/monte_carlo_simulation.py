@@ -112,3 +112,17 @@ def monte_carlo_simulation(
         "w": {"mean": np.mean(estimated_w), "std": np.std(estimated_w)},
     }
     return results
+
+
+
+theta_true = 0.5
+a_true = 1
+b_true = 1.5
+w_true = 2.5
+results = monte_carlo_simulation(theta_true, a_true, b_true, w_true,n_simulations=1000, n_samples_per_simulation=1000,initial_params=[0.5, 1.0, 1.5, 1.0],learning_rate=0.01, epochs=1000, verbose=False)
+print("\nMonte Carlo Simulation Results:")
+print(f"True Parameters: θ={theta_true}, a={a_true}, b={b_true}, w={w_true}")
+print(f"Estimated θ: Mean={results['theta']['mean']:.4f}, Std={results['theta']['std']:.4f}")
+print(f"Estimated a: Mean={results['a']['mean']:.4f}, Std={results['a']['std']:.4f}")
+print(f"Estimated b: Mean={results['b']['mean']:.4f}, Std={results['b']['std']:.4f}")
+print(f"Estimated w: Mean={results['w']['mean']:.4f}, Std={results['w']['std']:.4f}")
