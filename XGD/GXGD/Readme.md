@@ -3,7 +3,7 @@
 
 # GXGD Distribution
 
-The **GXGD (Generalized XGamma-Geometric Distribution)** is a flexible probability distribution that arises as a mixture of an **exponential distribution** and a **gamma distribution**, weighted by parameters derived from a geometric mixing mechanism.
+The **GXGD (Generalized XGamma- Distribution)** is a flexible probability distribution that arises as a mixture of an **exponential distribution** and a **gamma distribution**, weighted by parameters derived from a geometric mixing mechanism.
 
 ## Probability Density Function (PDF)
 
