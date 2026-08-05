@@ -4,9 +4,7 @@ Parametric bootstrap percentile control charts for the **Kumaraswamy–Lindley
 (KwL) distribution** — an R package accompanying the manuscript *"A
 Parametric Bootstrap Control Chart for Kumaraswamy–Lindley Percentiles"*.
 
-The methodology follows Al-Lami, Jabbari Khamnei & Heydari (2025, *PLOS ONE*
-20(2): e0316449), *"A parametric bootstrap control chart for Lindley
-Geometric percentiles,"* adapted from the two-parameter Lindley-Geometric
+The methodology follows "xxx article"* adapted from the two-parameter Lindley-Geometric
 distribution to the three-parameter Kumaraswamy–Lindley distribution
 obtained via the Kumaraswamy-G construction (Cordeiro & de Castro, 2011).
 
