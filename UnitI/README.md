@@ -1,10 +1,9 @@
-
 # unit_transform_dist
 
 **A scipy‑style package for probability distributions on (0,1) via the unit transform**  
 `Y = 1 / (1 + X)`,   `X > 0`
 
-[![CI](https://github.com/yourusername/unit_transform_dist/actions/workflows/ci.yml/badge.svg)](https://github.com/yourusername/unit_transform_dist/actions)
+[![CI](https://github.com/yamenetoo/unit_transform_dist/actions/workflows/ci.yml/badge.svg)](https://github.com/yamenetoo/unit_transform_dist/actions)
 [![PyPI version](https://badge.fury.io/py/unit_transform_dist.svg)](https://badge.fury.io/py/unit_transform_dist)
 [![Python versions](https://img.shields.io/pypi/pyversions/unit_transform_dist.svg)](https://pypi.org/project/unit_transform_dist/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -26,13 +25,21 @@ This mapping is **strictly decreasing** and maps `(0, ∞)` onto `(0, 1)`. The p
 Additionally, the package includes **advanced statistical tools**:
 
 - Maximum Likelihood Estimation (MLE) fitting
+- L-moment matching estimation (`fit_lmoments`), robust and applicable to any base distribution
+- Automatic model selection across all candidate base distributions (`auto_select_distribution`)
 - Model selection (AIC, BIC)
 - Goodness‑of‑fit tests (Kolmogorov–Smirnov, Cramér–von Mises, Anderson–Darling)
 - Hazard and cumulative hazard functions
-- Bootstrap and profile‑likelihood confidence intervals
+- Bootstrap and (correctly nuisance-profiled) profile‑likelihood confidence intervals
 - Method of Moments estimation for common distributions
+- **Regression**: `UnitTransformRegression`, a beta-regression-style model for (0,1) responses with covariates
+- **Mixture models**: `UnitTransformMixture`, EM-fit finite mixtures for multimodal (0,1) data
+- **Bayesian estimation**: MAP estimation and a dependency-free Metropolis-Hastings sampler
+- **Censored & truncated data**: MLE fitting under right/left/interval censoring and window truncation
+- **Diagnostics**: Pearson, Cox-Snell, and randomised quantile residuals; Cook's-distance-like influence
 - Publication‑ready plotting (PDF, CDF, SF, Q‑Q, P‑P)
 - A registry of all 50+ positive‑support distributions from `scipy.stats`
+- Fully typed (`py.typed`), tested (pytest, 49+ tests), and packaged with a standard `src/` layout
 
 ---
 
@@ -45,7 +52,7 @@ pip install unit_transform_dist
 For the latest development version:
 
 ```bash
-git clone https://github.com/yourusername/unit_transform_dist.git
+git clone https://github.com/yamenetoo/unit_transform_dist.git
 cd unit_transform_dist
 pip install -e .
 ```
@@ -61,7 +68,7 @@ from unit_transform_dist import make_unit_transform, plot_pdf
 dist = make_unit_transform("gamma", base_shape_params=(2.5,))
 
 # Evaluate PDF at y = 0.3
-print(dist.pdf(0.3))          # 0.872...
+print(dist.pdf(0.3))          # 2.888...
 
 # Generate random samples
 samples = dist.rvs(size=1000, random_state=42)
@@ -182,7 +189,77 @@ all_dists, failed = load_all()          # cached version
 unit_expon = all_dists["expon"]
 ```
 
-### 10. Extended Convenience Class
+### 10. Regression on (0,1) responses
+
+```python
+from unit_transform_dist import UnitTransformRegression
+import numpy as np
+
+model = UnitTransformRegression("gamma", link="log")
+model.fit(X, y)              # X: (n, p) covariates, y: (n,) in (0,1)
+model.predict_scale(X_new)   # fitted scale parameter per row
+model.predict_mean(X_new)    # E[Y | X] per row
+model.summary()
+```
+
+### 11. Mixture models
+
+```python
+from unit_transform_dist import UnitTransformMixture
+
+mix = UnitTransformMixture(["gamma", "gamma"])   # 2-component mixture
+mix.fit(data, n_init=3, random_state=0)
+mix.weights_          # mixing proportions
+mix.pdf(y_grid)
+mix.aic(data), mix.bic(data)
+```
+
+### 12. Bayesian estimation
+
+```python
+from unit_transform_dist import map_estimate, metropolis_hastings, posterior_summary, PriorSpec
+
+# MAP with a weak informative prior on the shape parameter
+priors = PriorSpec().add(0, lambda v: -0.5 * ((v - 2.0) / 1.0) ** 2)
+fitted_map = map_estimate(data, "gamma", priors=priors)
+
+# Full posterior via random-walk Metropolis-Hastings (no external MCMC dependency)
+result = metropolis_hastings(data, "gamma", n_samples=5000, burn_in=1000)
+posterior_summary(result)   # {'shape1': (mean, lower, upper), ...}
+```
+
+### 13. Censored and truncated data
+
+```python
+from unit_transform_dist import fit_censored
+
+# status: 0=exact, 1=right-censored, 2=left-censored, 3=interval-censored
+fitted = fit_censored(data, "gamma", status=status, upper=upper_bounds)
+
+# Truncated observation window (a, b) subset of (0,1)
+fitted_trunc = fit_censored(windowed_data, "gamma", truncation=(0.1, 0.9))
+```
+
+### 14. Diagnostics
+
+```python
+from unit_transform_dist import pearson_residuals, cox_snell_residuals, quantile_residuals, cooks_distance
+
+quantile_residuals(fitted, data)                        # ~N(0,1) if well-specified
+cooks_distance(UnitTransformDist, base_dist, data)       # per-observation influence
+```
+
+### 15. Automatic model selection
+
+```python
+from unit_transform_dist import auto_select_distribution
+
+results = auto_select_distribution(data, criterion="aic", top_n=5)
+for r in results:
+    print(r["name"], r["aic"], r["bic"])
+```
+
+### 16. Extended Convenience Class
 
 ```python
 from unit_transform_dist import UnitTransformExtras
@@ -266,9 +343,9 @@ help(make_unit_transform)
 
 ## Authors
 
-- **Mohamad Yamen AL Mohamad** (y.almo@tabrizu.ac.ir)  
-- **Ali Akbar Heydari** (a.heydari@tabrizu.ac.ir)  
-- **Hossein Jabbari Khamnei** (h.jabbari@tabrizu.ac.ir)  
+- **Mohamad Yamen AL Mohamad** (yamenmohamad@tabrizu.ac.ir)  
+- **Ali Akbar Heydari** (heydari@tabrizu.ac.ir)  
+- **Hossein Jabbari Khamnei** (h_jabbari@tabrizu.ac.ir)  
 
 *Department of Statistics, University of Tabriz, Tabriz, Iran*
 
@@ -283,7 +360,7 @@ If you use `unit_transform_dist` in your research, please cite:
   author = {AL Mohamad, Mohamad Yamen and Heydari, Ali Akbar and Jabbari Khamnei, Hossein},
   title = {unit_transform_dist: Probability distributions on (0,1) via the unit transform},
   year = {2026},
-  url = {https://github.com/yourusername/unit_transform_dist}
+  url = {https://github.com/yamenetoo/unit_transform_dist}
 }
 ```
 
@@ -297,7 +374,7 @@ This project is licensed under the **MIT License** – see the [LICENSE](LICENSE
 
 ## Contributing
 
-Contributions are welcome! Please open an issue or submit a pull request on [GitHub](https://github.com/yourusername/unit_transform_dist).
+Contributions are welcome! Please open an issue or submit a pull request on [GitHub](https://github.com/yamenetoo/unit_transform_dist).
 
 ---
 

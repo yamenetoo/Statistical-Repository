@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "unit_transform_dist"
+version = "0.3.0"
+description = "Probability distributions, regression, mixtures, and Bayesian tools on (0,1) via the unit transform Y = 1/(1+X)"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "MIT"
+authors = [
+    {name = "Mohamad Yamen AL Mohamad", email = "yamenmohamad@tabrizu.ac.ir"},
+    {name = "Ali Akbar Heydari", email = "heydari@tabrizu.ac.ir"},
+    {name = "Hossein Jabbari Khamnei", email = "h_jabbari@tabrizu.ac.ir"},
+]
+keywords = [
+    "probability distributions", "statistics", "scipy", "unit interval",
+    "beta regression", "mixture models", "bayesian statistics",
+    "bounded data", "proportions", "survival analysis"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Typing :: Typed",
+]
+dependencies = [
+    "numpy>=1.21",
+    "scipy>=1.7",
+    "matplotlib>=3.4",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=7.0", "pytest-cov"]
+docs = ["sphinx", "sphinx-rtd-theme"]
+dev = ["pytest>=7.0", "pytest-cov", "sphinx", "build", "twine"]
+
+[project.urls]
+Homepage = "https://github.com/yamenetoo/unit_transform_dist"
+Repository = "https://github.com/yamenetoo/unit_transform_dist"
+Documentation = "https://unit-transform-dist.readthedocs.io/"
+"Bug Tracker" = "https://github.com/yamenetoo/unit_transform_dist/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+unit_transform_dist = ["py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
