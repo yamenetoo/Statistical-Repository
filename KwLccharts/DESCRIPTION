@@ -1,0 +1,24 @@
+Package: KwLccharts
+Type: Package
+Title: Parametric Bootstrap Percentile Control Charts for the Kumaraswamy-Lindley Distribution
+Version: 0.1.0
+Date: 2026-08-05
+Authors@R: person(given = "Mohamad Yamen", family = "Al-Mohamad",
+    email = "yamen@example.edu", role = c("aut", "cre"))
+Author: Mohamad Yamen Al-Mohamad
+Maintainer: Mohamad Yamen Al-Mohamad <yamen@example.edu>
+Description: Density, cumulative distribution, quantile (closed form via the
+    Lambert W function) and random-generation functions for the
+    Kumaraswamy-Lindley (KwL) distribution, together with maximum-likelihood
+    fitting and a parametric bootstrap percentile control chart (Phase I
+    control limits and Phase II / average-run-length simulation), following
+    the methodology of Al-Lami, Jabbari Khamnei and Heydari (2025) for the
+    Lindley-Geometric distribution, <doi:10.1371/journal.pone.0316449>,
+    adapted here to the three-parameter Kumaraswamy-Lindley family obtained
+    from the Kumaraswamy-G construction of Cordeiro and de Castro (2011).
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Depends: R (>= 3.6)
+Imports: stats
+RoxygenNote: 7.3.1
