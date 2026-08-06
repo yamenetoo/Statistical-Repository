@@ -1,0 +1,101 @@
+---
+title: "Getting started with unitTransformDist"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting started with unitTransformDist}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+## The transform
+
+`unitTransformDist` builds distributions on the open interval (0,1) from
+any base distribution on (0, Inf) via the odds-inverting transform
+`Y = 1/(1+X)`. The base distribution is supplied directly as
+density/CDF/quantile/random-generation functions -- there is no fixed
+registry of allowed distributions.
+
+```{r setup}
+library(unitTransformDist)
+set.seed(1)
+```
+
+```{r}
+d <- utd(dgamma, pgamma, qgamma, rgamma, params = list(shape = 2.5))
+dutd(0.3, d)
+y <- rutd(500, d)
+hist(y, breaks = 30, main = "Simulated (0,1)-valued data", xlab = "y")
+```
+
+## Fitting by maximum likelihood
+
+```{r}
+fit <- fit_utd_mle(y, dgamma, start = c(shape = 1), lower = c(shape = 1e-6))
+fit
+AIC(fit)
+BIC(fit)
+```
+
+## The corrected profile-likelihood interval
+
+A historical implementation mistake (carried over from an earlier
+Python prototype of this idea) froze nuisance parameters at their
+unconstrained MLE while profiling the parameter of interest. This
+package's `profile_likelihood_ci()` re-optimizes nuisance parameters at
+every candidate value instead, which is what the theory of profile
+likelihood actually requires.
+
+```{r}
+ci <- profile_likelihood_ci(fit, "shape")
+ci
+```
+
+## A fully custom, unregistered base distribution
+
+Nothing above required `dgamma`/`pgamma` specifically. Any density and
+CDF the user can write down works, including one with no closed-form
+quantile function:
+
+```{r}
+dcustom <- function(x, rate, log = FALSE) dexp(x, rate = rate, log = log)
+pcustom <- function(q, rate, lower.tail = TRUE) pexp(q, rate, lower.tail = lower.tail)
+d2 <- utd(dcustom, pcustom, params = list(rate = 1.5), name = "custom_exp")
+dutd(0.4, d2)
+qutd(0.5, d2)  # obtained by numerically inverting pcustom, since qdist was not supplied
+```
+
+## Demonstrating the profile-likelihood fix empirically
+
+`compare_profile_likelihood_coverage()` runs a small Monte Carlo study
+comparing 95% coverage of the naive (broken) and corrected profile
+likelihood on the same simulated data. This chunk is the package's
+central empirical claim, and is fully reproducible by any user with the
+seed fixed below.
+
+```{r}
+true_dist <- utd(dgamma, pgamma, qgamma, rgamma, params = list(shape = 2.5, rate = 1))
+res <- compare_profile_likelihood_coverage(
+  true_dist, c(shape = 2.5, rate = 1), dgamma,
+  start = c(shape = 1, rate = 1), param_name = "shape",
+  n = 60, n_sim = 150, lower = c(shape = 1e-6, rate = 1e-6), seed = 1)
+res
+```
+
+## Bias correction
+
+```{r}
+bias_correct(fit, y, method = "jackknife")
+```
+
+## Monte Carlo study of estimator behaviour
+
+```{r}
+mc <- run_monte_carlo(d, true_params = c(shape = 2.5), ddist = dgamma,
+                       start = c(shape = 1), lower = c(shape = 1e-6),
+                       n = 100, n_sim = 200, seed = 1)
+summary(mc)
+```

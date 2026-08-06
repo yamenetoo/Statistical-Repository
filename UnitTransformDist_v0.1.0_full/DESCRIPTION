@@ -1,0 +1,40 @@
+Package: unitTransformDist
+Type: Package
+Title: Generalized Unit-Interval Distributions via the Odds Transform
+Version: 0.1.0
+Authors@R: c(
+    person("Mohamad Yamen", "Al Mohamad", email = "yamenmohamad@tabrizu.ac.ir",
+           role = c("aut", "cre")),
+    person("Ali Akbar", "Heydari", email = "heydari@tabrizu.ac.ir", role = "aut"),
+    person("Hossein", "Jabbari Khamnei", email = "h_jabbari@tabrizu.ac.ir", role = "aut"))
+Description: Constructs, fits, and diagnoses continuous probability
+    distributions on the open interval (0,1), obtained from an arbitrary
+    base distribution on (0, Inf) via the odds-inverting transform
+    Y = 1 / (1 + X). Unlike registry-restricted implementations, the base
+    distribution is supplied directly as density/CDF/quantile/random-generation
+    functions, so the package works with any distribution the user can write
+    down, including custom research distributions with no closed-form
+    quantile function. Provides maximum likelihood, L-moment, and Bayesian
+    estimation; a corrected profile-likelihood confidence interval that
+    re-optimizes nuisance parameters at every grid point (rather than
+    holding them fixed); Monte Carlo simulation utilities for studying
+    estimator bias, mean squared error, and confidence interval coverage;
+    and multiple bias-correction methods (analytic, jackknife, bootstrap,
+    median-unbiased, Firth-type penalized likelihood, double bootstrap).
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Depends: R (>= 4.1.0)
+Imports:
+    stats,
+    graphics
+Suggests:
+    testthat (>= 3.0.0),
+    knitr,
+    rmarkdown,
+    ggplot2
+VignetteBuilder: knitr
+RoxygenNote: 7.3.1
+Config/testthat/edition: 3
+URL: https://github.com/yamenetoo/unitTransformDist
+BugReports: https://github.com/yamenetoo/unitTransformDist/issues
