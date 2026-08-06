@@ -1,0 +1,39 @@
+Cover letter -- submission to the R Journal
+
+Dear Editors,
+
+We submit "unitTransformDist: A Distribution-Agnostic Toolkit for
+Unit-Interval Models via the Odds-Inverting Transform" for consideration.
+
+The package constructs (0,1)-interval distributions from an arbitrary
+base distribution via Y = 1/(1+X), accepting the base distribution's
+d/p/q/r functions directly rather than restricting users to a fixed
+registry. Its central, empirically demonstrated contribution is a
+documented fix to a profile-likelihood implementation mistake (freezing
+nuisance parameters instead of re-optimizing them), with a reproducible
+Monte Carlo study showing this raises actual 95% coverage from
+approximately 59% to approximately 94%.
+
+We note candidly, in the interest of transparency with reviewers:
+
+1. The package has not yet completed CRAN submission; this manuscript
+   accompanies the package's initial release rather than an
+   already-accepted CRAN package. We understand this is a requirement
+   for consideration and will complete CRAN submission before requesting
+   review.
+2. One routine in the package, `bias_correct_analytic()`, is explicitly
+   documented as experimental and not yet numerically validated; we
+   disclose this in the paper (Section 4) rather than omitting it.
+3. `R CMD check --as-cran` has been exercised via direct example
+   execution rather than the full automated check in a
+   network-connected environment, due to development-environment
+   constraints; this will be completed prior to any formal submission.
+
+All code, tests, and the vignette needed to reproduce every reported
+number are included in the package source (see tests/testthat/ and
+vignettes/getting-started.Rmd). Package repository: see DESCRIPTION for
+the URL field.
+
+Sincerely,
+Mohamad Yamen Al Mohamad, Ali Akbar Heydari, Hossein Jabbari Khamnei
+Department of Statistics, University of Tabriz

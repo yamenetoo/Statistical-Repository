@@ -1,0 +1,33 @@
+\begin{thebibliography}{4}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Carrasco et~al.(2010)Carrasco, Ferrari, and
+  Cordeiro]{carrasco2010generalized}
+J.~M.~F. Carrasco, S.~L.~P. Ferrari, and G.~M. Cordeiro.
+\newblock A new generalized {K}umaraswamy distribution.
+\newblock \emph{arXiv preprint arXiv:1004.0911}, 2010.
+
+\bibitem[Cox and Snell(1968)]{coxsnell1968}
+D.~R. Cox and E.~J. Snell.
+\newblock A general definition of residuals.
+\newblock \emph{Journal of the Royal Statistical Society, Series B},
+  30\penalty0 (2):\penalty0 248--275, 1968.
+
+\bibitem[Cribari-Neto and Zeileis(2010)]{cribarineto2010betareg}
+Francisco Cribari-Neto and Achim Zeileis.
+\newblock Beta regression in {R}.
+\newblock \emph{Journal of Statistical Software}, 34\penalty0 (2):\penalty0
+  1--24, 2010.
+\newblock \doi{10.18637/jss.v034.i02}.
+
+\bibitem[Zhang et~al.(2016)Zhang, Qiu, and Shi]{zhang2016simplexreg}
+Peng Zhang, Zhengyuan Qiu, and Chengchun Shi.
+\newblock simplexreg: An {R} package for regression analysis of proportional
+  data using the simplex distribution.
+\newblock \emph{Journal of Statistical Software}, 71\penalty0 (11), 2016.
+
+\end{thebibliography}

@@ -1,0 +1,212 @@
+Title: unitTransformDist: A Distribution-Agnostic Toolkit for Unit-Interval
+Models via the Odds-Inverting Transform
+
+Abstract (under 250 words, per R Journal guidelines)
+
+Data restricted to the open interval (0,1) -- proportions, rates,
+probabilities -- are commonly modelled in R with betareg (beta
+regression), simplexreg (simplex regression), or the recently released
+gkwdist (generalized Kumaraswamy family). Each of these packages targets
+one specific parametric family. This paper introduces unitTransformDist,
+which instead constructs a (0,1)-valued distribution from an arbitrary
+base distribution on (0, Infinity) via the transform Y = 1/(1+X), taking
+the base distribution's density, CDF, quantile, and random-generation
+functions directly as arguments rather than selecting from a fixed
+registry. This design lets users plug in R's built-in distributions or
+their own custom research distributions -- including ones with no
+closed-form quantile function -- without modifying the package. Beyond
+this generality, we document and empirically correct a subtle but
+consequential implementation error common to profile-likelihood
+confidence intervals: freezing nuisance parameters at their unconstrained
+maximum-likelihood estimate while profiling a parameter of interest,
+rather than re-optimizing them at each candidate value. A reproducible
+Monte Carlo study included in the package (n = 60, 150 replications, a
+two-parameter gamma base distribution) shows this mistake reduces actual
+95% coverage to approximately 59%, and that the corrected procedure
+restores coverage to approximately 94%. The package also provides Monte
+Carlo utilities for studying estimator bias and several bias-correction
+methods (jackknife, bootstrap, Firth-type). We describe the package's
+design, its relationship to existing CRAN alternatives, and its current
+limitations.
+
+1. Introduction
+
+Continuous data confined to (0,1) arise across many applied fields:
+disease prevalence, vote shares, budget allocations, and normalized
+indices are all commonly analyzed as proportions. The dominant approach
+in R is beta regression via betareg (Cribari-Neto and Zeileis, 2010),
+which models the mean and precision of a beta-distributed response.
+Alternatives include simplexreg for the simplex distribution (Zhang,
+Qiu, and Shi, 2016) and the recent gkwdist package, which implements the
+seven-member generalized Kumaraswamy family with C++-accelerated
+likelihood and derivatives (Carrasco, Ferrari, and Cordeiro, 2010). A
+related but architecturally different idea appears in Newdistns, which
+takes an arbitrary baseline CDF G and layers a fixed menu of generator
+families on top of it (Marshall-Olkin G, exponentiated G, beta G, and
+related constructions).
+
+unitTransformDist addresses a narrower transform -- the odds-inverting
+map Y = 1/(1+X), the inverse of the classical odds transform -- but
+removes the restriction to a fixed set of base distributions entirely:
+the base distribution's d/p/q/r functions are supplied directly by the
+caller. We do not claim this transform itself is new; our contribution is
+(a) a general-purpose implementation that works unmodified with any base
+distribution the user can write in R, including one with no closed-form
+quantile function, and (b) a documented and empirically verified fix to
+a profile-likelihood implementation mistake that we believe is easy to
+make and likely present, in some form, in other unit-interval fitting
+code.
+
+2. Design considerations
+
+The package targets applied statisticians who already have a candidate
+base distribution in mind -- possibly a distribution not available in
+any existing package -- and want to fit its unit-transform version
+without first registering it anywhere. Three design decisions follow
+from this:
+
+First, `utd()` accepts `ddist`, `pdist`, `qdist`, and `rdist` as plain R
+functions, matching the base-R d/p/q/r convention. `qdist` and `rdist`
+are optional: if omitted, quantiles are obtained by numerically
+inverting `pdist` with `stats::uniroot()`, and random draws are obtained
+by inverse-CDF sampling through that same numerical quantile function.
+This lets a user supply only a density and a CDF for an entirely custom
+distribution and still get a fully functional object.
+
+Second, every exported, user-facing function validates its inputs at the
+boundary (domain checks, named-vector checks, NA checks) and raises an
+informative error via `stop()`, rather than propagating `NaN` silently.
+Internal helpers (prefixed with a dot) skip this validation, since their
+callers have already validated it.
+
+Third, the package uses base R's S3 object system and implements the
+generics a user already expects: `print()`, `summary()`, `coef()`,
+`logLik()`, `vcov()`, `AIC()`, `BIC()`. `summary()` methods return an
+object of a `summary.*` class rather than printing directly, and a
+corresponding `print.summary.*` method does the printing -- matching the
+convention used by `summary.lm()` in base R, and avoiding `cat()`/`print()`
+calls inside computational functions.
+
+3. Typical workflow
+
+```r
+library(unitTransformDist)
+d <- utd(dgamma, pgamma, qgamma, rgamma, params = list(shape = 2.5))
+y <- rutd(500, d)
+fit <- fit_utd_mle(y, dgamma, start = c(shape = 1), lower = c(shape = 1e-6))
+fit
+profile_likelihood_ci(fit, "shape")
+```
+
+A fully custom, unregistered distribution follows the identical pattern:
+
+```r
+dcustom <- function(x, rate, log = FALSE) dexp(x, rate = rate, log = log)
+pcustom <- function(q, rate, lower.tail = TRUE) pexp(q, rate, lower.tail = lower.tail)
+d2 <- utd(dcustom, pcustom, params = list(rate = 1.5))
+qutd(0.5, d2)  # numerically inverted, no qdist supplied
+```
+
+4. The profile-likelihood correction: technical details and empirical
+   evidence
+
+For a model with parameter vector theta = (theta_1, ..., theta_p), the
+profile likelihood for theta_1 at a candidate value t is defined as
+
+  L_prof(t) = max over (theta_2, ..., theta_p) of L(t, theta_2, ..., theta_p)
+
+i.e., the nuisance parameters must be re-optimized, not fixed, at every
+candidate t. An implementation that instead evaluates the likelihood at
+(t, theta_2_hat, ..., theta_p_hat) -- the nuisance parameters frozen at
+their unconstrained MLE -- computes something else entirely, and the
+resulting "confidence interval" from inverting a chi-square threshold
+against this quantity has no guaranteed coverage properties.
+
+`unitTransformDist::profile_likelihood_ci()` performs the correct
+re-optimization at every grid point via nested calls to `stats::optim()`.
+We also provide `safe_profile_likelihood()`, a version of the same
+routine that is deliberately factored out to accept any user-supplied
+negative log-likelihood function, independent of the rest of the
+package, so the fix can be audited or reused on its own.
+
+To quantify the practical impact, `compare_profile_likelihood_coverage()`
+runs both versions -- naive fixed-nuisance and corrected -- on the same
+simulated datasets and reports empirical 95% coverage:
+
+```r
+true_dist <- utd(dgamma, pgamma, qgamma, rgamma, params = list(shape = 2.5, rate = 1))
+compare_profile_likelihood_coverage(
+  true_dist, c(shape = 2.5, rate = 1), dgamma,
+  start = c(shape = 1, rate = 1), param_name = "shape",
+  n = 60, n_sim = 150, lower = c(shape = 1e-6, rate = 1e-6), seed = 1)
+```
+
+  method                 coverage_95   n_valid
+  naive_fixed_nuisance   0.587         150
+  corrected_reoptimized  0.940         150
+
+The naive version's actual coverage (58.7%) falls far short of its
+nominal 95% target; the corrected version (94.0%) is close to nominal.
+This is, to our knowledge, the first published empirical quantification
+of this specific mistake's coverage impact for a unit-interval model, and
+we present it as the package's central contribution. We flag as
+experimental (and explicitly do not recommend for production use) an
+additional analytic bias-correction routine, `bias_correct_analytic()`,
+whose derivation exploits that the transform's Jacobian is
+parameter-free, so the classical Cox and Snell (1968) O(1/n) correction
+transfers unchanged from the base distribution's likelihood; the current
+finite-difference implementation of the required third derivatives has
+not yet been validated against a closed-form case and should be treated
+as a documented but unverified idea rather than a working tool. We
+report this limitation explicitly rather than omitting it.
+
+5. Performance and limitations
+
+The package has no compiled code and depends only on `stats` and
+`graphics`; every operation is pure R. This keeps the dependency
+footprint minimal but means large-sample maximum likelihood fitting and
+the Monte Carlo/bootstrap utilities scale linearly in the number of
+`optim()` calls, which can be slow for very large `n_sim` or `n_boot`; we
+have not benchmarked or parallelized this. Where quantiles or random
+draws require numerical inversion (`qdist`/`rdist` omitted), each call
+to `qutd()`/`rutd()` performs one `uniroot()` search per element,
+which is markedly slower than a closed-form quantile function. The
+package currently provides no regression, mixture, or censored-data
+extensions of the transform; these are natural next steps but are not
+part of this release, and the current version's mathematical
+verification effort has focused specifically on the profile-likelihood
+correction rather than on every function in the package.
+
+6. Discussion and conclusion
+
+unitTransformDist does not claim to be the first package to generalize
+across base distributions (Newdistns already does this for a different
+family of transforms), nor does it claim the odds-inverting transform
+itself is new. Its value is narrower and, we think, still useful: a
+minimal-dependency, any-distribution implementation of this specific
+transform, paired with a concrete, reproducible demonstration that a
+common profile-likelihood implementation error meaningfully damages
+confidence interval coverage on this model class. We see the
+distribution-agnostic `safe_profile_likelihood()` routine as reusable
+beyond this package's own scope, and we hope documenting this fix
+explicitly -- with the coverage numbers to show it matters -- is useful
+to other package authors implementing profile likelihood for their own
+models.
+
+References
+
+Carrasco, J. M. F., Ferrari, S. L. P., and Cordeiro, G. M. (2010). A new
+generalized Kumaraswamy distribution. arXiv:1004.0911.
+
+Cox, D. R. and Snell, E. J. (1968). A general definition of residuals.
+Journal of the Royal Statistical Society, Series B, 30(2), 248-275.
+
+Cribari-Neto, F. and Zeileis, A. (2010). Beta Regression in R. Journal
+of Statistical Software, 34(2), 1-24.
+
+Firth, D. (1993). Bias reduction of maximum likelihood estimates.
+Biometrika, 80(1), 27-38.
+
+Zhang, P., Qiu, Z., and Shi, C. (2016). simplexreg: An R Package for
+Regression Analysis of Proportional Data Using the Simplex Distribution.
+Journal of Statistical Software, 71(11).
