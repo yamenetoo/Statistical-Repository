@@ -1,4 +1,4 @@
-# unitTransformDist
+# UnitTransformDist
 
 **Generalized (0,1)-interval distributions from *any* base distribution on
 (0, ∞), via the odds-inverting transform `Y = 1/(1+X)`.**
