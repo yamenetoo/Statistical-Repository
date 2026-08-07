@@ -7,7 +7,10 @@
 ¹Department of Statistics, Faculty of Mathematics, Statistics, and Computer Sciences, University of Tabriz, Tabriz, Iran
 
 **Generalized (0,1)-interval distributions from *any* base distribution on
-(0, ∞), via the odds-inverting transform `Y = 1/(1+X)`.**
+(0, ∞), via the odds-inverting transform $Y = 1/(1+X)$.**
+ ![Uploading Unit.png…]()
+
+
 
 
 
