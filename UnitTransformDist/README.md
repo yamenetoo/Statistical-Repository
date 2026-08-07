@@ -2,7 +2,10 @@
 
 **Generalized (0,1)-interval distributions from *any* base distribution on
 (0, ∞), via the odds-inverting transform `Y = 1/(1+X)`.**
-![Uploading Unit.png…]()
+
+ ![Uploading Unit.png…]() 
+
+
 Unlike registry-restricted designs, the base distribution is supplied
 directly as density/CDF/quantile/random-generation functions — so this
 works with built-in R distributions (`dgamma`/`pgamma`/...), or with a
