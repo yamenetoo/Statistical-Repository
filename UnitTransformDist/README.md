@@ -1,7 +1,16 @@
+![UnitTransformDist Logo](Unit.png)
+
 # UnitTransformDist
+
+**[Mohamad Yamen Al Mohamad¹](https://orcid.org/0009-0009-1665-7203), [Ali Akbar Heydari¹](https://orcid.org/0000-000X-XXXX-XXXX), [Hossein Jabbari Khamnei¹](https://orcid.org/0000-000X-XXXX-XXXX)**
+
+¹Department of Statistics, Faculty of Mathematics, Statistics, and Computer Sciences, University of Tabriz, Tabriz, Iran
 
 **Generalized (0,1)-interval distributions from *any* base distribution on
 (0, ∞), via the odds-inverting transform `Y = 1/(1+X)`.**
+
+
+
 
 Unlike registry-restricted designs, the base distribution is supplied
 directly as density/CDF/quantile/random-generation functions — so this
@@ -267,9 +276,43 @@ what `unitTransformDist` does and does not add relative to each.
 
 ## Citing this package
 
-A `CITATION` file and formal DOI will be added once the package is
-released on CRAN. Until then, please cite the accompanying JSS or R
-Journal manuscript in `paper/`.
+If you use `unitTransformDist` in your research, please cite it as:
+
+```bibtex
+@Manual{unitTransformDist,
+  title = {unitTransformDist: Generalized (0,1)-Interval Distributions from Any Base Distribution on (0, ∞)},
+  author = {Mohamad Yamen Al Mohamad and Ali Akbar Heydari and Hossein Jabbari Khamnei},
+  year = {2026},
+  note = {R package version 0.1.0},
+  url = {https://github.com/yamenetoo/unitTransformDist},
+}
+```
+
+For the methodological foundation, please also cite the accompanying papers:
+
+```bibtex
+@Article{unitTransformDist-JSS,
+  author = {Mohamad Yamen Al Mohamad and Ali Akbar Heydari and Hossein Jabbari Khamnei},
+  title = {The Odds-Inverse Transform: A Unified Framework for Unit-Interval Distributions},
+  journal = {Journal of Statistical Software},
+  year = {2026},
+  volume = {xx},
+  number = {xx},
+  pages = {1--20},
+  doi = {10.xxxx/xxxxx},
+}
+
+@Article{unitTransformDist-RJ,
+  author = {Mohamad Yamen Al Mohamad and Ali Akbar Heydari and Hossein Jabbari Khamnei},
+  title = {unitTransformDist: Flexible Unit-Interval Modeling in R},
+  journal = {The R Journal},
+  year = {2026},
+  volume = {xx},
+  number = {xx},
+  pages = {1--20},
+  doi = {10.xxxx/xxxxx},
+}
+```
 
 ## Contributing
 
@@ -280,18 +323,19 @@ the behaviour you're fixing or adding.
 
 ## Authors
 
-**Mohamad Yamen Al Mohamad** — author, maintainer
+**[Mohamad Yamen Al Mohamad](https://orcid.org/0000-000X-XXXX-XXXX)** — author, maintainer
 Department of Statistics, Faculty of Mathematics, Statistics, and Computer Sciences, University of Tabriz, Tabriz, Iran
 Email: [yamenmohamad@tabrizu.ac.ir](mailto:yamenmohamad@tabrizu.ac.ir)
 
-**Ali Akbar Heydari** — author
+**[Ali Akbar Heydari](https://orcid.org/0000-000X-XXXX-XXXX)** — author
 Department of Statistics, Faculty of Mathematics, Statistics, and Computer Sciences, University of Tabriz, Tabriz, Iran
 Email: [heydari@tabrizu.ac.ir](mailto:heydari@tabrizu.ac.ir)
 
-**Hossein Jabbari Khamnei** — author
+**[Hossein Jabbari Khamnei](https://orcid.org/0000-000X-XXXX-XXXX)** — author
 Department of Statistics, Faculty of Mathematics, Statistics, and Computer Sciences, University of Tabriz, Tabriz, Iran
 Email: [h_jabbari@tabrizu.ac.ir](mailto:h_jabbari@tabrizu.ac.ir)
 
 ## License
 
 MIT — see [`LICENSE.md`](LICENSE.md).
+ 
