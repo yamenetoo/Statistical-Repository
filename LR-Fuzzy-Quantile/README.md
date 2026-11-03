@@ -1,5 +1,8 @@
 # LR-Fuzzy-Quantile
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yamenetoo/Statistical-Repository/blob/main/LR-Fuzzy-Quantile/run_in_colab.ipynb)
+
+
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yamenetoo/Statistical-Repository/blob/main/LR-Fuzzy-Quantile/lr_fuzzy_simulation.ipynb)
 
 Python code accompanying the article
