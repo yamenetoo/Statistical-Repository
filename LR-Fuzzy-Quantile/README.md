@@ -33,6 +33,8 @@ Consequences studied (and simulated here):
 | Non-asymptotic rate | `P( sup|X_k - X| <= sqrt(ln(4/delta)/(2k)) + 2/(k+1) ) >= 1 - delta` | `lr_fuzzy_simulation.py` (Convergence sheet) |
 | Dependence | Gaussian copula on `(U_C, V_l, V_r)`; mean width unchanged, variance of the width increases with `rho`; fuzzy intervals | `lr_fuzzy_simulation.py` (Dependence sheet) |
 | Inference | exact recovery of the spread law at rate `1/n`, Kolmogorov-type goodness-of-fit test, Fisher information of the knots | `lr_fuzzy_inference.py` |
+| Horizontal rate | `P( d_inf(X_k, X) <= max_j omega_{Q_j,V_j}(V_j eps_k(delta)) ) >= 1 - delta` (`d_inf` = largest Hausdorff distance between alpha-cuts, `omega` = modulus of continuity of the quantile function); exact order `k^(-1/2)` when `Q` is Lipschitz | `lr_fuzzy_horizontal.py` |
+| Characterisation of the LR class | a spread-determined random fuzzy number is LR iff its arms satisfy multiplicative consistency `G_s(t) = G_s(s') G_{s'}(t)` and the shape function so identified is the law of the spread | `lr_fuzzy_horizontal.py` |
 
 ---
 
@@ -45,6 +47,8 @@ LR-Fuzzy-Quantile/
 ├── lr_fuzzy_simulation.py          main simulation study (writes an Excel workbook)
 ├── lr_fuzzy_simulation.ipynb       the same study as a Google Colab notebook
 ├── lr_fuzzy_inference.py           inference experiments of Section 4 (writes a JSON file)
+├── lr_fuzzy_horizontal.py          horizontal-rate and characterisation experiments (writes a JSON file)
+├── results/horizontal_results.json output of the full run of lr_fuzzy_horizontal.py (seed 2026)
 └── base_paper/
     ├── README.md
     ├── parchami2024_base_paper.py  Algorithms 1-3 and Examples 1-3 of the base paper
@@ -71,6 +75,10 @@ python lr_fuzzy_simulation.py --reps 2000 --seed 7 --out my_results.xlsx
 python lr_fuzzy_inference.py --quick       # inference experiments, test run
 python lr_fuzzy_inference.py               # full run (several minutes)
 python lr_fuzzy_inference.py --only gof --out gof.json
+
+python lr_fuzzy_horizontal.py --quick     # horizontal rate + characterisation, test run
+python lr_fuzzy_horizontal.py             # full run (about 3-4 minutes)
+python lr_fuzzy_horizontal.py --out h.json --datadir figdata   # also writes .dat files for pgfplots
 
 cd base_paper && python parchami2024_base_paper.py --example all --outdir figures
 ```
@@ -116,7 +124,18 @@ Exp(3) spreads, noise-free observed memberships.
 
 Options: `--seed`, `--quick`, `--only {recover,compat,gof,mle}`, `--out`.
 
-### 4.3 `base_paper/parchami2024_base_paper.py`
+### 4.3 `lr_fuzzy_horizontal.py` -> `horizontal_results.json`
+
+| Block | Result | Quantity |
+|---|---|---|
+| `horizontal` | Theorem "horizontal bound" | for scenarios A-C and `k = 4 ... 1000`: median / 95% quantile of `d_inf(X_k, X)`, the bound with `delta = 0.05` (modulus of continuity evaluated on a grid), its empirical coverage and the ratio bound/error |
+| `fitted_slopes` | Remark on Hoelder exponents | observed log-log order `k^(-slope)` of the median error (about 0.46, 0.34, 0.30 for A, C, B in the stored run) |
+| `sharp` | Proposition "exact order" | uniform spread, `V = 1`: `sqrt(k) * E d_inf` tends to `sqrt(pi/2) ln 2 = 0.8687` |
+| `characterisation` | Theorem "characterisation" | largest violation of the consistency condition (CE) for LR (exponential) arms, triangular arms and a spread-determined non-LR family, and the error of recovering the shape function from the arms alone |
+
+Options: `--seed`, `--quick`, `--out`, `--datadir`.
+
+### 4.4 `base_paper/parchami2024_base_paper.py`
 
 | Paper | Function |
 |---|---|
