@@ -98,6 +98,19 @@ Requirements: Python 3.9+ ; numpy, scipy, pandas, openpyxl ; matplotlib for the 
 
 ---
 
+
+### Saving results to Excel / Google Drive
+
+`get_and_run.py` merges every result table into one workbook, `LR_all_results.xlsx` (one sheet per table).
+In Google Colab it mounts Drive and saves to `My Drive/LR_Fuzzy_Quantile_results/` (workbook at top level, all raw files in `details/`):
+
+```python
+!python get_and_run.py --quick      # fast check
+!python get_and_run.py              # full run
+```
+
+Options: `--drive-folder NAME`, `--drive-dir PATH` (any synced folder outside Colab), `--no-drive`.
+
 ## 4. The experiments
 
 ### 4.1 `lr_fuzzy_simulation.py` -> one Excel sheet per experiment
