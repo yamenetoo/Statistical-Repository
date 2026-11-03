@@ -301,16 +301,16 @@ def main():
                   "coverage column checks it empirically."]})
 
     with pd.ExcelWriter(a.out, engine="openpyxl") as xw:
-        cfg.to_excel(xw, "Config", index=False)
-        df_eq.to_excel(xw, "Equivalence", index=False)
-        df_cv.to_excel(xw, "Convergence", index=False)
-        df_au.to_excel(xw, "Aumann", index=False)
-        df_dp.to_excel(xw, "Dependence", index=False)
-        df_tm.to_excel(xw, "Timing", index=False)
-        df_sl.to_excel(xw, "Fuzzy_sample_long", index=False)
-        df_sw.to_excel(xw, "Fuzzy_sample_wide", index=False)
-        df_fi.to_excel(xw, "Fuzzy_interval_long", index=False)
-        df_fw.to_excel(xw, "Fuzzy_interval_wide", index=False)
+        cfg.to_excel(xw, sheet_name="Config", index=False)
+        df_eq.to_excel(xw, sheet_name="Equivalence", index=False)
+        df_cv.to_excel(xw, sheet_name="Convergence", index=False)
+        df_au.to_excel(xw, sheet_name="Aumann", index=False)
+        df_dp.to_excel(xw, sheet_name="Dependence", index=False)
+        df_tm.to_excel(xw, sheet_name="Timing", index=False)
+        df_sl.to_excel(xw, sheet_name="Fuzzy_sample_long", index=False)
+        df_sw.to_excel(xw, sheet_name="Fuzzy_sample_wide", index=False)
+        df_fi.to_excel(xw, sheet_name="Fuzzy_interval_long", index=False)
+        df_fw.to_excel(xw, sheet_name="Fuzzy_interval_wide", index=False)
 
     wb = load_workbook(a.out)
     for ws in wb.worksheets:

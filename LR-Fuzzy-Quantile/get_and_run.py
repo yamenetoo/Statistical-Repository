@@ -152,9 +152,19 @@ def drive_target(args):
     if args.drive_dir:
         path = os.path.abspath(os.path.expanduser(args.drive_dir))
     elif in_colab():
-        from google.colab import drive
-        drive.mount("/content/drive")
-        path = os.path.join("/content/drive/MyDrive", args.drive_folder)
+        root = "/content/drive/MyDrive"
+        if not os.path.isdir(root):
+            try:
+                from google.colab import drive
+                drive.mount("/content/drive")
+            except Exception:
+                pass
+        if not os.path.isdir(root):
+            print("\nGoogle Drive is not mounted (mounting only works from a notebook cell, not from '!python').\n"
+                  "Run  from google.colab import drive; drive.mount('/content/drive')  in a cell first, then run again.\n"
+                  "Results are kept in the work folder meanwhile.")
+            return None
+        path = os.path.join(root, args.drive_folder)
     else:
         print("\nNot running in Colab and --drive-dir not given: results stay in the work folder "
               "(use --drive-dir PATH for a synced Google Drive folder).")
