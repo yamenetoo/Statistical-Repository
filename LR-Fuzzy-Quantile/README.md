@@ -44,6 +44,7 @@ Consequences studied (and simulated here):
 LR-Fuzzy-Quantile/
 ├── README.md                       this file
 ├── requirements.txt                numpy, scipy, pandas, openpyxl
+├── get_and_run.py                  downloads this folder from GitHub and runs all experiments
 ├── lr_fuzzy_simulation.py          main simulation study (writes an Excel workbook)
 ├── lr_fuzzy_simulation.ipynb       the same study as a Google Colab notebook
 ├── lr_fuzzy_inference.py           inference experiments of Section 4 (writes a JSON file)
@@ -58,6 +59,17 @@ LR-Fuzzy-Quantile/
 ---
 
 ## 3. Quick start
+
+### One command: download and run everything
+`get_and_run.py` downloads this folder from GitHub (no git needed), installs the packages and runs all experiments.
+```bash
+wget -q https://raw.githubusercontent.com/yamenetoo/Statistical-Repository/main/LR-Fuzzy-Quantile/get_and_run.py
+python get_and_run.py --quick            # about 1 minute, small replication numbers
+python get_and_run.py                    # full run (about 10 minutes)
+python get_and_run.py --only horizontal inference --workdir my_run
+```
+In Google Colab use `!wget ...` and `!python get_and_run.py --quick`. Outputs are written to `<workdir>/results/`
+(Excel workbook, two JSON files, `.dat` files and the base-paper figures).
 
 ### Google Colab (no installation)
 Click the badge above, then **Runtime -> Run all**. The first cell installs the packages and the last cell downloads the Excel file.
