@@ -15,3 +15,6 @@ pip install -r requirements.txt
 python lr_fuzzy_simulation.py                 # default: 500 replications, seed 2026
 python lr_fuzzy_simulation.py --quick         # fast test
 ```
+
+## Base paper
+`base_paper/` contains a Python implementation of Algorithms 1-3 and Examples 1-3 of Parchami, Grzegorzewski & Romaniuk (2024), with the reproduced figures.
