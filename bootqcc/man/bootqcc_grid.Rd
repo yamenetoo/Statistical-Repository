@@ -39,9 +39,7 @@ This reproduces the Monte Carlo study usually reported in control chart
 papers.
 }
 \examples{
-\donttest{
 g <- expand.grid(shape = c(1.5, 2), scale = 1)
 bootqcc_grid("weibull", g, u_values = c(0.1, 0.9), n_values = 5,
-             B = 100, M = 3, arl_rep = 20, seed = 1)
-}
+             alpha = 0.1, B = 50, M = 2, arl_rep = 5, seed = 1)
 }

@@ -35,9 +35,8 @@ limits. Use the in-control parameters to estimate ARL0, or shifted
 parameters to estimate the out-of-control ARL1.
 }
 \examples{
-\donttest{
 ch <- bootqcc("weibull", list(shape = 2, scale = 1), u = 0.1, n = 5,
-              B = 200, M = 5, arl_rep = 50, seed = 1)
-arl(ch, params = list(shape = 2, scale = 1.5), rep = 100)
-}
+              alpha = 0.05, B = 100, M = 3, arl_rep = 10, seed = 1)
+# Out-of-control ARL after a scale shift
+arl(ch, params = list(shape = 2, scale = 1.5), rep = 20)$mean
 }

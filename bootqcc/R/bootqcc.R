@@ -55,11 +55,13 @@
 #'   settings used.
 #'
 #' @examples
-#' \donttest{
+#' # Small settings so that the example runs quickly; use the defaults
+#' # (B = 1000, M = 30, arl_rep = 100) for a real analysis.
 #' ch <- bootqcc("weibull", list(shape = 2, scale = 1), u = 0.1, n = 5,
-#'               alpha = 0.0027, B = 200, M = 5, arl_rep = 50, seed = 1)
+#'               alpha = 0.05, B = 100, M = 3, arl_rep = 10, seed = 1)
 #' ch
 #'
+#' \donttest{
 #' # A user-defined distribution (Kumaraswamy)
 #' kw <- list(
 #'   name = "kumaraswamy",
@@ -68,7 +70,7 @@
 #'   r = function(n, a, b) (1 - (1 - runif(n))^(1 / b))^(1 / a)
 #' )
 #' bootqcc(kw, list(a = 2, b = 3), u = 0.5, n = 10,
-#'         B = 200, M = 5, arl_rep = 50, seed = 1)
+#'         alpha = 0.05, B = 100, M = 3, arl_rep = 10, seed = 1)
 #' }
 #' @export
 bootqcc <- function(distr, params, u = 0.5, n = 5, alpha = 0.0027,
@@ -181,11 +183,10 @@ bootqcc <- function(distr, params, u = 0.5, n = 5, alpha = 0.0027,
 #' @return A list with `mean`, `sd`, `runs` and `censored` (the number of
 #'   runs that reached the cap).
 #' @examples
-#' \donttest{
 #' ch <- bootqcc("weibull", list(shape = 2, scale = 1), u = 0.1, n = 5,
-#'               B = 200, M = 5, arl_rep = 50, seed = 1)
-#' arl(ch, params = list(shape = 2, scale = 1.5), rep = 100)
-#' }
+#'               alpha = 0.05, B = 100, M = 3, arl_rep = 10, seed = 1)
+#' # Out-of-control ARL after a scale shift
+#' arl(ch, params = list(shape = 2, scale = 1.5), rep = 20)$mean
 #' @export
 arl <- function(chart, params = chart$params, rep = 100,
                 max_run_length = chart$max_run_length, verbose = FALSE) {

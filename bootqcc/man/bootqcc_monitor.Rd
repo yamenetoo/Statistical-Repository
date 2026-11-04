@@ -22,10 +22,9 @@ Fits the distribution to each new sample, computes the monitored statistic
 and compares it with the control limits of a chart built by \code{\link[=bootqcc]{bootqcc()}}.
 }
 \examples{
-\donttest{
 ch <- bootqcc("weibull", list(shape = 2, scale = 1), u = 0.1, n = 5,
-              B = 200, M = 5, arl_rep = 20, seed = 1)
+              alpha = 0.05, B = 100, M = 3, arl_rep = 5, seed = 1)
+set.seed(2)
 new <- matrix(rweibull(50, 2, 1.6), ncol = 5)
 bootqcc_monitor(ch, new)
-}
 }

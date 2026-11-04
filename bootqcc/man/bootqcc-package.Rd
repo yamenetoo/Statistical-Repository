@@ -16,6 +16,14 @@ under a parameter shift), \code{\link[=bootqcc_monitor]{bootqcc_monitor()}} appl
 \code{\link[=bootqcc_grid]{bootqcc_grid()}} runs a simulation study over many settings.
 }
 
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/yamenetoo/Statistical-Repository/tree/main/bootqcc}
+  \item Report bugs at \url{https://github.com/yamenetoo/Statistical-Repository/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Mohamad Yamen Al-Mohamad \email{yamenmohamad@tabrizu.ac.ir} (\href{https://orcid.org/0009-0009-1665-7203}{ORCID})
 

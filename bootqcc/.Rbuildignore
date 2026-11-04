@@ -1,1 +1,7 @@
 ^docs$
+^cran-comments\.md$
+^\.github$
+^README\.Rmd$
+^man/figures/logo\.svg$
+^.*\.Rproj$
+^\.Rproj\.user$

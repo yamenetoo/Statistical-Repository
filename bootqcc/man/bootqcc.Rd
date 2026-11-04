@@ -104,11 +104,13 @@ The reported limits are the means of the \code{M} limits. The ARL is then
 estimated by drawing samples until the statistic leaves the limits.
 }
 \examples{
-\donttest{
+# Small settings so that the example runs quickly; use the defaults
+# (B = 1000, M = 30, arl_rep = 100) for a real analysis.
 ch <- bootqcc("weibull", list(shape = 2, scale = 1), u = 0.1, n = 5,
-              alpha = 0.0027, B = 200, M = 5, arl_rep = 50, seed = 1)
+              alpha = 0.05, B = 100, M = 3, arl_rep = 10, seed = 1)
 ch
 
+\donttest{
 # A user-defined distribution (Kumaraswamy)
 kw <- list(
   name = "kumaraswamy",
@@ -117,6 +119,6 @@ kw <- list(
   r = function(n, a, b) (1 - (1 - runif(n))^(1 / b))^(1 / a)
 )
 bootqcc(kw, list(a = 2, b = 3), u = 0.5, n = 10,
-        B = 200, M = 5, arl_rep = 50, seed = 1)
+        alpha = 0.05, B = 100, M = 3, arl_rep = 10, seed = 1)
 }
 }

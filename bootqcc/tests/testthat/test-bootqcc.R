@@ -26,6 +26,7 @@ test_that("works with a user-defined distribution", {
 })
 
 test_that("in-control ARL is close to 1/alpha for a moderate alpha", {
+  skip_on_cran()
   ch <- bootqcc("exp", list(rate = 1), u = 0.5, n = 10, alpha = 0.1,
                 B = 300, M = 5, arl_rep = 300, seed = 3)
   expect_gt(ch$arl$mean, 5)

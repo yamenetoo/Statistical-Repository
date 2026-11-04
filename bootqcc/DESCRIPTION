@@ -15,7 +15,12 @@ Description: Builds Phase I control limits for a quantile (or any user-defined
     user, so the same code serves Weibull, gamma, Kumaraswamy, Lindley-type and
     other lifetime models. Phase II monitoring of new samples is supported.
 License: MIT + file LICENSE
+URL: https://github.com/yamenetoo/Statistical-Repository/tree/main/bootqcc
+BugReports: https://github.com/yamenetoo/Statistical-Repository/issues
 Encoding: UTF-8
+Language: en-GB
+Depends:
+    R (>= 4.0.0)
 Roxygen: list(markdown = TRUE)
 Imports:
     graphics,
