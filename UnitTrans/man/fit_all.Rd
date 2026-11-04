@@ -9,7 +9,11 @@ fit_all(
   dists,
   trans = names(.registry()),
   criterion = c("AIC", "BIC", "AICc"),
-  verbose = FALSE
+  verbose = FALSE,
+  drop_nonconverged = TRUE,
+  seed = NULL,
+  cores = 1L,
+  adjust = FALSE
 )
 }
 \arguments{
@@ -22,14 +26,28 @@ fit_all(
 \item{criterion}{`"AIC"`, `"BIC"` or `"AICc"`.}
 
 \item{verbose}{Print skipped combinations.}
+
+\item{drop_nonconverged}{Drop fits whose optimiser reported non-convergence.}
+
+\item{seed}{Optional seed passed to every [fit_trans()] call (the same seed
+for each combination, so results do not depend on the order of the
+combinations or on `cores`).}
+
+\item{cores}{Number of processes (Unix-alike systems only; ignored on Windows).}
+
+\item{adjust}{Passed to [fit_trans()].}
 }
 \value{
-An object of class `transfit_all`: a ranking `table` and the list of
+An object of class `transfit_all`: a ranking `table` (with
+  `delta` and Akaike `weight` for the chosen criterion) and the list of
   `fits`.
 }
 \description{
 Fits every valid combination of baseline distributions and transformations
-and ranks them by an information criterion.
+and ranks them by an information criterion. Combinations whose baseline
+support is incompatible with the transformation, whose optimiser did not
+converge or whose fit puts mass outside the transformation domain are
+dropped (reported when `verbose = TRUE`).
 }
 \examples{
 set.seed(2)

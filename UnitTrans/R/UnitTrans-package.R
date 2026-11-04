@@ -5,6 +5,6 @@
 #' distribution and quantile functions of V, simulates from it, fits it by
 #' maximum likelihood, ranks many candidate models, tests goodness of fit,
 #' and runs simulation studies.
-#' @importFrom stats coef vcov logLik confint
+#' @importFrom stats coef vcov logLik confint nobs residuals predict
 #' @keywords internal
 "_PACKAGE"

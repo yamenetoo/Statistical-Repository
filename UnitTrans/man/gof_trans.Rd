@@ -13,16 +13,19 @@ gof_trans(fit, B = 200, refit = TRUE, seed = NULL)
 
 \item{refit}{Re-estimate the parameters in each replication.}
 
-\item{seed}{Optional seed.}
+\item{seed}{Optional seed (the caller's random number stream is restored).}
 }
 \value{
-A data frame with statistic and bootstrap p-value for each test.
+A data frame with statistic and bootstrap p-value for each test, and
+  `valid_boot`, the number of replications that could be fitted. A warning
+  is issued when some replications fail.
 }
 \description{
 Computes Kolmogorov-Smirnov, Cramer-von Mises and Anderson-Darling
 statistics for a fitted model and obtains p-values by a parametric bootstrap
 that re-estimates the parameters in every replication (so the p-values are
-valid with estimated parameters).
+valid with estimated parameters). The p-value is
+`(1 + #{T* >= T}) / (B + 1)`, so it is never exactly zero.
 }
 \examples{
 set.seed(3)

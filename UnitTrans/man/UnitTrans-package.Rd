@@ -12,8 +12,16 @@ distribution and quantile functions of V, simulates from it, fits it by
 maximum likelihood, ranks many candidate models, tests goodness of fit,
 and runs simulation studies.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/yamenetoo/Statistical-Repository/tree/main/UnitTrans}
+  \item Report bugs at \url{https://github.com/yamenetoo/Statistical-Repository/issues}
+}
+
+}
 \author{
-\strong{Maintainer}: Mohamad Yamen Al-Mohamad \email{almohamadmohamad678@gmail.com}
+\strong{Maintainer}: Mohamad Yamen Al-Mohamad \email{almohamadmohamad678@gmail.com} (\href{https://orcid.org/0009-0009-1665-7203}{ORCID})
 
 }
 \keyword{internal}

@@ -20,7 +20,9 @@ summary_trans(dist, par, trans)
 }
 \description{
 Computed by numerical integration of the quantile function,
-\eqn{E[V^r] = \int_0^1 Q(p)^r dp}.
+\eqn{E[V^r] = \int_0^1 Q(p)^r dp}. Central moments in `summary_trans` are
+integrated directly (not obtained from raw moments), which avoids
+cancellation errors.
 }
 \examples{
 moments_trans("gamma", c(2, 1), "rational", r = 1:2)

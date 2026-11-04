@@ -8,27 +8,34 @@
   object,
   parm,
   level = 0.95,
-  method = c("wald", "bootstrap"),
+  method = c("wald", "bootstrap", "profile"),
   B = 200,
+  seed = NULL,
   ...
 )
 }
 \arguments{
 \item{object}{A `transfit` object.}
 
-\item{parm}{Ignored (all parameters).}
+\item{parm}{Parameter names or indices (default: all).}
 
 \item{level}{Confidence level.}
 
-\item{method}{`"wald"` (from the Hessian) or `"bootstrap"` (parametric
-percentile bootstrap).}
+\item{method}{`"wald"` (from the Hessian), `"bootstrap"` (parametric
+percentile bootstrap) or `"profile"` (profile likelihood, usually
+better for positive or skewed parameters). A limit returned as `NA` means
+that the profile did not cross the cut-off in the searched range.}
 
 \item{B}{Bootstrap replications.}
+
+\item{seed}{Optional seed for the bootstrap (the caller's random number
+stream is restored afterwards).}
 
 \item{...}{Unused.}
 }
 \value{
-Matrix with lower and upper limits.
+Matrix with lower and upper limits. For the bootstrap the number of
+  failed replications is stored in the attribute `"failed"`.
 }
 \description{
 Confidence intervals for a fitted model
@@ -37,4 +44,5 @@ Confidence intervals for a fitted model
 set.seed(1)
 fit <- fit_trans(rtrans(150, "norm", c(0, 1), "logit"), "norm", "logit")
 confint(fit)
+confint(fit, method = "profile")
 }

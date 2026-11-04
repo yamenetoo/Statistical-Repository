@@ -13,14 +13,16 @@ simulation_study(dist, par, trans, n = c(50, 100, 200), R = 200, seed = NULL)
 
 \item{R}{Number of replications.}
 
-\item{seed}{Optional seed.}
+\item{seed}{Optional seed (the caller's random number stream is restored).}
 }
 \value{
-A data frame with one row per sample size and parameter.
+A data frame with one row per sample size and parameter, including
+  the number of `failed` replications.
 }
 \description{
 Repeatedly simulates from a transformed distribution, refits it and
 summarises bias, root mean squared error and the coverage of Wald intervals.
+Coverage is computed over the replications with available standard errors.
 }
 \examples{
 simulation_study("norm", c(mean = 0, sd = 1), "logit", n = c(50, 100), R = 20, seed = 1)

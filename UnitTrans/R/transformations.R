@@ -25,10 +25,12 @@
       g = function(y) stats::plogis(y),
       ginv = function(v) stats::qlogis(v),
       logjac = function(v) -log(v) - log1p(-v)),
-    arcsech = .make_trans(
-      "arcsech", "V = 2 / (1 + exp(Y))", "Y = log(2 / V - 1)", "positive", TRUE,
-      g = function(y) 2 / (1 + exp(y)),
-      ginv = function(v) log(2 / v - 1),
+    # V = 2 / (1 + exp(Y)) = 1 - tanh(Y / 2); previously (wrongly) named "arcsech".
+    tanh = .make_trans(
+      "tanh", "V = 2 / (1 + exp(Y)) = 1 - tanh(Y / 2)",
+      "Y = log(2 / V - 1) = 2 atanh(1 - V)", "positive", TRUE,
+      g = function(y) 2 * stats::plogis(-y),
+      ginv = function(v) log(2 - v) - log(v),
       logjac = function(v) log(2) - log(v) - log(2 - v)),
     probit = .make_trans(
       "probit", "V = pnorm(Y)", "Y = qnorm(V)", "real", FALSE,
@@ -63,7 +65,10 @@ trans_list <- function() {
 
 #' Get a transformation object by name
 #'
-#' @param name One of the names returned by [trans_list()].
+#' @param name One of the names returned by [trans_list()]. The old name
+#'   `"arcsech"` is still accepted (with a warning) and refers to `"tanh"`:
+#'   the map `V = 2/(1 + exp(Y))` equals `1 - tanh(Y/2)` and is not the
+#'   inverse hyperbolic secant.
 #' @return An object of class `unitrans` with elements `g` (forward map),
 #'   `ginv` (inverse map), `logjac` (log |dY/dV|), `domain` and `decreasing`.
 #' @examples
@@ -73,8 +78,13 @@ trans_list <- function() {
 get_transformation <- function(name) {
   if (inherits(name, "unitrans")) return(name)
   r <- .registry()
+  if (is.character(name) && length(name) == 1L && identical(name, "arcsech")) {
+    warning("Transformation 'arcsech' was renamed 'tanh' (V = 1 - tanh(Y/2)); ",
+            "using 'tanh'.", call. = FALSE)
+    name <- "tanh"
+  }
   if (!is.character(name) || length(name) != 1L || !name %in% names(r))
-    stop("Unknown transformation '", name, "'. Available: ",
+    stop("Unknown transformation '", format(name)[1], "'. Available: ",
          paste(names(r), collapse = ", "), call. = FALSE)
   r[[name]]
 }

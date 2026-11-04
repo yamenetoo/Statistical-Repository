@@ -29,7 +29,7 @@ From a shell:
 
 ```
 R CMD build UnitTrans
-R CMD check UnitTrans_0.1.0.tar.gz
+R CMD check UnitTrans_0.2.0.tar.gz
 ```
 
 or inside R: `testthat::test_local("UnitTrans")`. Expect `FAIL 0`.
@@ -80,6 +80,8 @@ If a p-value is small, return to Step 5 with other baselines or transformations.
 
 ```{r}
 confint(best)
+confint(best, method = "profile")
+head(residuals(best))
 summary_trans(best$dist, best$coef, best$trans)
 hazard_trans(c(.2, .5, .8), best$dist, best$coef, best$trans)
 ```

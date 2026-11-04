@@ -2,7 +2,7 @@ test_that("density integrates to 1 for every valid pair", {
   cases <- list(
     list("norm", c(0, 1), "logit"), list("norm", c(0, 1), "probit"),
     list("norm", c(0, 1), "cloglog"), list("gamma", c(3, 1), "rational"),
-    list("gamma", c(3, 1), "exponential"), list("gamma", c(3, 1), "arcsech"),
+    list("gamma", c(3, 1), "exponential"), list("gamma", c(3, 1), "tanh"),
     list("beta", c(3, 2), "rational"), list("exp", 3, "exponential"))
   for (cs in cases) {
     i <- tryCatch(integrate(function(v) dtrans(v, cs[[1]], cs[[2]], cs[[3]]),
@@ -15,7 +15,7 @@ test_that("density integrates to 1 for every valid pair", {
 })
 
 test_that("p and q are inverses; d is derivative of p", {
-  for (tn in c("rational", "exponential", "logit", "arcsech", "probit", "cloglog")) {
+  for (tn in c("rational", "exponential", "logit", "tanh", "probit", "cloglog")) {
     d <- if (tn %in% c("logit", "probit", "cloglog")) "norm" else "gamma"
     par <- if (d == "norm") c(0.3, 1.2) else c(2.5, 1.5)
     p <- c(.1, .3, .5, .8, .95)
@@ -36,7 +36,7 @@ test_that("random sample matches the cdf", {
 test_that("domain checking works", {
   expect_false(check_domain("norm", c(0, 1), "rational")$valid)
   expect_true(check_domain("norm", c(0, 1), "logit")$valid)
-  expect_true(check_domain("gamma", c(3, 1), "arcsech")$valid)
+  expect_true(check_domain("gamma", c(3, 1), "tanh")$valid)
 })
 
 test_that("mle recovers parameters and fit_all picks sensible model", {

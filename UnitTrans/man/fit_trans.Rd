@@ -12,7 +12,9 @@ fit_trans(
   lower = NULL,
   upper = NULL,
   n_start = 3,
-  seed = NULL
+  seed = NULL,
+  adjust = FALSE,
+  check_support = TRUE
 )
 }
 \arguments{
@@ -27,18 +29,31 @@ parameters and 1 otherwise.}
 
 \item{lower, upper}{Optional bounds for the parameters.}
 
-\item{n_start}{Number of starting points (the default plus random
-perturbations); the best optimum is kept.}
+\item{n_start}{Number of starting points (the default or user start, a
+quantile-matching start, plus random perturbations); the best optimum is
+kept.}
 
-\item{seed}{Optional seed for the random perturbations.}
+\item{seed}{Optional seed for the random perturbations. The caller's random
+number stream is restored afterwards.}
+
+\item{adjust}{If `TRUE`, data are mapped into the open interval with the
+Smithson-Verkuilen correction `(y (n - 1) + 0.5) / n`, which allows
+observations equal to 0 or 1.}
+
+\item{check_support}{If `TRUE` (default), stop when the baseline puts mass
+outside the domain of the transformation (see [check_domain()]).}
 }
 \value{
 An object of class `transfit` with `coef`, `se`, `vcov`, `logLik`,
-  `AIC`, `BIC`, `AICc`, `n`, `convergence`.
+  `AIC`, `BIC`, `AICc`, `n`, `convergence` and `hessian_ok` (whether the
+  Hessian was positive definite, so that standard errors are available).
 }
 \description{
 Fits the distribution of \eqn{V = g(Y)} to data in (0,1) by maximising the
-log-likelihood over the baseline parameters.
+log-likelihood over the baseline parameters. The optimisation is carried
+out on an unconstrained scale (logarithmic for positive parameters), starting
+from the default values, from a quantile-matching solution and from random
+perturbations; the best optimum is kept.
 }
 \examples{
 set.seed(1)

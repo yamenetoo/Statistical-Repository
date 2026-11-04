@@ -4,7 +4,7 @@
 \alias{check_domain}
 \title{Check that a baseline/transformation pair is valid}
 \usage{
-check_domain(dist, par, trans)
+check_domain(dist, par, trans, tol = 1e-08)
 }
 \arguments{
 \item{dist}{Baseline distribution name.}
@@ -12,15 +12,19 @@ check_domain(dist, par, trans)
 \item{par}{Baseline parameters (named vector/list or unnamed in formals order).}
 
 \item{trans}{Transformation name or object.}
+
+\item{tol}{Largest tolerated probability mass outside the admissible domain.}
 }
 \value{
-A list with `valid` (logical), `range` (approximate support of V)
-  and `message`.
+A list with `valid` (logical), `range` (approximate support of V),
+  `mass_outside` and `message`.
 }
 \description{
-Evaluates the baseline quantile function on a fine grid of probabilities to
-verify that the support of Y is compatible with the transformation, and
-reports the range of V actually reached.
+Verifies that the support of Y is compatible with the transformation. When
+the baseline cdf is available the probability mass that Y places outside
+the admissible domain of the transformation is computed exactly
+(for example `P(Y < 0)` for `"rational"`); otherwise a grid of quantiles is
+inspected. The range of V actually reached is also reported.
 }
 \examples{
 check_domain("norm", c(0, 1), "logit")

@@ -18,7 +18,8 @@ survival_trans(v, dist, par, trans)
 Numeric vector.
 }
 \description{
-Survival and hazard functions
+The survival function is the upper tail computed directly from the baseline
+and the hazard is evaluated on the log scale, so both stay accurate near 1.
 }
 \examples{
 hazard_trans(c(.2, .5), "gamma", c(2, 1), "rational")

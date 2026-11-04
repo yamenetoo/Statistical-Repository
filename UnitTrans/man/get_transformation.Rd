@@ -7,7 +7,10 @@
 get_transformation(name)
 }
 \arguments{
-\item{name}{One of the names returned by [trans_list()].}
+\item{name}{One of the names returned by [trans_list()]. The old name
+`"arcsech"` is still accepted (with a warning) and refers to `"tanh"`:
+the map `V = 2/(1 + exp(Y))` equals `1 - tanh(Y/2)` and is not the
+inverse hyperbolic secant.}
 }
 \value{
 An object of class `unitrans` with elements `g` (forward map),

@@ -4,10 +4,12 @@
 \alias{plot.transfit}
 \title{Plot a fitted model}
 \usage{
-\method{plot}{transfit}(x, ...)
+\method{plot}{transfit}(x, which = 1:4, ...)
 }
 \arguments{
 \item{x}{A `transfit` object.}
+
+\item{which}{Which of the four panels to draw (subset of 1:4).}
 
 \item{...}{Unused.}
 }

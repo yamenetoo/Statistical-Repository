@@ -10,9 +10,9 @@
 \usage{
 dtrans(v, dist, par, trans, log = FALSE)
 
-ptrans(q, dist, par, trans, lower.tail = TRUE)
+ptrans(q, dist, par, trans, lower.tail = TRUE, log.p = FALSE)
 
-qtrans(p, dist, par, trans, lower.tail = TRUE)
+qtrans(p, dist, par, trans, lower.tail = TRUE, log.p = FALSE)
 
 rtrans(n, dist, par, trans)
 }
@@ -31,16 +31,25 @@ the baseline's formals.}
 
 \item{lower.tail}{Logical; if `FALSE`, return \eqn{P(V > q)}.}
 
+\item{log.p}{Logical; probabilities are given/returned as `log(p)`.}
+
 \item{p}{Vector of probabilities.}
 
 \item{n}{Number of observations.}
 }
 \value{
-Numeric vector.
+Numeric vector. `rtrans` may return values numerically equal to 0
+  or 1 for extreme draws.
 }
 \description{
 Functions for the distribution of \eqn{V = g(Y)} on (0,1), where \eqn{Y}
 follows a baseline distribution `dist` with parameters `par`.
+}
+\details{
+Tail probabilities are computed directly from the baseline (for a
+decreasing transformation the upper tail of \eqn{Y} is the lower tail of
+\eqn{V}), never as `1 - p`, so `lower.tail = FALSE` and `log.p = TRUE` stay
+accurate far into the tails.
 }
 \examples{
 dtrans(c(.2, .5, .8), "norm", c(0, 1), "logit")

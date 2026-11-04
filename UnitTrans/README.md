@@ -3,15 +3,15 @@
 **Distributions on the unit interval via transformations of baseline laws**
 
 `UnitTrans` builds new probability distributions on (0, 1) by applying a monotone
-transformation `V = g(Y)` — rational, exponential, logit, arcsecant-hyperbolic,
+transformation `V = g(Y)` — rational, exponential, logit, tanh,
 probit or complementary log-log — to a baseline random variable `Y` with any
 available `d/p/q/r` functions.
 
 It provides:
 
 - density, distribution, quantile and random generation (`dtrans`, `ptrans`, `qtrans`, `rtrans`)
-- maximum-likelihood fitting with information criteria (`fit_trans`)
-- automatic model search over baseline/transformation pairs (`fit_all`, `best_model`)
+- maximum-likelihood fitting with information criteria (`fit_trans`), with Wald, profile-likelihood and bootstrap confidence intervals
+- automatic model search over baseline/transformation pairs, with Akaike weights (`fit_all`, `best_model`)
 - goodness-of-fit tests with parametric bootstrap (`gof_trans`)
 - moments, survival and hazard functions (`moments_trans`, `survival_trans`, `hazard_trans`)
 - simulation studies for validating the estimator (`simulation_study`)
@@ -46,7 +46,7 @@ $$f_V(v) = f_Y\big(g^{-1}(v)\big)\,\left|\frac{d\,g^{-1}(v)}{dv}\right|, \qquad 
 | `rational`    | `Y / (1 + Y)`         | `V / (1 − V)`         | Y ≥ 0 |
 | `exponential` | `exp(−Y)`             | `−log(V)`             | Y > 0 |
 | `logit`       | `1 / (1 + exp(−Y))`   | `log(V / (1 − V))`    | real line |
-| `arcsech`     | `2 / (1 + exp(Y))`    | `log(2/V − 1)`        | Y > 0 |
+| `tanh`        | `2 / (1 + exp(Y))` = `1 − tanh(Y/2)` | `log(2/V − 1)` | Y > 0 |
 | `probit`      | `pnorm(Y)`            | `qnorm(V)`            | real line |
 | `cloglog`     | `1 − exp(−exp(Y))`    | `log(−log(1 − V))`    | real line |
 
@@ -146,9 +146,9 @@ plot(v, dtrans(v, "gamma", par, "rational"), type = "l", lwd = 2,
      ylim = c(0, 3), xlab = "v", ylab = "density",
      main = "Gamma(2,1) under three transformations")
 lines(v, dtrans(v, "gamma", par, "exponential"), lwd = 2, col = 2)
-lines(v, dtrans(v, "gamma", par, "arcsech"),     lwd = 2, col = 4)
+lines(v, dtrans(v, "gamma", par, "tanh"),     lwd = 2, col = 4)
 legend("topright", lwd = 2, col = c(1, 2, 4),
-       legend = c("rational", "exponential", "arcsech"))
+       legend = c("rational", "exponential", "tanh"))
 ```
 
 ### 7. Real-line baselines: normal, logistic, Cauchy
@@ -226,7 +226,7 @@ x <- rtrans(400, "gamma", c(3, 2), "rational")
 
 res <- fit_all(x,
                dists     = c("gamma", "lnorm", "weibull", "exp"),
-               trans     = c("rational", "exponential", "arcsech"),
+               trans     = c("rational", "exponential", "tanh"),
                criterion = "AIC",
                verbose   = TRUE)   # report combinations that were skipped
 res                 # ranking with delta-AIC
@@ -310,11 +310,11 @@ with(subset(sim, parameter == "shape"),
 
 ```r
 set.seed(7)
-x <- rtrans(2000, "gamma", c(2, 1), "arcsech")
-ks.test(x, function(q) ptrans(q, "gamma", c(2, 1), "arcsech"))
+x <- rtrans(2000, "gamma", c(2, 1), "tanh")
+ks.test(x, function(q) ptrans(q, "gamma", c(2, 1), "tanh"))
 
 hist(x, breaks = 40, probability = TRUE, main = "rtrans() vs dtrans()")
-curve(dtrans(x, "gamma", c(2, 1), "arcsech"), add = TRUE, lwd = 2, col = 2)
+curve(dtrans(x, "gamma", c(2, 1), "tanh"), add = TRUE, lwd = 2, col = 2)
 ```
 
 ### 19. Baselines from `extraDistr`
@@ -367,13 +367,47 @@ confint(best, method = "bootstrap", B = 500)
 summary_trans(best$dist, best$coef, best$trans)
 ```
 
+### 22. Profile-likelihood intervals, residuals and prediction
+
+```r
+set.seed(3)
+x   <- rtrans(200, "weibull", c(2, 1.5), "exponential")
+fit <- fit_trans(x, "weibull", "exponential")
+
+confint(fit, method = "profile")        # profile likelihood (good for positive parameters)
+confint(fit, parm = "shape")            # a single parameter (Wald)
+
+r <- residuals(fit)                     # normalised quantile residuals ~ N(0,1)
+qqnorm(r); qqline(r)
+nobs(fit)
+predict(fit, c(.2, .5), type = "cdf")   # also "density" and "quantile"
+```
+
+### 23. Data containing exact 0 or 1
+
+```r
+y <- c(0, 1, x)
+fit_trans(y, "weibull", "exponential", adjust = TRUE)   # Smithson-Verkuilen correction
+```
+
+### 24. Accurate tails
+
+`ptrans()` and `qtrans()` accept `lower.tail` and `log.p`, and the upper tail is
+computed directly from the baseline (not as `1 - p`), so survival and hazard
+functions stay accurate close to 1.
+
+```r
+ptrans(1 - 1e-12, "lnorm", c(0, 1), "rational", lower.tail = FALSE)
+hazard_trans(1 - 1e-12, "lnorm", c(0, 1), "rational")
+```
+
 ---
 
 ## Running the tests
 
 ```sh
 R CMD build UnitTrans
-R CMD check UnitTrans_0.1.0.tar.gz
+R CMD check UnitTrans_0.2.0.tar.gz
 ```
 
 or inside R: `testthat::test_local()`.
