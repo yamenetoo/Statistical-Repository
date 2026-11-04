@@ -281,7 +281,7 @@ implements a version of this idea.
 ## Diagrams and flowcharts
 
 All figures below are included in the repository. The TikZ sources are in
-[`docs/tikz`](docs/tikz) (PDF versions next to them), and the diagrams written
+[`docs/tikz`](https://github.com/yamenetoo/Statistical-Repository/tree/main/bootqcc/docs/tikz) (PDF versions next to them), and the diagrams written
 in Mermaid are rendered directly by GitHub.
 
 ### Phase I: bootstrap algorithm
@@ -385,7 +385,7 @@ cd docs/tikz
 
 This writes the PDF next to each `.tex` file and the PNG used in this README to
 `man/figures`. The figures share the colors and styles defined in
-[`docs/tikz/preamble.tex`](docs/tikz/preamble.tex). To use a figure in a paper,
+[`docs/tikz/preamble.tex`](https://github.com/yamenetoo/Statistical-Repository/blob/main/bootqcc/docs/tikz/preamble.tex). To use a figure in a paper,
 include the PDF with `\includegraphics`, or copy the `tikzpicture` environment
 together with the style definitions from the preamble.
 
@@ -951,7 +951,7 @@ function, the small-`B` warning, agreement with the exact exponential limits,
 ## Relation to the original code
 
 This package generalizes the Lindley-geometric chart in
-[`LGBootStrapControlChart`](../LGBootStrapControlChart) of this repository,
+[`LGBootStrapControlChart`](https://github.com/yamenetoo/Statistical-Repository/tree/main/LGBootStrapControlChart) of this repository,
 whose README cites Prof. Dr. Ali Akbar Heydari (University of Tabriz,
 Department of Statistics). The Lindley-geometric chart is described in
 Al-Lami, Jabbari Khamnei and Heydari (2025). Compared with the original script, `bootqcc`:
@@ -1008,7 +1008,7 @@ Al-Lami, Jabbari Khamnei and Heydari (2025). Compared with the original script, 
 - Kumaraswamy, P. (1980). A generalized probability density function for double-bounded random processes. *Journal of Hydrology*, 46(1-2), 79-88.
 - Loprinzi, C. L., Laurie, J. A., Wieand, H. S. et al. (1994). Prospective evaluation of prognostic variables from patient-completed questionnaires. *Journal of Clinical Oncology*, 12(3), 601-607. (Source of the `survival::lung` data used in the vignette.)
 
-A BibTeX file with all entries is in [`docs/references.bib`](docs/references.bib).
+A BibTeX file with all entries is in [`docs/references.bib`](https://github.com/yamenetoo/Statistical-Repository/blob/main/bootqcc/docs/references.bib).
 The page numbers and volumes were written from the standard bibliographic
 record; please check them against the publisher's pages before using them in a
 manuscript.
