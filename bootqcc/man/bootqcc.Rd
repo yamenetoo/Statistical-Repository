@@ -43,7 +43,11 @@ followed by the distribution parameters by name.}
 
 \item{alpha}{Total false-alarm probability used for the limits.}
 
-\item{B}{Number of bootstrap replicates per Monte Carlo iteration.}
+\item{B}{Number of bootstrap replicates per Monte Carlo iteration. Each limit
+is estimated from about \code{B * alpha / 2} points in the tail, so \code{B} must be
+large when \code{alpha} is small: use at least \code{B = 10 / alpha} (a warning is
+given below that) and preferably \code{100 / alpha} for stable limits. With too
+small a \code{B} the limits are too narrow and the in-control ARL is too small.}
 
 \item{M}{Number of Monte Carlo iterations of the limit computation.}
 
@@ -107,7 +111,7 @@ estimated by drawing samples until the statistic leaves the limits.
 # Small settings so that the example runs quickly; use the defaults
 # (B = 1000, M = 30, arl_rep = 100) for a real analysis.
 ch <- bootqcc("weibull", list(shape = 2, scale = 1), u = 0.1, n = 5,
-              alpha = 0.05, B = 100, M = 3, arl_rep = 10, seed = 1)
+              alpha = 0.05, B = 200, M = 3, arl_rep = 10, seed = 1)
 ch
 
 \donttest{
@@ -119,6 +123,31 @@ kw <- list(
   r = function(n, a, b) (1 - (1 - runif(n))^(1 / b))^(1 / a)
 )
 bootqcc(kw, list(a = 2, b = 3), u = 0.5, n = 10,
-        alpha = 0.05, B = 100, M = 3, arl_rep = 10, seed = 1)
+        alpha = 0.05, B = 200, M = 3, arl_rep = 10, seed = 1)
 }
+}
+\references{
+Efron, B. (1979). Bootstrap methods: another look at the jackknife.
+\emph{The Annals of Statistics}, 7(1), 1--26.
+
+Efron, B. and Tibshirani, R. J. (1993). \emph{An Introduction to the Bootstrap}.
+Chapman and Hall, New York.
+
+Padgett, W. J. and Spurrier, J. D. (1990). Shewhart-type charts for percentiles
+of strength distributions. \emph{Journal of Quality Technology}, 22(4), 283--288.
+
+Seppala, T., Moskowitz, H., Plante, R. and Tang, J. (1995). Statistical process
+control via the subgroup bootstrap. \emph{Journal of Quality Technology}, 27(2),
+139--153.
+
+Jones, L. A. and Woodall, W. H. (1998). The performance of bootstrap control
+charts. \emph{Journal of Quality Technology}, 30(4), 362--375.
+
+Jensen, W. A., Jones-Farmer, L. A., Champ, C. W. and Woodall, W. H. (2006).
+Effects of parameter estimation on control chart properties: a literature
+review. \emph{Journal of Quality Technology}, 38(4), 349--364.
+
+Al-Lami, M. A. H., Jabbari Khamnei, H. and Heydari, A. A. (2025). Bootstrap
+control chart for the Lindley-Geometric distribution. \emph{PLOS ONE}.
+\doi{10.1371/journal.pone.0316449}
 }

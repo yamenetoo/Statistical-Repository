@@ -36,7 +36,18 @@ parameters to estimate the out-of-control ARL1.
 }
 \examples{
 ch <- bootqcc("weibull", list(shape = 2, scale = 1), u = 0.1, n = 5,
-              alpha = 0.05, B = 100, M = 3, arl_rep = 10, seed = 1)
+              alpha = 0.05, B = 200, M = 3, arl_rep = 10, seed = 1)
 # Out-of-control ARL after a scale shift
 arl(ch, params = list(shape = 2, scale = 1.5), rep = 20)$mean
+}
+\references{
+Montgomery, D. C. (2019). \emph{Introduction to Statistical Quality Control},
+8th edition. Wiley, Hoboken, NJ.
+
+Quesenberry, C. P. (1993). The effect of sample size on estimated limits for
+X-bar and X control charts. \emph{Journal of Quality Technology}, 25(4), 237--247.
+
+Jensen, W. A., Jones-Farmer, L. A., Champ, C. W. and Woodall, W. H. (2006).
+Effects of parameter estimation on control chart properties: a literature
+review. \emph{Journal of Quality Technology}, 38(4), 349--364.
 }

@@ -9,9 +9,16 @@
 #' @return A data frame of class `"bootqcc_monitor"` with columns `sample`,
 #'   `statistic`, `LCL`, `UCL` and `status` (`"in control"`, `"out of control"`
 #'   or `"fit failed"`).
+#' @references
+#' Shewhart, W. A. (1931). \emph{Economic Control of Quality of Manufactured
+#' Product}. Van Nostrand, New York.
+#'
+#' Montgomery, D. C. (2019). \emph{Introduction to Statistical Quality Control},
+#' 8th edition. Wiley, Hoboken, NJ.
+#'
 #' @examples
 #' ch <- bootqcc("weibull", list(shape = 2, scale = 1), u = 0.1, n = 5,
-#'               alpha = 0.05, B = 100, M = 3, arl_rep = 5, seed = 1)
+#'               alpha = 0.05, B = 200, M = 3, arl_rep = 5, seed = 1)
 #' set.seed(2)
 #' new <- matrix(rweibull(50, 2, 1.6), ncol = 5)
 #' bootqcc_monitor(ch, new)
@@ -52,10 +59,18 @@ bootqcc_monitor <- function(chart, data) {
 #' @param env Environment used to look up distribution functions by name.
 #' @return A data frame with columns `n`, `u`, the parameters, `MLCL`, `MUCL`,
 #'   `SDLCL`, `SDUCL`, `MARL`, `SDARL` and `censored`.
+#' @references
+#' Jones, L. A. and Woodall, W. H. (1998). The performance of bootstrap control
+#' charts. \emph{Journal of Quality Technology}, 30(4), 362--375.
+#'
+#' Al-Lami, M. A. H., Jabbari Khamnei, H. and Heydari, A. A. (2025). Bootstrap
+#' control chart for the Lindley-Geometric distribution. \emph{PLOS ONE}.
+#' \doi{10.1371/journal.pone.0316449}
+#'
 #' @examples
 #' g <- expand.grid(shape = c(1.5, 2), scale = 1)
 #' bootqcc_grid("weibull", g, u_values = c(0.1, 0.9), n_values = 5,
-#'              alpha = 0.1, B = 50, M = 2, arl_rep = 5, seed = 1)
+#'              alpha = 0.1, B = 100, M = 2, arl_rep = 5, seed = 1)
 #' @export
 bootqcc_grid <- function(distr, param_grid, u_values = 0.5, n_values = 5, ...,
                          verbose = FALSE, env = parent.frame()) {

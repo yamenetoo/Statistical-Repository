@@ -21,26 +21,30 @@
 1. [Overview](#overview)
 2. [Why bootqcc](#why-bootqcc)
 3. [How it works](#how-it-works)
-4. [Diagrams and flowcharts](#diagrams-and-flowcharts)
-5. [Installation](#installation)
-6. [Quick start](#quick-start)
-7. [Using your own distribution](#using-your-own-distribution)
-8. [Reproducing the Lindley-geometric chart](#reproducing-the-lindley-geometric-chart)
-9. [Out-of-control performance and Phase II](#out-of-control-performance-and-phase-ii)
-10. [Calibrating the false-alarm rate](#calibrating-the-false-alarm-rate)
-11. [Other statistics and estimators](#other-statistics-and-estimators)
-12. [Simulation studies over a grid](#simulation-studies-over-a-grid)
-13. [Function reference](#function-reference)
-14. [Argument reference for `bootqcc()`](#argument-reference-for-bootqcc)
-15. [What the result contains](#what-the-result-contains)
-16. [Tips for speed and reproducibility](#tips-for-speed-and-reproducibility)
-17. [Troubleshooting](#troubleshooting)
-18. [Limitations](#limitations)
-19. [Roadmap](#roadmap)
-20. [Testing](#testing)
-21. [Relation to the original code](#relation-to-the-original-code)
-22. [Citation](#citation)
-23. [Author and license](#author-and-license)
+4. [Methodology](#methodology)
+5. [Diagrams and flowcharts](#diagrams-and-flowcharts)
+6. [Installation](#installation)
+7. [Quick start](#quick-start)
+8. [Using your own distribution](#using-your-own-distribution)
+9. [Reproducing the Lindley-geometric chart](#reproducing-the-lindley-geometric-chart)
+10. [Out-of-control performance and Phase II](#out-of-control-performance-and-phase-ii)
+11. [Unknown parameters: building the chart from Phase I data](#unknown-parameters-building-the-chart-from-phase-i-data)
+12. [Validation against exact results](#validation-against-exact-results)
+13. [Calibrating the false-alarm rate](#calibrating-the-false-alarm-rate)
+14. [Other statistics and estimators](#other-statistics-and-estimators)
+15. [Simulation studies over a grid](#simulation-studies-over-a-grid)
+16. [Function reference](#function-reference)
+17. [Argument reference for `bootqcc()`](#argument-reference-for-bootqcc)
+18. [What the result contains](#what-the-result-contains)
+19. [Tips for speed and reproducibility](#tips-for-speed-and-reproducibility)
+20. [Troubleshooting](#troubleshooting)
+21. [Limitations](#limitations)
+22. [Roadmap](#roadmap)
+23. [Testing](#testing)
+24. [Relation to the original code](#relation-to-the-original-code)
+25. [References](#references)
+26. [Citation](#citation)
+27. [Author and license](#author-and-license)
 
 ---
 
@@ -48,13 +52,17 @@
 
 `bootqcc` builds **Phase I control limits** for a quantile (or any statistic
 of your choice) of a parametric distribution using the **parametric
-bootstrap** and **maximum likelihood estimation**. It then evaluates the chart
+bootstrap** (Efron 1979; Efron and Tibshirani 1993) and **maximum likelihood
+estimation** (Fisher 1922). It then evaluates the chart
 by Monte Carlo estimates of the **average run length (ARL)**, and can monitor
 new samples in **Phase II**.
 
 The idea comes from control charts for lifetime and reliability data, where
 the quantity of interest is a *percentile* of a skewed distribution, not a
-mean, and where a classical Shewhart chart is a poor fit. The original code in
+mean, and where a classical Shewhart chart (Shewhart 1931; Montgomery 2019) is
+a poor fit. Percentile charts for strength data go back to Padgett and
+Spurrier (1990), and bootstrap charts to Seppala et al. (1995) and Jones and
+Woodall (1998). The original code in
 this repository solved the problem for one family, the Lindley-geometric
 distribution. `bootqcc` generalizes it: **any family with density, quantile and
 random-generation functions works**, whether it is built into R or defined by
@@ -78,17 +86,19 @@ ARL is never silent.
 ## How it works
 
 Let `T(θ̂)` be the monitored statistic computed from fitted parameters `θ̂`.
-By default `T` is the `u`-quantile of the fitted distribution, `Q(u; θ̂)`.
+By default `T` is the `u`-quantile of the fitted distribution, `Q(u; θ̂)`
+(Padgett and Spurrier 1990). The full mathematical statement, with references
+for every step, is in [Methodology](#methodology).
 
 For each Monte Carlo iteration `m = 1, ..., M`:
 
 1. Draw `B` samples of size `n` from the distribution with the in-control
    parameters `θ`.
-2. Fit the distribution to each sample by maximum likelihood, giving
-   `θ̂₁, ..., θ̂_B`.
+2. Fit the distribution to each sample by maximum likelihood (Fisher 1922),
+   giving `θ̂₁, ..., θ̂_B`.
 3. Compute `T₁, ..., T_B` with `T_b = T(θ̂_b)`.
-4. Record the empirical `α/2` and `1 − α/2` quantiles of the `T_b` as one lower
-   and one upper limit, `LCL_m` and `UCL_m`.
+4. Record the empirical `α/2` and `1 − α/2` quantiles of the `T_b` (Hyndman
+   and Fan 1996, type 7) as one lower and one upper limit, `LCL_m` and `UCL_m`.
 
 The reported control limits are the averages over the `M` iterations,
 
@@ -116,6 +126,157 @@ parameters gives the out-of-control ARL.
 *The `alpha/2` and `1 - alpha/2` quantiles of the bootstrap distribution (left) become the control limits of the Phase II chart (right).*
 
 </div>
+
+## Methodology
+
+<div align="center">
+
+<img src="man/figures/methodology.png" alt="General methodology: model and design, Phase I parametric bootstrap, calibration and performance, Phase II monitoring, with the literature behind each step" width="100%">
+
+*General methodology of `bootqcc`. Each box carries the literature behind that step (author-year, full entries in the [References](#references)).*
+
+</div>
+
+The methodology has four stages: (1) model and design, (2) Phase I parametric
+bootstrap, (3) calibration and performance evaluation, (4) Phase II
+monitoring. The mathematics of each stage follows.
+
+### 1. Model and design
+
+Subgroups $\mathbf{x}=(x_1,\dots,x_n)$ are independent and identically
+distributed with distribution function $F(x;\boldsymbol\theta)$, density $f$,
+quantile function $Q(p;\boldsymbol\theta)=F^{-1}(p;\boldsymbol\theta)$ and
+random generator $r$. Typical lifetime families are the Weibull (Weibull 1951),
+Kumaraswamy (Kumaraswamy 1980) and Lindley-type (Lindley 1958) models. The
+in-control parameters are $\boldsymbol\theta_0$. The design constants are the
+subgroup size $n$, the monitored quantile level $u$, the false-alarm level
+$\alpha$, the number of bootstrap replicates $B$ and the number of Monte Carlo
+repetitions $M$. Charts for a percentile of a lifetime distribution follow
+Padgett and Spurrier (1990).
+
+### 2. Phase I: the parametric bootstrap
+
+**Estimation.** For a sample $\mathbf{x}$ the maximum likelihood estimate
+(Fisher 1922) is
+
+$$
+\hat{\boldsymbol\theta}(\mathbf{x})=\arg\max_{\boldsymbol\theta}\ \sum_{i=1}^{n}\log f(x_i;\boldsymbol\theta),
+$$
+
+computed numerically by minimizing the negative log-likelihood with
+`optim()`; the default is the Nelder-Mead simplex method (Nelder and Mead 1965)
+and a box-constrained method such as L-BFGS-B (Byrd et al. 1995) can be chosen
+through `optim_method`, `lower` and `upper`.
+
+**Monitored statistic.** By default
+$T(\hat{\boldsymbol\theta})=Q(u;\hat{\boldsymbol\theta})$. By the invariance
+property of maximum likelihood estimators (Casella and Berger 2002, Thm. 7.2.10)
+this is the maximum likelihood estimator of the $u$-quantile. Any other function
+of $\hat{\boldsymbol\theta}$ can be supplied through `statistic`.
+
+**Bootstrap distribution.** The distribution of $T$ under the in-control model is
+approximated by simulation (Efron 1979; Efron and Tibshirani 1993). For
+$b=1,\dots,B$: draw $x^*_{b1},\dots,x^*_{bn}\sim F(\cdot;\boldsymbol\theta_0)$,
+fit $\hat{\boldsymbol\theta}^*_b$, and set $T^*_b=T(\hat{\boldsymbol\theta}^*_b)$.
+
+**Control limits.** With $\hat F^*_T$ the empirical distribution function of
+$T^*_1,\dots,T^*_B$,
+
+$$
+\mathrm{LCL}_m=\hat F^{*-1}_T(\alpha/2),\qquad \mathrm{UCL}_m=\hat F^{*-1}_T(1-\alpha/2),
+$$
+
+using the default quantile definition (type 7, Hyndman and Fan 1996). This is
+the percentile method for bootstrap intervals (DiCiccio and Efron 1996). Repeating
+the construction $M$ times and averaging reduces Monte Carlo noise
+(Robert and Casella 2004):
+
+$$
+\mathrm{LCL}=\frac1M\sum_{m=1}^{M}\mathrm{LCL}_m,\qquad
+\mathrm{UCL}=\frac1M\sum_{m=1}^{M}\mathrm{UCL}_m .
+$$
+
+**Resolution of the tail quantiles.** An empirical quantile at level $p=\alpha/2$
+is based on about $Bp$ points, and its asymptotic variance is
+$p(1-p)/\{B f_T(q_p)^2\}$ (Serfling 1980, Sec. 2.3.3), so its relative precision
+is of order $1/\sqrt{B\alpha/2}$. A small $B\alpha/2$ makes the limits both noisy
+and too narrow (a finite sample rarely contains its own extreme tail), and the
+in-control ARL then falls below $1/\alpha$. This is why the package warns when
+$B\alpha/2<5$ and why $B\ge 10/\alpha$ (preferably $100/\alpha$) is recommended.
+
+### 3. Run length and ARL
+
+The chart signals at the first $t$ with $T_t\notin[\mathrm{LCL},\mathrm{UCL}]$,
+so the run length is
+
+$$
+\mathrm{RL}=\min\{t\ge 1:\ T_t<\mathrm{LCL}\ \text{or}\ T_t>\mathrm{UCL}\}.
+$$
+
+For fixed limits and independent subgroups, $\mathrm{RL}$ is geometric,
+$P(\mathrm{RL}=t)=(1-p)^{t-1}p$, where $p=P(T\notin[\mathrm{LCL},\mathrm{UCL}])$
+is the probability that one subgroup signals, so (Montgomery 2019)
+
+$$
+\mathrm{ARL}=\operatorname{E}(\mathrm{RL})=\frac1p,\qquad
+\operatorname{SD}(\mathrm{RL})=\frac{\sqrt{1-p}}{p}.
+$$
+
+With the exact $\alpha/2$ and $1-\alpha/2$ quantiles of $T$ and known parameters,
+$p=\alpha$ and $\mathrm{ARL}_0=1/\alpha$. `bootqcc` estimates the ARL by
+Monte Carlo: it simulates `arl_rep` run lengths, reports their mean
+$\widehat{\mathrm{ARL}}$ and standard deviation $s$, and the standard error of the
+estimate is $s/\sqrt{\texttt{arl\_rep}}$. Because $\operatorname{SD}(\mathrm{RL})\approx
+\operatorname{E}(\mathrm{RL})$ for small $p$, the relative error is about
+$1/\sqrt{\texttt{arl\_rep}}$: 100 runs give roughly $\pm 10\%$, 1000 runs roughly
+$\pm 3\%$. Runs are capped at `max_run_length` and counted as censored.
+For the out-of-control ARL, $\mathrm{ARL}_1$, the samples are drawn from shifted
+parameters (Montgomery 2019).
+
+### 4. Phase II monitoring
+
+For each new subgroup the model is fitted, $T(\hat{\boldsymbol\theta})$ is
+computed and compared with $[\mathrm{LCL},\mathrm{UCL}]$ (Shewhart 1931). A
+point outside the limits is a signal.
+
+### 5. Unknown parameters: the effect of estimation
+
+When $\boldsymbol\theta_0$ is not known and the limits are built from a Phase I
+estimate $\hat{\boldsymbol\theta}$ of finite size $N$, the false-alarm probability
+of the chart *given the Phase I sample*,
+
+$$
+p(\hat{\boldsymbol\theta})=P\{T\notin[\mathrm{LCL}(\hat{\boldsymbol\theta}),\mathrm{UCL}(\hat{\boldsymbol\theta})]\mid\hat{\boldsymbol\theta}\},
+$$
+
+is random. The conditional run length is geometric with mean $1/p(\hat{\boldsymbol\theta})$,
+and the unconditional ARL is $\operatorname{E}\{1/p(\hat{\boldsymbol\theta})\}$,
+which is smaller than $1/\alpha$ (Quesenberry 1993; Jensen et al. 2006; Psarakis
+et al. 2014). For a given Phase I sample the chart can alarm much more often than
+nominal, and a large Phase I sample is needed to avoid this (Saleh et al. 2015).
+Gandy and Kvaloy (2013) propose bootstrap limits whose conditional performance is
+guaranteed with a chosen probability.
+[`bootqcc_phase1()`](#unknown-parameters-building-the-chart-from-phase-i-data)
+implements a version of this idea.
+
+### Step-to-reference map
+
+| Step | Where in the code | Source |
+|---|---|---|
+| Shewhart-type chart, Phase I and II | `bootqcc()`, `bootqcc_monitor()` | Shewhart (1931); Montgomery (2019) |
+| Percentile (quantile) chart for lifetime data | default `statistic` | Padgett and Spurrier (1990) |
+| Bootstrap control charts | Phase I loop | Seppala et al. (1995); Jones and Woodall (1998) |
+| Parametric bootstrap | `r(n, theta0)` draws | Efron (1979); Efron and Tibshirani (1993) |
+| Maximum likelihood estimation | `.make_mle_fitter()` | Fisher (1922) |
+| Optimization | `optim()` Nelder-Mead / L-BFGS-B | Nelder and Mead (1965); Byrd et al. (1995) |
+| Invariance of the MLE (quantile as a function of $\hat\theta$) | `Q(u; theta_hat)` | Casella and Berger (2002) |
+| Percentile limits from the bootstrap distribution | `quantile()` | DiCiccio and Efron (1996); Hyndman and Fan (1996) |
+| Averaging over $M$ Monte Carlo repetitions | `mean(lcl_runs)` | Robert and Casella (2004) |
+| Precision of tail quantiles, rule for $B$ | warning in `bootqcc()` | Serfling (1980) |
+| Run length, ARL, geometric distribution | `arl()` | Montgomery (2019) |
+| Effect of parameter estimation | `bootqcc_phase1()` | Quesenberry (1993); Jensen et al. (2006); Psarakis et al. (2014); Saleh et al. (2015) |
+| Bootstrap guarantee on conditional performance | `adjust = "quantile"` | Gandy and Kvaloy (2013) |
+| Lindley-geometric chart (origin of the original code) | `LGBootStrapControlChart` | Al-Lami et al. (2025) |
 
 ## Diagrams and flowcharts
 
@@ -234,7 +395,8 @@ From GitHub (the package lives in a subfolder of this repository):
 
 ```r
 # install.packages("remotes")
-remotes::install_github("yamenetoo/Statistical-Repository", subdir = "bootqcc")
+remotes::install_github("yamenetoo/Statistical-Repository", subdir = "bootqcc",
+                        build_vignettes = TRUE)
 ```
 
 From a downloaded source archive:
@@ -255,21 +417,23 @@ ch <- bootqcc("weibull",
               params = list(shape = 2, scale = 1),
               u = 0.1,         # monitor the 10% quantile
               n = 5,           # subgroup size
-              alpha = 0.0027,  # false-alarm probability used for the limits
-              B = 500, M = 10, arl_rep = 100, seed = 1)
+              alpha = 0.01,    # false-alarm probability used for the limits
+              B = 2000,        # bootstrap replicates; keep B * alpha / 2 >= 5
+              M = 10, arl_rep = 200, seed = 1)
 ch
 ```
 
-Output (real run):
+Output (real run; the in-control ARL should be close to `1/alpha = 100`, and 92.9 with a
+standard error of about 6 agrees):
 
 ```
 Parametric bootstrap control chart
 Distribution : weibull (shape = 2, scale = 1)
 Statistic    : 0.1-quantile, subgroup size n = 5
-Settings     : alpha = 0.0027, B = 500, M = 10
-LCL = 0.06954 (SD 0.0156)
-UCL = 1.118 (SD 0.0897)
-In-control ARL = 175.8 (SD 181.2) from 100 runs
+Settings     : alpha = 0.01, B = 2000, M = 10
+LCL = 0.07589 (SD 0.006578)
+UCL = 1.004 (SD 0.03429)
+In-control ARL = 92.94 (SD 89.65) from 200 runs
 ```
 
 Any family works as long as `d<name>`, `q<name>` and `r<name>` exist in your
@@ -352,7 +516,7 @@ out-of-control ARL:
 
 ```r
 for (sc in c(1, 1.2, 1.5, 2)) {
-  a <- arl(ch, params = list(shape = 2, scale = sc), rep = 100)
+  a <- arl(ch, params = list(shape = 2, scale = sc), rep = 200)
   cat(sprintf("scale = %.1f  ARL = %.1f\n", sc, a$mean))
 }
 ```
@@ -360,10 +524,10 @@ for (sc in c(1, 1.2, 1.5, 2)) {
 Output (real run, with the chart above):
 
 ```
-scale = 1.0  ARL = 178.9
-scale = 1.2  ARL = 78.3
-scale = 1.5  ARL = 20.3
-scale = 2.0  ARL = 4.5
+scale = 1.0  ARL = 88.5
+scale = 1.2  ARL = 31.9
+scale = 1.5  ARL = 9.6
+scale = 2.0  ARL = 3.1
 ```
 
 **Monitoring new samples.** One sample per row (a matrix or data frame), or a
@@ -371,56 +535,227 @@ list of numeric vectors:
 
 ```r
 new <- rbind(matrix(rweibull(15, 2, 1), ncol = 5),   # in control
-             matrix(rweibull(10, 2, 2), ncol = 5))   # scale doubled
+             matrix(rweibull(10, 2, 3), ncol = 5))   # scale tripled
 bootqcc_monitor(ch, new)
 plot(ch, data = new)       # draws the Phase II control chart
 ```
 
 ```
   sample statistic        LCL      UCL         status
-1      1 0.6799767 0.06953615 1.118293     in control
-2      2 0.4940795 0.06953615 1.118293     in control
-3      3 0.4854396 0.06953615 1.118293     in control
-4      4 0.8747797 0.06953615 1.118293     in control
-5      5 1.2695785 0.06953615 1.118293 out of control
+1      1 0.8414807 0.07589485 1.003706     in control
+2      2 0.4251076 0.07589485 1.003706     in control
+3      3 0.2113204 0.07589485 1.003706     in control
+4      4 0.8812365 0.07589485 1.003706     in control
+5      5 1.4582266 0.07589485 1.003706 out of control
 ```
 
 Samples for which no fit could be obtained are labelled `"fit failed"`
 instead of being silently dropped.
 
-## Calibrating the false-alarm rate
+## Unknown parameters: building the chart from Phase I data
 
-The nominal `alpha` and the realized in-control ARL are **not** tied by the
-simple formula `ARL0 = 1/alpha`. In the Quick start example `alpha = 0.0027`
-would suggest an ARL of about 370, but the simulated in-control ARL was about
-176. The reason is that with a small subgroup size (`n = 5`) the fitted
-parameters are variable, and the fitted statistic is compared with limits that
-were built from the *true* parameters.
-
-So treat `alpha` as a tuning parameter: choose it so that the simulated
-in-control ARL matches your target.
+`bootqcc()` simulates from parameters you give. In practice you have a Phase I
+sample, and the limits built from its estimates have a random false-alarm
+rate. `bootqcc_phase1()` takes the raw Phase I data, estimates the parameters by
+maximum likelihood, builds the bootstrap limits, and measures (and optionally
+corrects) the effect of the estimation by an outer bootstrap. It returns an object that works
+with `bootqcc_monitor()`, `arl()` and `plot()`.
 
 ```r
-for (a in c(0.0027, 0.0015, 0.001, 0.0005)) {
-  ch_a <- bootqcc("weibull", list(shape = 2, scale = 1), u = 0.1, n = 5,
-                  alpha = a, B = 500, M = 10, arl_rep = 300, seed = 1)
-  cat(sprintf("alpha = %.4f  ARL0 = %.0f\n", a, ch_a$arl$mean))
-}
+set.seed(1)
+phase1 <- matrix(rexp(20 * 5, rate = 1), ncol = 5)      # 20 subgroups of size 5
+ch <- bootqcc_phase1(phase1, "exp", u = 0.5, alpha = 0.0027,
+                     fit_fn = function(x) list(rate = 1 / mean(x)),
+                     B = 3000, R = 100, N_ref = 20000,
+                     adjust = "mean", seed = 2)
+ch
 ```
+
+Output (real run, about 16 seconds):
+
+```
+Parametric bootstrap control chart from Phase I data
+Distribution : exp, estimated from N = 100 observations
+Estimates    : rate = 0.9702
+Statistic    : 0.5-quantile, subgroup size n = 5
+Nominal alpha = 0.0027; adjustment = mean; level used = 0.0012
+LCL = 0.1102, UCL = 2.291  (unadjusted: 0.1234, 2.073)
+Conditional false-alarm probability at the nominal level: mean 0.00493, 90% quantile 0.00823
+                       at the level used:               mean 0.0027, 90% quantile 0.00451
+```
+
+(A warning that $B\alpha/2=4<5$ was also printed in this run; use `B >= 3704` for
+final results.) With the nominal level the average false-alarm probability is
+almost twice the target, and the chart is made wider by using the level
+$\alpha'=0.0012$.
+
+**How it works** (details in [Methodology](#5-unknown-parameters-the-effect-of-estimation)).
+
+1. Fit $\hat\theta$ from the Phase I data and draw a reference sample of
+   in-control statistics from $F(\cdot;\hat\theta)$.
+2. Repeat `R` times: simulate a Phase I sample of the same size from
+   $F(\cdot;\hat\theta)$, re-estimate, build the bootstrap limits from the
+   re-estimated parameters, and record the conditional false-alarm probability
+   $p_r(\alpha')$ of those limits on the reference sample.
+3. `adjust = "none"` only reports the distribution of $p_r$; `"mean"` lowers
+   the level $\alpha'$ until $\operatorname{mean}_r p_r(\alpha')=\alpha$; `"quantile"` lowers it
+   until $p_r(\alpha')\le\alpha$ for a share `prob` of the Phase I samples
+   (Gandy and Kvaloy 2013).
+
+| Argument | Meaning |
+|---|---|
+| `data` | matrix (one subgroup per row) or vector with `n` given |
+| `B` | bootstrap replicates for the limits (default `max(1000, 20/alpha)`) |
+| `R` | outer replicates that resample the Phase I estimation |
+| `N_ref` | size of the reference sample of in-control statistics |
+| `adjust`, `prob` | `"none"`, `"mean"` or `"quantile"`; probability for the quantile criterion |
+| `start` or `fit_fn` | starting values for numerical MLE, or a closed-form estimator |
+
+The cost is about `R * B + N_ref` fits, so use a closed-form `fit_fn` for large
+problems. The result also contains `params_hat`, `limits_unadjusted`,
+`alpha_adj`, `alpha_mean`, `alpha_quantile`, and the conditional probabilities
+`fap` for each outer replicate.
+
+> **What is and is not corrected.** The procedure assumes that the model is
+> right and that the Phase I data are in control. It takes the estimate as the
+> truth inside the bootstrap world, so it is approximate when $N$ is small, and
+> it is assessed in the next section against an exact benchmark.
+
+## Validation against exact results
+
+The exponential distribution gives a benchmark with closed forms. For
+$X\sim\mathrm{Exp}(1)$ the MLE of the rate is $1/\bar x$, so
+$T=-\log(1-u)\,\bar x$ with $\bar x\sim\mathrm{Gamma}(n,\ \text{scale}=1/n)$. The exact limits are
+$-\log(1-u)\,\{q_{\alpha/2},q_{1-\alpha/2}\}$ of that gamma law, the exact in-control ARL is $1/\alpha$,
+and the distribution of the conditional false-alarm probability under estimation
+is also available in closed form. Everything below is reproduced by
+[`inst/validation/exponential-validation.R`](inst/validation/exponential-validation.R)
+(about 25 minutes); the raw results are in `inst/validation/exponential-validation.rds`.
+The settings are $n=5$, $u=0.5$, $M=10$ and 2000 simulated runs per ARL.
+
+### A. Known parameters
+
+Bootstrap limits and ARL0 (standard error in brackets) against the exact values:
+
+| alpha | B | B·alpha/2 | LCL | LCL exact | UCL | UCL exact | ARL0 | 1/alpha |
+|---|---|---|---|---|---|---|---|---|
+| 0.1 |    100 | 5 | 0.2900 | 0.2731 | 1.2240 | 1.2689 | 8.1 (0.2) | 10 |
+| 0.1 |   1,000 | 50 | 0.2730 | 0.2731 | 1.2538 | 1.2689 | 9.9 (0.2) | 10 |
+| 0.1 |  10,000 | 500 | 0.2743 | 0.2731 | 1.2635 | 1.2689 | 10.0 (0.2) | 10 |
+| 0.1 | 100,000 | 5,000 | 0.2728 | 0.2731 | 1.2699 | 1.2689 | 10.1 (0.2) | 10 |
+| 0.01 |    100 | 0.5 | 0.1869 | 0.1494 | 1.6676 | 1.7459 | 52.4 (1.1) | 100 |
+| 0.01 |   1,000 | 5 | 0.1485 | 0.1494 | 1.7169 | 1.7459 | 96.9 (2.2) | 100 |
+| 0.01 |  10,000 | 50 | 0.1490 | 0.1494 | 1.7343 | 1.7459 | 101.5 (2.4) | 100 |
+| 0.01 | 100,000 | 500 | 0.1496 | 0.1494 | 1.7479 | 1.7459 | 103.2 (2.3) | 100 |
+| 0.0027 |    100 | 0.135 | 0.1738 | 0.1098 | 1.7954 | 1.9952 | 78.3 (1.7) | 370.4 |
+| 0.0027 |   1,000 | 1.35 | 0.1177 | 0.1098 | 1.9658 | 1.9952 | 293.3 (6.6) | 370.4 |
+| 0.0027 |  10,000 | 13.5 | 0.1122 | 0.1098 | 1.9749 | 1.9952 | 328.9 (7.3) | 370.4 |
+| 0.0027 | 100,000 | 135 | 0.1096 | 0.1098 | 1.9980 | 1.9952 | 379.6 (8.5) | 370.4 |
+
+* The limits converge to the exact limits as $B$ grows, and ARL0 converges to
+  $1/\alpha$ (for example 379.6 ± 8.5 against 370.4 at $\alpha=0.0027$ with
+  $B=10^5$).
+* With few points in the tails ($B\alpha/2\lesssim 1$) the limits are too
+  narrow and ARL0 is far too small (78 and 293 against 370). At
+  $B\alpha/2\approx 5$ and above the agreement is within a few percent. This
+  supports the warning and the rule $B\ge 10/\alpha$ stated above.
+* The ARL estimates have a Monte Carlo standard error of about 2% to 3% with 2000 runs.
+
+### B. Unknown parameters (Phase I data)
+
+In total 60 Phase I samples were simulated ($m=20$ subgroups of size $n=5$, so $N=100$), `bootqcc_phase1()` was run with $B=4000$, $R=100$, `N_ref`$=20000$,
+$\alpha=0.0027$, and the **exact** conditional false-alarm probability of each resulting
+chart was computed from the gamma distribution.
+
+| Limits | Mean exact conditional false-alarm probability | Share of Phase I samples with probability ≤ alpha |
+|---|---|---|
+| Nominal level (`adjust = "none"`) | 0.00424 | 20% |
+| Mean-adjusted (`adjust = "mean"`) | 0.00256 | 67% |
+| Quantile-adjusted, 90% (`adjust = "quantile"`) | 0.00140 | 88% |
+
+Exact benchmark for the nominal level: the mean false-alarm probability is
+0.00368 and its 90% quantile is 0.0058, that is, about 36% above the target on
+average and more than twice the target for 10% of Phase I samples. The simulated
+mean for the nominal level, 0.00424 (standard error 0.00027), is slightly above
+the exact 0.00368 because $B\alpha/2\approx 5$ makes the limits a little narrow
+(see A).
+
+**What the results show.**
+
+* The correction does what it promises, approximately: the average false-alarm
+  probability goes from 0.0042 to 0.0026 (target 0.0027), and the share of
+  Phase I samples that meet the target goes from 20% to 88% (target 90%).
+* The estimated adjusted levels are somewhat lower than the exact ones (mean
+  criterion: 0.0014 against 0.0019; quantile criterion: 0.0005 against 0.0011), so
+  the correction is on the conservative side and widens the limits more than
+  necessary. Part of this comes from the finite $B$ (see A) and part from using
+  the estimate as the truth in the bootstrap world.
+* The price of the correction is wider limits and a lower detection power. Compare
+  the two charts before choosing; a larger Phase I sample is the only way to get
+  both.
+
+### C. Normal mean (textbook limits)
+
+For a normal sample the control limits for the sample mean of the monitored statistic
+are $\mu\pm z_{1-\alpha/2}\sigma/\sqrt n$. With `statistic = function(est) est$mean` and
+$B=20000$ the bootstrap limits agree with these (the check is run in the
+vignette).
+
+### D. Comparison with other software
+
+The R packages normally used for Shewhart charts (for example `qcc` and `spc`) cover the
+normal and a few other families, and none of them builds bootstrap limits for an arbitrary
+distribution, so there is no like-for-like numerical comparison for the general case.
+They could not be installed in the build environment either. The exact exponential
+results above and the textbook normal limits are the benchmarks. A comparison with
+`qcc` for the normal mean is a natural next check.
+
+### E. Case study
+
+The vignette (`vignette("bootqcc")`) applies `bootqcc_phase1()` to the survival times
+of the patients who died in the `survival::lung` data (Loprinzi et al. 1994): a Weibull
+model is fitted to a Phase I sample of 100 observations (20 subgroups of 5), the limits
+are built with the mean adjustment, and 13 further subgroups are monitored. This is an
+illustration of the workflow, not a claim about a real process.
+
+
+## Calibrating the false-alarm rate
+
+With known parameters, exact $\alpha/2$ and $1-\alpha/2$ limits give an
+in-control ARL of exactly $1/\alpha$ (see [Methodology](#3-run-length-and-arl)).
+The simulated ARL0 from `bootqcc()` is close to $1/\alpha$ only if the limits
+are estimated accurately, and the requirement is on the number of bootstrap
+points **in the tails**:
+
+- **Make `B * alpha / 2` large.** The limits are empirical quantiles at the
+  levels $\alpha/2$ and $1-\alpha/2$, estimated from about $B\alpha/2$ points
+  in each tail. When this number is small (for example $B=500$ and
+  $\alpha=0.0027$ give 0.7 points) the empirical limits lie *inside* the true
+  ones, the chart alarms too often, and ARL0 falls far below $1/\alpha$. In an
+  earlier version of this README the low ARL0 of that setting (about 176 instead
+  of 370) was explained by the variability of the fitted parameters; the
+  numerical checks in the [Validation](#validation-against-exact-results) section
+  show instead that the cause is the small $B$, and that ARL0 approaches
+  $1/\alpha$ as $B$ grows. `bootqcc()` now warns when $B\alpha/2<5$; use
+  $B\ge 10/\alpha$ at least, and $B\ge 100/\alpha$ for final results.
+- **Make `arl_rep` large enough.** The ARL estimate has relative standard error
+  about $1/\sqrt{\texttt{arl\_rep}}$, so 100 runs give about 10%.
+- **Use `alpha` as a tuning knob if you need a particular ARL0.** If the
+  simulated ARL0 stays away from the target after the two points above, change
+  `alpha` until it matches. Remember that with *estimated* parameters the
+  achieved ARL0 is smaller than $1/\alpha$ even for exact limits (see
+  [Unknown parameters](#unknown-parameters-building-the-chart-from-phase-i-data)),
+  which is what `bootqcc_phase1(adjust = ...)` corrects.
 
 ```mermaid
 flowchart LR
-    A[Choose a target ARL0] --> B[Pick a value of alpha]
-    B --> C["Run bootqcc() with that alpha"]
-    C --> D{"Simulated ARL0<br/>close to the target?"}
-    D -- too low --> E[Decrease alpha] --> C
+    A[Choose a target ARL0] --> B["Choose alpha = 1/ARL0 and B >= 100/alpha"]
+    B --> C["Run bootqcc()"]
+    C --> D{"Simulated ARL0<br/>within its standard error<br/>of the target?"}
+    D -- too low --> E[Increase B, then decrease alpha] --> C
     D -- too high --> F[Increase alpha] --> C
     D -- yes --> G([Use this chart])
 ```
-
-Increase `arl_rep` for a stable estimate: the ARL has a large standard
-deviation (close to its mean for a geometric-like run length), so a few
-hundred runs are needed for a useful standard error.
 
 ## Other statistics and estimators
 
@@ -495,12 +830,14 @@ write.csv(res, "res.csv", row.names = FALSE)
 |---|---|
 | `bootqcc()` | Build a chart: bootstrap limits plus in-control ARL |
 | `arl()` | Re-estimate the ARL of an existing chart, in control or under shifted parameters |
+| `bootqcc_phase1()` | Build a chart from raw Phase I data, with the effect of parameter estimation measured and optionally corrected |
 | `bootqcc_monitor()` | Apply a chart to new samples (Phase II) |
 | `bootqcc_grid()` | Simulation study over sample sizes, quantiles and parameters |
 | `print()` | Summary of a chart |
 | `plot()` | Bootstrap distribution with limits, or the Phase II chart when `data` is given |
 
-Help pages: `?bootqcc`, `?arl`, `?bootqcc_monitor`, `?bootqcc_grid`.
+Help pages: `?bootqcc`, `?bootqcc_phase1`, `?arl`, `?bootqcc_monitor`, `?bootqcc_grid`.
+The vignette `vignette("bootqcc")` contains the validation and a case study.
 
 ## Argument reference for `bootqcc()`
 
@@ -572,9 +909,9 @@ hist(ch$arl$runs)
 
 ## Limitations
 
-- **Known in-control parameters.** Phase I draws samples from the parameters
-  you give. A function that estimates the parameters from real Phase I data
-  and then builds the limits is not included yet (see the roadmap).
+- **Model correctness.** The limits are only as good as the assumed family and
+  the Phase I data; `bootqcc_phase1()` corrects for the *variability* of the
+  estimates, not for a wrong model or contaminated Phase I data.
 - **Single statistic per chart.** One quantile or one custom statistic is
   monitored at a time.
 - **Univariate, independent data** with subgroups of fixed size `n`.
@@ -582,16 +919,18 @@ hist(ch$arl$runs)
   `arl_rep = 1000`) take a long time.
 - **Estimator.** The default is Nelder-Mead maximum likelihood, which can be
   fragile for many-parameter or heavily constrained families.
-- **Validation.** The package is tested on Weibull, exponential and
-  Kumaraswamy models. Results for new families should be validated against
-  your own simulations.
+- **Validation.** The exponential distribution is validated against exact
+  results (see [Validation](#validation-against-exact-results)); the Weibull,
+  normal and Kumaraswamy models are tested for consistency. A numerical
+  comparison with other software was not possible, because the usual R packages
+  for Shewhart charts do not build bootstrap limits for arbitrary families.
+  Validate new families against your own simulations.
 
 ## Roadmap
 
-- Estimate the parameters from real Phase I data and build the chart from them
+- Parametric or nonparametric bootstrap of the Phase I *data* (bootstrap-t style adjustments)
 - Parallel execution of the bootstrap and ARL loops
 - Parameter transformations for stable fitting of constrained families
-- Vignette with a full worked case study
 - Additional chart types (individual observations, one-sided charts)
 - Preparation for CRAN submission
 
@@ -600,20 +939,22 @@ Suggestions are welcome: open an issue in the repository.
 ## Testing
 
 ```r
-devtools::test()      # the testthat suite (8 test blocks)
+devtools::test()      # the testthat suite (11 test blocks)
 devtools::check()     # R CMD check
 ```
 
 The tests cover built-in and user-defined distributions, custom statistics and
 estimators, the effect of a shift on the ARL, Phase II monitoring, the grid
-function, and input validation.
+function, the small-`B` warning, agreement with the exact exponential limits,
+`bootqcc_phase1()`, and input validation.
 
 ## Relation to the original code
 
 This package generalizes the Lindley-geometric chart in
 [`LGBootStrapControlChart`](../LGBootStrapControlChart) of this repository,
 whose README cites Prof. Dr. Ali Akbar Heydari (University of Tabriz,
-Department of Statistics). Compared with the original script, `bootqcc`:
+Department of Statistics). The Lindley-geometric chart is described in
+Al-Lami, Jabbari Khamnei and Heydari (2025). Compared with the original script, `bootqcc`:
 
 - works for any distribution instead of one;
 - fixes the swapped assignment of the two fitted parameters;
@@ -621,6 +962,56 @@ Department of Statistics). Compared with the original script, `bootqcc`:
 - computes the limits with empirical quantiles instead of an integer index
   that could be zero;
 - caps the run length so a chart that never signals cannot loop forever.
+
+## References
+
+**Control charts and run length**
+
+- Shewhart, W. A. (1931). *Economic Control of Quality of Manufactured Product*. Van Nostrand, New York.
+- Montgomery, D. C. (2019). *Introduction to Statistical Quality Control*, 8th edition. Wiley, Hoboken, NJ.
+- Padgett, W. J. and Spurrier, J. D. (1990). Shewhart-type charts for percentiles of strength distributions. *Journal of Quality Technology*, 22(4), 283-288.
+
+**Bootstrap control charts**
+
+- Seppala, T., Moskowitz, H., Plante, R. and Tang, J. (1995). Statistical process control via the subgroup bootstrap. *Journal of Quality Technology*, 27(2), 139-153.
+- Jones, L. A. and Woodall, W. H. (1998). The performance of bootstrap control charts. *Journal of Quality Technology*, 30(4), 362-375.
+- Al-Lami, M. A. H., Jabbari Khamnei, H. and Heydari, A. A. (2025). Bootstrap control chart for the Lindley-Geometric distribution. *PLOS ONE*. [doi:10.1371/journal.pone.0316449](https://doi.org/10.1371/journal.pone.0316449)
+
+**Effect of parameter estimation**
+
+- Quesenberry, C. P. (1993). The effect of sample size on estimated limits for X-bar and X control charts. *Journal of Quality Technology*, 25(4), 237-247.
+- Jensen, W. A., Jones-Farmer, L. A., Champ, C. W. and Woodall, W. H. (2006). Effects of parameter estimation on control chart properties: a literature review. *Journal of Quality Technology*, 38(4), 349-364.
+- Psarakis, S., Vyniou, A. K. and Castagliola, P. (2014). Some recent developments on the effects of parameter estimation on control charts. *Quality and Reliability Engineering International*, 30(8), 1113-1129.
+- Gandy, A. and Kvaloy, J. T. (2013). Guaranteed conditional performance of control charts via bootstrap methods. *Scandinavian Journal of Statistics*, 40(4), 647-668.
+- Saleh, N. A., Mahmoud, M. A., Keefe, M. J. and Woodall, W. H. (2015). The difficulty in designing Shewhart X-bar and X control charts with estimated parameters. *Computational Statistics and Data Analysis*, 87, 1-16.
+
+**Bootstrap and Monte Carlo**
+
+- Efron, B. (1979). Bootstrap methods: another look at the jackknife. *The Annals of Statistics*, 7(1), 1-26.
+- Efron, B. and Tibshirani, R. J. (1993). *An Introduction to the Bootstrap*. Chapman and Hall, New York.
+- DiCiccio, T. J. and Efron, B. (1996). Bootstrap confidence intervals. *Statistical Science*, 11(3), 189-228.
+- Hyndman, R. J. and Fan, Y. (1996). Sample quantiles in statistical packages. *The American Statistician*, 50(4), 361-365.
+- Robert, C. P. and Casella, G. (2004). *Monte Carlo Statistical Methods*, 2nd edition. Springer, New York.
+- Serfling, R. J. (1980). *Approximation Theorems of Mathematical Statistics*. Wiley, New York.
+
+**Estimation and optimization**
+
+- Fisher, R. A. (1922). On the mathematical foundations of theoretical statistics. *Philosophical Transactions of the Royal Society of London, Series A*, 222, 309-368.
+- Casella, G. and Berger, R. L. (2002). *Statistical Inference*, 2nd edition. Duxbury, Pacific Grove, CA.
+- Nelder, J. A. and Mead, R. (1965). A simplex method for function minimization. *The Computer Journal*, 7(4), 308-313.
+- Byrd, R. H., Lu, P., Nocedal, J. and Zhu, C. (1995). A limited memory algorithm for bound constrained optimization. *SIAM Journal on Scientific Computing*, 16(5), 1190-1208.
+
+**Distributions and data**
+
+- Weibull, W. (1951). A statistical distribution function of wide applicability. *Journal of Applied Mechanics*, 18(3), 293-297.
+- Lindley, D. V. (1958). Fiducial distributions and Bayes' theorem. *Journal of the Royal Statistical Society, Series B*, 20(1), 102-107.
+- Kumaraswamy, P. (1980). A generalized probability density function for double-bounded random processes. *Journal of Hydrology*, 46(1-2), 79-88.
+- Loprinzi, C. L., Laurie, J. A., Wieand, H. S. et al. (1994). Prospective evaluation of prognostic variables from patient-completed questionnaires. *Journal of Clinical Oncology*, 12(3), 601-607. (Source of the `survival::lung` data used in the vignette.)
+
+A BibTeX file with all entries is in [`docs/references.bib`](docs/references.bib).
+The page numbers and volumes were written from the standard bibliographic
+record; please check them against the publisher's pages before using them in a
+manuscript.
 
 ## Citation
 

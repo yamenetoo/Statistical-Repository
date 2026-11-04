@@ -23,8 +23,15 @@ and compares it with the control limits of a chart built by \code{\link[=bootqcc
 }
 \examples{
 ch <- bootqcc("weibull", list(shape = 2, scale = 1), u = 0.1, n = 5,
-              alpha = 0.05, B = 100, M = 3, arl_rep = 5, seed = 1)
+              alpha = 0.05, B = 200, M = 3, arl_rep = 5, seed = 1)
 set.seed(2)
 new <- matrix(rweibull(50, 2, 1.6), ncol = 5)
 bootqcc_monitor(ch, new)
+}
+\references{
+Shewhart, W. A. (1931). \emph{Economic Control of Quality of Manufactured
+Product}. Van Nostrand, New York.
+
+Montgomery, D. C. (2019). \emph{Introduction to Statistical Quality Control},
+8th edition. Wiley, Hoboken, NJ.
 }

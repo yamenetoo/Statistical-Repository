@@ -3,7 +3,7 @@
 # Requires: pdflatex with TikZ (texlive-pictures) and pdftocairo (poppler-utils).
 set -euo pipefail
 cd "$(dirname "$0")"
-for f in workflow bootstrap-flow arl-flow architecture chart-illustration; do
+for f in workflow bootstrap-flow arl-flow architecture chart-illustration methodology; do
   pdflatex -interaction=nonstopmode -halt-on-error "$f.tex" > /dev/null
   pdftocairo -png -r 150 -singlefile "$f.pdf" "../../man/figures/$f"
   echo "built $f"

@@ -27,7 +27,11 @@
 #'   `statistic` is given.
 #' @param n Subgroup (sample) size.
 #' @param alpha Total false-alarm probability used for the limits.
-#' @param B Number of bootstrap replicates per Monte Carlo iteration.
+#' @param B Number of bootstrap replicates per Monte Carlo iteration. Each limit
+#'   is estimated from about `B * alpha / 2` points in the tail, so `B` must be
+#'   large when `alpha` is small: use at least `B = 10 / alpha` (a warning is
+#'   given below that) and preferably `100 / alpha` for stable limits. With too
+#'   small a `B` the limits are too narrow and the in-control ARL is too small.
 #' @param M Number of Monte Carlo iterations of the limit computation.
 #' @param arl_rep Number of simulated run lengths used to estimate the ARL.
 #' @param statistic Optional function taking the named list of fitted
@@ -54,11 +58,36 @@
 #'   the bootstrap statistics of the last iteration `boot_stats`, and the
 #'   settings used.
 #'
+#' @references
+#' Efron, B. (1979). Bootstrap methods: another look at the jackknife.
+#' \emph{The Annals of Statistics}, 7(1), 1--26.
+#'
+#' Efron, B. and Tibshirani, R. J. (1993). \emph{An Introduction to the Bootstrap}.
+#' Chapman and Hall, New York.
+#'
+#' Padgett, W. J. and Spurrier, J. D. (1990). Shewhart-type charts for percentiles
+#' of strength distributions. \emph{Journal of Quality Technology}, 22(4), 283--288.
+#'
+#' Seppala, T., Moskowitz, H., Plante, R. and Tang, J. (1995). Statistical process
+#' control via the subgroup bootstrap. \emph{Journal of Quality Technology}, 27(2),
+#' 139--153.
+#'
+#' Jones, L. A. and Woodall, W. H. (1998). The performance of bootstrap control
+#' charts. \emph{Journal of Quality Technology}, 30(4), 362--375.
+#'
+#' Jensen, W. A., Jones-Farmer, L. A., Champ, C. W. and Woodall, W. H. (2006).
+#' Effects of parameter estimation on control chart properties: a literature
+#' review. \emph{Journal of Quality Technology}, 38(4), 349--364.
+#'
+#' Al-Lami, M. A. H., Jabbari Khamnei, H. and Heydari, A. A. (2025). Bootstrap
+#' control chart for the Lindley-Geometric distribution. \emph{PLOS ONE}.
+#' \doi{10.1371/journal.pone.0316449}
+#'
 #' @examples
 #' # Small settings so that the example runs quickly; use the defaults
 #' # (B = 1000, M = 30, arl_rep = 100) for a real analysis.
 #' ch <- bootqcc("weibull", list(shape = 2, scale = 1), u = 0.1, n = 5,
-#'               alpha = 0.05, B = 100, M = 3, arl_rep = 10, seed = 1)
+#'               alpha = 0.05, B = 200, M = 3, arl_rep = 10, seed = 1)
 #' ch
 #'
 #' \donttest{
@@ -70,7 +99,7 @@
 #'   r = function(n, a, b) (1 - (1 - runif(n))^(1 / b))^(1 / a)
 #' )
 #' bootqcc(kw, list(a = 2, b = 3), u = 0.5, n = 10,
-#'         alpha = 0.05, B = 100, M = 3, arl_rep = 10, seed = 1)
+#'         alpha = 0.05, B = 200, M = 3, arl_rep = 10, seed = 1)
 #' }
 #' @export
 bootqcc <- function(distr, params, u = 0.5, n = 5, alpha = 0.0027,
@@ -95,6 +124,12 @@ bootqcc <- function(distr, params, u = 0.5, n = 5, alpha = 0.0027,
   arl_rep <- as.integer(arl_rep)
   if (any(is.na(c(n, B, M, arl_rep))) || any(c(n, B, M, arl_rep) < 1L)) {
     stop("'n', 'B', 'M' and 'arl_rep' must be positive integers.", call. = FALSE)
+  }
+  if (B * alpha / 2 < 5) {
+    warning(sprintf(paste0("B * alpha / 2 = %.1f: too few bootstrap replicates in the tails ",
+                           "to estimate the limits reliably (the limits will be too narrow and ",
+                           "the in-control ARL too small). Use B >= %d."),
+                    B * alpha / 2, as.integer(ceiling(10 / alpha))), call. = FALSE)
   }
   if (!is.null(seed)) set.seed(seed)
 
@@ -182,9 +217,20 @@ bootqcc <- function(distr, params, u = 0.5, n = 5, alpha = 0.0027,
 #' @param verbose Print a short summary.
 #' @return A list with `mean`, `sd`, `runs` and `censored` (the number of
 #'   runs that reached the cap).
+#' @references
+#' Montgomery, D. C. (2019). \emph{Introduction to Statistical Quality Control},
+#' 8th edition. Wiley, Hoboken, NJ.
+#'
+#' Quesenberry, C. P. (1993). The effect of sample size on estimated limits for
+#' X-bar and X control charts. \emph{Journal of Quality Technology}, 25(4), 237--247.
+#'
+#' Jensen, W. A., Jones-Farmer, L. A., Champ, C. W. and Woodall, W. H. (2006).
+#' Effects of parameter estimation on control chart properties: a literature
+#' review. \emph{Journal of Quality Technology}, 38(4), 349--364.
+#'
 #' @examples
 #' ch <- bootqcc("weibull", list(shape = 2, scale = 1), u = 0.1, n = 5,
-#'               alpha = 0.05, B = 100, M = 3, arl_rep = 10, seed = 1)
+#'               alpha = 0.05, B = 200, M = 3, arl_rep = 10, seed = 1)
 #' # Out-of-control ARL after a scale shift
 #' arl(ch, params = list(shape = 2, scale = 1.5), rep = 20)$mean
 #' @export

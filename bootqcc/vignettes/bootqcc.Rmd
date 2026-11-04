@@ -1,0 +1,254 @@
+---
+title: "Bootstrap control charts with bootqcc: method, validation and a case study"
+author: "Mohamad Yamen Al-Mohamad, Ali Akbar Hydari, Hossein Jabbari Khamnei"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Bootstrap control charts with bootqcc: method, validation and a case study}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 6.5, fig.height = 4)
+library(bootqcc)
+```
+
+## 1. The problem
+
+A Shewhart-type chart for a quantile (or any statistic) of a non-normal
+distribution has no closed-form limits. `bootqcc` builds them by parametric
+bootstrap (Efron 1979; Efron and Tibshirani 1993), in the spirit of
+Padgett and Spurrier (1990) and Jones and Woodall (1998), for **any** family
+that has `d`, `q` and `r` functions. Two situations must be distinguished.
+
+* **Known parameters** (`bootqcc()`): the in-control parameters are given, and
+  the chart is designed and its run length studied by simulation. This is the
+  setting of most simulation studies in the literature.
+* **Unknown parameters** (`bootqcc_phase1()`): only a Phase I sample is
+  available. The parameters are estimated, and the estimation error makes the
+  *actual* false-alarm rate random and, on average, larger than the nominal
+  one (Quesenberry 1993; Jensen et al. 2006; Saleh et al. 2015).
+  `bootqcc_phase1()` quantifies this effect and can correct it by a second
+  bootstrap layer in the manner of Gandy and Kvaloy (2013).
+
+## 2. Method in brief
+
+For a subgroup $x_1,\dots,x_n$ let $\hat\theta$ be the maximum likelihood
+estimate (Fisher 1922) and monitor $T=Q(u;\hat\theta)$, the estimated
+$u$-quantile (any other function of $\hat\theta$ can be used). With the
+parameters $\theta_0$ known, the limits are
+
+$$
+\mathrm{LCL}=\hat F_{T}^{-1}(\alpha/2),\qquad
+\mathrm{UCL}=\hat F_{T}^{-1}(1-\alpha/2),
+$$
+
+where $\hat F_T$ is the empirical distribution of $T^*_b=T(\hat\theta^*_b)$,
+$b=1,\dots,B$, and $\hat\theta^*_b$ is fitted to a sample of size $n$ drawn
+from $F(\cdot;\theta_0)$. The limits are averaged over $M$ independent
+repetitions. The run length is $\mathrm{RL}=\min\{t: T_t\notin[\mathrm{LCL},
+\mathrm{UCL}]\}$; for fixed limits it is geometric with
+$\mathrm{ARL}=1/p$, where $p$ is the probability that a subgroup signals
+(Montgomery 2019). `bootqcc` estimates it by Monte Carlo.
+
+With unknown parameters the limits are a function of the Phase I estimate
+$\hat\theta$, so the false-alarm probability $p(\hat\theta)$ of the chart
+*given* the Phase I sample is itself random. `bootqcc_phase1()` approximates
+its distribution by an outer bootstrap: Phase I samples of the same size are
+simulated from $F(\cdot;\hat\theta)$, the whole limit construction is repeated
+on each, and $p$ is evaluated on a reference sample of in-control statistics.
+
+## 3. Validation against exact results
+
+For $X\sim\mathrm{Exp}(1)$ the MLE of the rate is $1/\bar x$, hence
+$T=-\log(1-u)\,\bar x$ with $\bar x\sim\mathrm{Gamma}(n,\,\text{scale}=1/n)$.
+The exact control limits, the exact in-control ARL ($=1/\alpha$ for exact
+limits) and the exact distribution of the conditional false-alarm probability
+under estimation are therefore known, which gives a benchmark. The script
+`inst/validation/exponential-validation.R` reproduces everything below.
+
+```{r load-validation, include = FALSE}
+f <- system.file("validation", "exponential-validation.rds", package = "bootqcc")
+if (!nzchar(f)) f <- file.path("..", "inst", "validation", "exponential-validation.rds")
+have <- file.exists(f)
+if (have) val <- readRDS(f)
+```
+
+```{r partA, eval = have, echo = FALSE}
+a <- val$partA
+a$`B*alpha/2` <- a$B_alpha_2
+knitr::kable(a[, c("alpha", "B", "B*alpha/2", "LCL", "LCL_exact", "UCL", "UCL_exact",
+                   "ARL0", "ARL0_se", "ARL0_exact")], digits = 4, row.names = FALSE,
+             caption = "Known parameters: bootstrap limits and ARL0 (2000 runs) against the exact values. n = 5, u = 0.5.")
+```
+
+**Reading the table.** The bootstrap limits converge to the exact limits as
+$B$ grows, and the in-control ARL converges to $1/\alpha$. When
+$B\alpha/2$ is small (a handful of bootstrap points in each tail) the
+empirical quantiles fall inside the true ones, the limits are too narrow and
+the ARL is too small; this is a resolution effect of the empirical quantile,
+not a bias of the method. A good rule is $B\ge 10/\alpha$, preferably
+$B\ge 100/\alpha$; `bootqcc()` warns below the first threshold. The ARL
+estimates carry Monte Carlo error (column `ARL0_se`), which is large for
+$\alpha=0.0027$ because run lengths have a standard deviation close to their mean.
+
+```{r partB, eval = have, echo = FALSE}
+b <- val$partB
+s <- b$summary
+s$mean_FAP <- signif(s$mean_FAP, 3)
+knitr::kable(s, digits = 3, row.names = FALSE,
+  col.names = c("Limits", "Mean exact conditional false-alarm probability",
+                "Share of Phase I samples with probability <= alpha"),
+  caption = sprintf(paste("Unknown parameters: %d simulated Phase I samples (m = %d subgroups of size n = %d),",
+                          "nominal alpha = %g. The false-alarm probabilities are computed exactly."),
+                    b$S, b$m, b$n, b$alpha))
+```
+
+```{r partB2, eval = have, echo = FALSE}
+knitr::kable(data.frame(
+  Quantity = c("Mean false-alarm probability with the nominal level (exact)",
+               "90% quantile of the false-alarm probability with the nominal level (exact)",
+               "Level that makes the mean equal to alpha (exact)",
+               "Same level estimated by the bootstrap (average over the samples)",
+               "Level that makes the 90% quantile equal to alpha (exact)",
+               "Same level estimated by the bootstrap (average over the samples)"),
+  Value = signif(c(b$exact_mean_FAP_nominal, b$exact_q90_FAP_nominal, b$exact_alpha_mean,
+                   b$est_alpha_mean, b$exact_alpha_quantile, b$est_alpha_quantile), 3)),
+  caption = "Exact benchmark for the exponential case, and what the outer bootstrap recovers.")
+```
+
+The nominal $\alpha$ gives a mean false-alarm probability above $\alpha$, and
+in a large share of Phase I samples the conditional probability exceeds
+$\alpha$; the mean-adjusted level removes the average excess and the
+quantile-adjusted level controls the share of unlucky Phase I samples.
+
+*Comparison with other software.* The packages usually used for Shewhart
+charts (for example `qcc` and `spc`) cover the normal and a few other
+families, and none of them builds bootstrap limits for an arbitrary
+distribution, so a like-for-like numerical comparison is not available for
+the general case. The exact exponential results above are the benchmark used
+here, and the limits for the normal mean obtained with `bootqcc` coincide in
+the limit with the textbook $\mu\pm z\sigma/\sqrt n$ limits (see the check
+below).
+
+```{r normal-check}
+set.seed(1)
+fit_norm <- function(x) list(mean = mean(x), sd = sqrt(mean((x - mean(x))^2)))
+mean_stat <- function(est) est$mean
+ch <- suppressWarnings(bootqcc("norm", list(mean = 0, sd = 1), statistic = mean_stat,
+                               n = 5, alpha = 0.0027, B = 20000, M = 5, arl_rep = 2,
+                               fit_fn = fit_norm))
+rbind(bootstrap = ch$limits, textbook = c(-1, 1) * qnorm(1 - 0.0027 / 2) / sqrt(5))
+```
+
+## 4. Case study: survival times (illustration)
+
+We use the survival times (days) of the patients who died in the
+`survival::lung` data (Loprinzi et al. 1994) to show the complete workflow
+on real data. The data are not a manufacturing process, and the row order is
+arbitrary, so the example demonstrates the mechanics of the method and is not
+a claim that this process was in or out of control. Only deaths are used
+(no censoring), and the first 100 observations in file order form the Phase I
+sample, arranged as 20 subgroups of size 5.
+
+```{r data}
+library(survival)
+x <- lung$time[lung$status == 2]
+length(x)
+phase1 <- matrix(x[1:100], ncol = 5, byrow = TRUE)
+phase2 <- matrix(x[101:165], ncol = 5, byrow = TRUE)
+```
+
+A Weibull model is fitted with a fast profile-likelihood routine (the shape
+solves a one-dimensional equation; Nelder-Mead on the log-likelihood would work
+too but is slower):
+
+```{r weibull-fit}
+fit_weibull <- function(x) {
+  lx <- log(x)
+  g <- function(k) sum(x^k * lx) / sum(x^k) - 1 / k - mean(lx)
+  k <- tryCatch(uniroot(g, c(0.05, 50))$root, error = function(e) NA_real_)
+  if (is.na(k)) return(NULL)
+  list(shape = k, scale = mean(x^k)^(1 / k))
+}
+fit_weibull(as.numeric(phase1))
+```
+
+A quick check of the Weibull fit by comparing the empirical and fitted
+quantiles of the Phase I data:
+
+```{r qq, fig.height = 4}
+est <- fit_weibull(as.numeric(phase1))
+p <- ppoints(100)
+plot(qweibull(p, est$shape, est$scale), sort(as.numeric(phase1)),
+     xlab = "Weibull quantiles", ylab = "Observed quantiles", pch = 19, cex = .6)
+abline(0, 1, col = "red")
+```
+
+The chart monitors the median ($u=0.5$). With only 100 Phase I observations
+the estimation error matters, so we use `bootqcc_phase1()`; $\alpha=0.01$
+keeps the example fast (use $\alpha=0.0027$ and larger $B$ for a final design).
+
+```{r phase1}
+ch <- bootqcc_phase1(phase1, "weibull", u = 0.5, alpha = 0.01, fit_fn = fit_weibull,
+                     B = 2000, R = 100, N_ref = 10000, adjust = "mean", seed = 123)
+ch
+```
+
+The Phase II subgroups are then compared with the limits:
+
+```{r phase2}
+mon <- bootqcc_monitor(ch, phase2)
+mon
+plot(mon)
+```
+
+```{r fap-hist, fig.height = 3.6}
+hist(ch$fap, breaks = 20, col = "grey85", border = "white",
+     main = "Conditional false-alarm probability (nominal level)",
+     xlab = "probability that a subgroup signals")
+abline(v = ch$alpha, col = "red", lty = 2, lwd = 2)
+```
+
+The histogram shows how much the false-alarm rate varies with the Phase I
+sample alone when the nominal level is used; the red line is the target.
+
+## References
+
+Efron, B. (1979). Bootstrap methods: another look at the jackknife. *The
+Annals of Statistics*, 7(1), 1-26.
+
+Efron, B. and Tibshirani, R. J. (1993). *An Introduction to the Bootstrap*.
+Chapman and Hall, New York.
+
+Fisher, R. A. (1922). On the mathematical foundations of theoretical
+statistics. *Philosophical Transactions of the Royal Society A*, 222, 309-368.
+
+Gandy, A. and Kvaloy, J. T. (2013). Guaranteed conditional performance of
+control charts via bootstrap methods. *Scandinavian Journal of Statistics*,
+40(4), 647-668.
+
+Jensen, W. A., Jones-Farmer, L. A., Champ, C. W. and Woodall, W. H. (2006).
+Effects of parameter estimation on control chart properties: a literature
+review. *Journal of Quality Technology*, 38(4), 349-364.
+
+Jones, L. A. and Woodall, W. H. (1998). The performance of bootstrap control
+charts. *Journal of Quality Technology*, 30(4), 362-375.
+
+Loprinzi, C. L., Laurie, J. A., Wieand, H. S., et al. (1994). Prospective
+evaluation of prognostic variables from patient-completed questionnaires.
+*Journal of Clinical Oncology*, 12(3), 601-607.
+
+Montgomery, D. C. (2019). *Introduction to Statistical Quality Control*, 8th
+edition. Wiley, Hoboken, NJ.
+
+Padgett, W. J. and Spurrier, J. D. (1990). Shewhart-type charts for
+percentiles of strength distributions. *Journal of Quality Technology*, 22(4),
+283-288.
+
+Quesenberry, C. P. (1993). The effect of sample size on estimated limits for
+X-bar and X control charts. *Journal of Quality Technology*, 25(4), 237-247.
+
+Saleh, N. A., Mahmoud, M. A., Keefe, M. J. and Woodall, W. H. (2015). The
+difficulty in designing Shewhart X-bar and X control charts with estimated
+parameters. *Computational Statistics and Data Analysis*, 87, 1-16.

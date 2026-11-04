@@ -41,5 +41,13 @@ papers.
 \examples{
 g <- expand.grid(shape = c(1.5, 2), scale = 1)
 bootqcc_grid("weibull", g, u_values = c(0.1, 0.9), n_values = 5,
-             alpha = 0.1, B = 50, M = 2, arl_rep = 5, seed = 1)
+             alpha = 0.1, B = 100, M = 2, arl_rep = 5, seed = 1)
+}
+\references{
+Jones, L. A. and Woodall, W. H. (1998). The performance of bootstrap control
+charts. \emph{Journal of Quality Technology}, 30(4), 362--375.
+
+Al-Lami, M. A. H., Jabbari Khamnei, H. and Heydari, A. A. (2025). Bootstrap
+control chart for the Lindley-Geometric distribution. \emph{PLOS ONE}.
+\doi{10.1371/journal.pone.0316449}
 }
