@@ -1,0 +1,23 @@
+Package: bootqcc
+Title: Parametric Bootstrap Control Charts for Any Distribution
+Version: 0.1.0
+Authors@R:
+    person("Mohamad Yamen", "Al-Mohamad", , "yamenmohamad@tabrizu.ac.ir", role = c("aut", "cre"),
+           comment = c(ORCID = "0009-0009-1665-7203"))
+Description: Builds Phase I control limits for a quantile (or any user-defined
+    statistic) of an arbitrary parametric distribution by parametric bootstrap
+    with maximum likelihood estimation, then evaluates the chart through
+    Monte Carlo estimates of the average run length (ARL). The distribution can
+    be any family with d/q/r functions, whether built into R or defined by the
+    user, so the same code serves Weibull, gamma, Kumaraswamy, Lindley-type and
+    other lifetime models. Phase II monitoring of new samples is supported.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+Imports:
+    graphics,
+    stats
+Suggests:
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+RoxygenNote: 7.3.1
