@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/logo.png" alt="LR-Fuzzy-Quantile logo" width="620">
+</p>
+
 # LR-Fuzzy-Quantile
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yamenetoo/Statistical-Repository/blob/main/LR-Fuzzy-Quantile/run_in_colab.ipynb)
