@@ -24,7 +24,7 @@
 Numeric vector.
 }
 \description{
-`residuals(type = "quantile")` returns normalised quantile residuals
+`residuals(type = "quantile")` returns normalized quantile residuals
 \eqn{\Phi^{-1}(F(v_i))}, which are approximately standard normal when the
 model is adequate; `type = "pit"` returns the probability integral
 transform \eqn{F(v_i)}, approximately uniform.

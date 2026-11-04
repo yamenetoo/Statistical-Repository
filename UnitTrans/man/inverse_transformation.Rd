@@ -12,7 +12,7 @@ inverse_transformation(v, trans)
 \item{trans}{Transformation name or object.}
 }
 \value{
-Numeric vector Y = g^{-1}(V).
+Numeric vector Y = ginv(V), the inverse of g.
 }
 \description{
 Maps values of V in (0,1) back to the baseline scale Y.

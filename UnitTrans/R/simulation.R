@@ -1,7 +1,7 @@
 #' Monte-Carlo simulation study of the MLE
 #'
 #' Repeatedly simulates from a transformed distribution, refits it and
-#' summarises bias, root mean squared error and the coverage of Wald intervals.
+#' summarizes bias, root mean squared error and the coverage of Wald intervals.
 #' Coverage is computed over the replications with available standard errors.
 #'
 #' @param dist,par,trans True model.

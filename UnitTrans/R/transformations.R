@@ -102,7 +102,7 @@ print.unitrans <- function(x, ...) {
 #' Maps values of V in (0,1) back to the baseline scale Y.
 #' @param v Numeric vector in (0,1).
 #' @param trans Transformation name or object.
-#' @return Numeric vector Y = g^{-1}(V).
+#' @return Numeric vector Y = ginv(V), the inverse of g.
 #' @examples
 #' inverse_transformation(0.3, "logit")
 #' @export

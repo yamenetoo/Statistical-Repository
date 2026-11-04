@@ -12,7 +12,7 @@
 #' statistics for a fitted model and obtains p-values by a parametric bootstrap
 #' that re-estimates the parameters in every replication (so the p-values are
 #' valid with estimated parameters). The p-value is
-#' `(1 + #{T* >= T}) / (B + 1)`, so it is never exactly zero.
+#' `(1 + number of T* >= T) / (B + 1)`, so it is never exactly zero.
 #'
 #' @param fit A `transfit` object.
 #' @param B Number of bootstrap replications.

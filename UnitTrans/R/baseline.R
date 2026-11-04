@@ -32,7 +32,7 @@
 }
 
 # A resolved baseline: the d/p/q functions are looked up once. Every exported
-# function accepts either a name or such an object, so that the optimiser and
+# function accepts either a name or such an object, so that the optimizer and
 # the bootstrap loops never repeat the lookup.
 .as_base <- function(dist) {
   if (inherits(dist, "unitbase")) return(dist)

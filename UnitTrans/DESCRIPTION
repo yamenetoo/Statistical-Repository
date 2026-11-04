@@ -3,11 +3,14 @@ Type: Package
 Title: Distributions on the Unit Interval via Transformations of
         Baseline Laws
 Version: 0.2.0
-Authors@R: person("Mohamad Yamen", "Al-Mohamad", role = c("aut", "cre"),
-    email = "almohamadmohamad678@gmail.com",
-    comment = c(ORCID = "0009-0009-1665-7203"))
+Authors@R: c(
+    person("Mohamad Yamen", "Al-Mohamad", role = c("aut", "cre"),
+    email = "yamenmohamad@tabrizu.ac.ir",
+    comment = c(ORCID = "0009-0009-1665-7203")),
+    person("Ali Akbar", "Hydari", role = "aut",
+    email = "heydari@tabrizu.ac.ir"))
 Description: Builds new probability distributions on (0,1) by applying a
-    monotone transformation (rational, exponential, logit, tanh, probit,
+    monotone transformation (rational, exponential, logit, 'tanh', probit,
     complementary log-log) to a baseline random variable Y with any
     available d/p/q/r functions. Provides density, distribution, quantile and
     random generation functions, maximum likelihood fitting with information

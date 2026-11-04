@@ -21,7 +21,7 @@ A data frame with one row per sample size and parameter, including
 }
 \description{
 Repeatedly simulates from a transformed distribution, refits it and
-summarises bias, root mean squared error and the coverage of Wald intervals.
+summarizes bias, root mean squared error and the coverage of Wald intervals.
 Coverage is computed over the replications with available standard errors.
 }
 \examples{

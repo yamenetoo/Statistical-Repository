@@ -181,7 +181,7 @@ logLik(fit)
 AIC(fit); BIC(fit)  # standard R generics work
 ```
 
-### 9. Control the optimiser: starting values, bounds, multi-start
+### 9. Control the optimizer: starting values, bounds, multi-start
 
 ```r
 set.seed(2)
@@ -377,7 +377,7 @@ fit <- fit_trans(x, "weibull", "exponential")
 confint(fit, method = "profile")        # profile likelihood (good for positive parameters)
 confint(fit, parm = "shape")            # a single parameter (Wald)
 
-r <- residuals(fit)                     # normalised quantile residuals ~ N(0,1)
+r <- residuals(fit)                     # normalized quantile residuals ~ N(0,1)
 qqnorm(r); qqline(r)
 nobs(fit)
 predict(fit, c(.2, .5), type = "cdf")   # also "density" and "quantile"

@@ -49,8 +49,8 @@ An object of class `transfit` with `coef`, `se`, `vcov`, `logLik`,
   Hessian was positive definite, so that standard errors are available).
 }
 \description{
-Fits the distribution of \eqn{V = g(Y)} to data in (0,1) by maximising the
-log-likelihood over the baseline parameters. The optimisation is carried
+Fits the distribution of \eqn{V = g(Y)} to data in (0,1) by maximizing the
+log-likelihood over the baseline parameters. The optimization is carried
 out on an unconstrained scale (logarithmic for positive parameters), starting
 from the default values, from a quantile-matching solution and from random
 perturbations; the best optimum is kept.

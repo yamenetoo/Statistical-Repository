@@ -97,7 +97,7 @@ loglik_trans <- function(par, data, dist, trans) {
   sum(ll)
 }
 
-# Core optimiser. `data` is already validated; `dist` and `trans` are resolved.
+# Core optimizer. `data` is already validated; `dist` and `trans` are resolved.
 .fit_core <- function(data, bl, tr, start = NULL, lower = NULL, upper = NULL,
                       n_start = 3, hessian = TRUE, check_support = TRUE,
                       adjusted = FALSE) {
@@ -188,8 +188,8 @@ loglik_trans <- function(par, data, dist, trans) {
 
 #' Maximum likelihood fit of a transformed distribution
 #'
-#' Fits the distribution of \eqn{V = g(Y)} to data in (0,1) by maximising the
-#' log-likelihood over the baseline parameters. The optimisation is carried
+#' Fits the distribution of \eqn{V = g(Y)} to data in (0,1) by maximizing the
+#' log-likelihood over the baseline parameters. The optimization is carried
 #' out on an unconstrained scale (logarithmic for positive parameters), starting
 #' from the default values, from a quantile-matching solution and from random
 #' perturbations; the best optimum is kept.
@@ -250,7 +250,7 @@ print.transfit <- function(x, ...) {
   print(round(cbind(Estimate = x$coef, `Std.Err` = x$se), 5))
   cat(sprintf("\nlogLik = %.3f  AIC = %.3f  BIC = %.3f  AICc = %.3f\n",
               x$logLik, x$AIC, x$BIC, x$AICc))
-  if (x$convergence != 0) cat("Warning: optimiser reported convergence code", x$convergence, "\n")
+  if (x$convergence != 0) cat("Warning: optimizer reported convergence code", x$convergence, "\n")
   if (!isTRUE(x$hessian_ok))
     cat("Note: the Hessian is not positive definite; standard errors are unavailable.\n")
   if (!isTRUE(x$domain_ok))
@@ -271,7 +271,7 @@ nobs.transfit <- function(object, ...) object$n
 
 #' Residuals and predictions of a fitted model
 #'
-#' `residuals(type = "quantile")` returns normalised quantile residuals
+#' `residuals(type = "quantile")` returns normalized quantile residuals
 #' \eqn{\Phi^{-1}(F(v_i))}, which are approximately standard normal when the
 #' model is adequate; `type = "pit"` returns the probability integral
 #' transform \eqn{F(v_i)}, approximately uniform.
@@ -471,7 +471,7 @@ plot.transfit <- function(x, which = 1:4, ...) {
 #'
 #' Fits every valid combination of baseline distributions and transformations
 #' and ranks them by an information criterion. Combinations whose baseline
-#' support is incompatible with the transformation, whose optimiser did not
+#' support is incompatible with the transformation, whose optimizer did not
 #' converge or whose fit puts mass outside the transformation domain are
 #' dropped (reported when `verbose = TRUE`).
 #'
@@ -480,7 +480,7 @@ plot.transfit <- function(x, which = 1:4, ...) {
 #' @param trans Character vector of transformation names (default: all).
 #' @param criterion `"AIC"`, `"BIC"` or `"AICc"`.
 #' @param verbose Print skipped combinations.
-#' @param drop_nonconverged Drop fits whose optimiser reported non-convergence.
+#' @param drop_nonconverged Drop fits whose optimizer reported non-convergence.
 #' @param seed Optional seed passed to every [fit_trans()] call (the same seed
 #'   for each combination, so results do not depend on the order of the
 #'   combinations or on `cores`).

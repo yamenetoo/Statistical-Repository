@@ -27,7 +27,7 @@ fit_all(
 
 \item{verbose}{Print skipped combinations.}
 
-\item{drop_nonconverged}{Drop fits whose optimiser reported non-convergence.}
+\item{drop_nonconverged}{Drop fits whose optimizer reported non-convergence.}
 
 \item{seed}{Optional seed passed to every [fit_trans()] call (the same seed
 for each combination, so results do not depend on the order of the
@@ -45,7 +45,7 @@ An object of class `transfit_all`: a ranking `table` (with
 \description{
 Fits every valid combination of baseline distributions and transformations
 and ranks them by an information criterion. Combinations whose baseline
-support is incompatible with the transformation, whose optimiser did not
+support is incompatible with the transformation, whose optimizer did not
 converge or whose fit puts mass outside the transformation domain are
 dropped (reported when `verbose = TRUE`).
 }
