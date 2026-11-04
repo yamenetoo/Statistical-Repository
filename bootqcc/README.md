@@ -13,7 +13,7 @@ to any family that has density, quantile and random-generation functions.
 
 ```r
 # install.packages("remotes")
-remotes::install_github("yamenetoo/bootqcc")
+remotes::install_github("yamenetoo/Statistical-Repository", subdir = "bootqcc")
 ```
 
 ## Quick start: a built-in distribution
