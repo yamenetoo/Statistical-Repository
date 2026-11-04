@@ -19,5 +19,11 @@ under a parameter shift), \code{\link[=bootqcc_monitor]{bootqcc_monitor()}} appl
 \author{
 \strong{Maintainer}: Mohamad Yamen Al-Mohamad \email{yamenmohamad@tabrizu.ac.ir} (\href{https://orcid.org/0009-0009-1665-7203}{ORCID})
 
+Authors:
+\itemize{
+  \item Ali Akbar Hydari \email{heydari@tabrizu.ac.ir}
+  \item Hossein Jabbari Khamnei \email{h_jabbari@tabrizu.ac.ir}
+}
+
 }
 \keyword{internal}

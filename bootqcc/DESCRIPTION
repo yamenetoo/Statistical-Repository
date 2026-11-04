@@ -1,9 +1,12 @@
 Package: bootqcc
 Title: Parametric Bootstrap Control Charts for Any Distribution
 Version: 0.1.0
-Authors@R:
+Authors@R: c(
     person("Mohamad Yamen", "Al-Mohamad", , "yamenmohamad@tabrizu.ac.ir", role = c("aut", "cre"),
-           comment = c(ORCID = "0009-0009-1665-7203"))
+           comment = c(ORCID = "0009-0009-1665-7203")),
+    person("Ali Akbar", "Hydari", , "heydari@tabrizu.ac.ir", role = "aut"),
+    person("Hossein", "Jabbari Khamnei", , "h_jabbari@tabrizu.ac.ir", role = "aut")
+  )
 Description: Builds Phase I control limits for a quantile (or any user-defined
     statistic) of an arbitrary parametric distribution by parametric bootstrap
     with maximum likelihood estimation, then evaluates the chart through

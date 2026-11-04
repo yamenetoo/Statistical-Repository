@@ -493,16 +493,23 @@ Department of Statistics). Compared with the original script, `bootqcc`:
 If you use `bootqcc` in your work, please cite it as:
 
 ```
-Al-Mohamad, M. Y. (2026). bootqcc: Parametric Bootstrap Control Charts for
-Any Distribution. R package version 0.1.0.
+Al-Mohamad, M. Y., Hydari, A. A., and Jabbari Khamnei, H. (2026). bootqcc:
+Parametric Bootstrap Control Charts for Any Distribution. R package version 0.1.0.
 https://github.com/yamenetoo/Statistical-Repository/tree/main/bootqcc
 ```
 
 ## Author and license
 
-**Mohamad Yamen Al-Mohamad**, Department of Statistics, University of Tabriz
+**Mohamad Yamen Al-Mohamad** (corresponding author and maintainer),
+Department of Statistics, University of Tabriz
 · [ORCID](https://orcid.org/0009-0009-1665-7203)
 · [Google Scholar](https://scholar.google.com/citations?user=un_6SQwAAAAJ)
 · [yamenmohamad@tabrizu.ac.ir](mailto:yamenmohamad@tabrizu.ac.ir)
+
+**Ali Akbar Hydari**, Department of Statistics, University of Tabriz
+· [heydari@tabrizu.ac.ir](mailto:heydari@tabrizu.ac.ir)
+
+**Hossein Jabbari Khamnei**, Department of Statistics, University of Tabriz
+· [h_jabbari@tabrizu.ac.ir](mailto:h_jabbari@tabrizu.ac.ir)
 
 Released under the MIT license, see [LICENSE](LICENSE).
