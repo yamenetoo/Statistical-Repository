@@ -147,7 +147,8 @@ Jensen, W. A., Jones-Farmer, L. A., Champ, C. W. and Woodall, W. H. (2006).
 Effects of parameter estimation on control chart properties: a literature
 review. \emph{Journal of Quality Technology}, 38(4), 349--364.
 
-Al-Lami, M. A. H., Jabbari Khamnei, H. and Heydari, A. A. (2025). Bootstrap
-control chart for the Lindley-Geometric distribution. \emph{PLOS ONE}.
+Al-Lami, M. A. H., Jabbari Khamnei, H. and Heydari, A. A. (2025). A parametric
+bootstrap control chart for Lindley Geometric percentiles.
+\emph{PLOS ONE}, 20(2), e0316449.
 \doi{10.1371/journal.pone.0316449}
 }

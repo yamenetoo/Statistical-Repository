@@ -23,8 +23,9 @@ Chapman and Hall, New York.
 Montgomery, D. C. (2019). \emph{Introduction to Statistical Quality Control},
 8th edition. Wiley, Hoboken, NJ.
 
-Al-Lami, M. A. H., Jabbari Khamnei, H. and Heydari, A. A. (2025). Bootstrap
-control chart for the Lindley-Geometric distribution. \emph{PLOS ONE}.
+Al-Lami, M. A. H., Jabbari Khamnei, H. and Heydari, A. A. (2025). A parametric
+bootstrap control chart for Lindley Geometric percentiles.
+\emph{PLOS ONE}, 20(2), e0316449.
 \doi{10.1371/journal.pone.0316449}
 }
 \seealso{

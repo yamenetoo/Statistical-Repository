@@ -975,7 +975,7 @@ Al-Lami, Jabbari Khamnei and Heydari (2025). Compared with the original script, 
 
 - Seppala, T., Moskowitz, H., Plante, R. and Tang, J. (1995). Statistical process control via the subgroup bootstrap. *Journal of Quality Technology*, 27(2), 139-153.
 - Jones, L. A. and Woodall, W. H. (1998). The performance of bootstrap control charts. *Journal of Quality Technology*, 30(4), 362-375.
-- Al-Lami, M. A. H., Jabbari Khamnei, H. and Heydari, A. A. (2025). Bootstrap control chart for the Lindley-Geometric distribution. *PLOS ONE*. [doi:10.1371/journal.pone.0316449](https://doi.org/10.1371/journal.pone.0316449)
+- Al-Lami, M. A. H., Jabbari Khamnei, H. and Heydari, A. A. (2025). A parametric bootstrap control chart for Lindley Geometric percentiles. *PLOS ONE*, 20(2), e0316449. [doi:10.1371/journal.pone.0316449](https://doi.org/10.1371/journal.pone.0316449)
 
 **Effect of parameter estimation**
 
