@@ -22,6 +22,7 @@ Each folder is **self-contained** (its own code, and in most cases its own READM
    - [3.9 KME](#39-kme)
    - [3.10 CommonCountModelDistributions](#310-commoncountmodeldistributions)
    - [3.11 Else](#311-else)
+   - [3.12 UnitTrans](#312-unittrans-r-package)
 4. [Getting started](#4-getting-started)
 5. [Requirements](#5-requirements)
 6. [Reproducibility notes](#6-reproducibility-notes)
@@ -77,6 +78,11 @@ Statistical-Repository/
 ├── TPL_GRL_SS_MODEL/              R: stress–strength model, Topp-Leone strength vs Generalized-Rayleigh stress
 │   ├── functions.R  Estimation_function.R  Monte_Carlo_simulation.R
 │
+├── UnitTrans/                     R package UnitTrans (v0.1.0): unit-interval laws via monotone transforms of a baseline
+│   ├── R/                         transformations, dpqr, fit, gof, moments, baseline, simulation
+│   ├── man/  tests/testthat/  vignettes/workflow.Rmd
+│   ├── DESCRIPTION  NAMESPACE  README.md
+│
 ├── KME/                           Python: stress–strength reliability for the KM-Exponential distribution
 │   └── PyCode.py
 │
@@ -90,6 +96,7 @@ Statistical-Repository/
 |---|---|---|---|---|
 | `UnitI Python` | Python ≥ 3.9 | Distributions, regression, mixtures, Bayes, censoring on (0,1) via `Y = 1/(1+X)` | Installable package | v0.3.0, 10 test files, CI, Sphinx docs |
 | `UnitTransformDist` | R ≥ 4.1 | Same transform, any user-supplied base distribution; corrected profile-likelihood CI | R package + 2 manuscripts | v0.1.0, pre-CRAN, testthat |
+| `UnitTrans` | R ≥ 3.5 | Laws on (0,1) from a baseline Y via rational / exponential / logit / arcsech / probit / cloglog transforms; MLE, model search, bootstrap GoF | R package | v0.1.0, testthat, vignette |
 | `KwLccharts` | R ≥ 3.6 | Kumaraswamy–Lindley (KwL) distribution and bootstrap percentile control charts | R package | v0.1.0, `R CMD check`-clean per its README |
 | `LGBootStrapControlChart` | R | Bootstrap control chart for Lindley-Geometric percentiles | Scripts | Research code |
 | `LR-Fuzzy-Quantile` | Python ≥ 3.9 | LR random fuzzy numbers: quantile generator, simulations, inference | Scripts + notebook | Reproducible, seeded |
@@ -366,6 +373,21 @@ Placeholder folder (a single `init` file). Reserved for count-model distribution
 ### 3.11 Else
 
 Two exploratory Jupyter notebooks, `DLE1.ipynb` and `Dr homai.ipynb` (large files with stored outputs). They are not documented and are not part of any package.
+
+### 3.12 UnitTrans (R package)
+
+Builds new distributions on (0,1) by applying a monotone transformation `V = g(Y)` (rational, exponential, logit, arcsecant-hyperbolic, probit, complementary log-log) to a baseline random variable `Y` with any available `d/p/q/r` functions.
+
+- `dtrans`, `ptrans`, `qtrans`, `rtrans` — density, CDF, quantile, random generation
+- `fit_trans`, `fit_all`, `best_model` — maximum likelihood and automatic search over baseline/transformation pairs
+- `gof_trans` — goodness-of-fit with parametric bootstrap
+- `moments_trans`, `survival_trans`, `hazard_trans`, `simulation_study`
+
+```r
+remotes::install_github("yamenetoo/Statistical-Repository", subdir = "UnitTrans", build_vignettes = TRUE)
+```
+
+See [`UnitTrans/README.md`](UnitTrans/README.md) and the `workflow` vignette.
 
 ---
 

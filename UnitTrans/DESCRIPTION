@@ -1,0 +1,27 @@
+Package: UnitTrans
+Type: Package
+Title: Distributions on the Unit Interval via Transformations of
+        Baseline Laws
+Version: 0.1.0
+Authors@R: person("Mohamad Yamen", "Al-Mohamad", role = c("aut", "cre"),
+    email = "almohamadmohamad678@gmail.com")
+Description: Builds new probability distributions on (0,1) by applying a
+    monotone transformation (rational, exponential, logit, arcsecant-hyperbolic,
+    probit, complementary log-log) to a baseline random variable Y with any
+    available d/p/q/r functions. Provides density, distribution, quantile and
+    random generation functions, maximum likelihood fitting with information
+    criteria, automatic model search over baseline/transformation pairs,
+    goodness-of-fit tests with parametric bootstrap, moments, hazard and
+    simulation studies.
+License: GPL-3
+Encoding: UTF-8
+Depends: R (>= 3.5.0)
+Imports: stats, graphics
+Suggests: extraDistr, testthat (>= 3.0.0), knitr, rmarkdown
+VignetteBuilder: knitr
+Config/testthat/edition: 3
+RoxygenNote: 7.3.2
+NeedsCompilation: no
+Packaged: 2026-10-14 18:39:07 UTC; root
+Author: Mohamad Yamen Al-Mohamad [aut, cre]
+Maintainer: Mohamad Yamen Al-Mohamad <almohamadmohamad678@gmail.com>

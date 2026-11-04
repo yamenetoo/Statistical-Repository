@@ -1,0 +1,93 @@
+---
+title: "UnitTrans: run and test workflow"
+author: "Mohamad Yamen Al-Mohamad"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{UnitTrans: run and test workflow}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 6, fig.height = 5)
+```
+
+## Idea
+
+Take a baseline variable $Y$ (any distribution with `d/p/q/r` functions) and a
+monotone map $V=g(Y)\in(0,1)$. The package gives the law of $V$ and the full
+toolchain around it.
+
+```{r}
+library(UnitTrans)
+trans_list()
+```
+
+## Step 1. Run the package tests
+
+From a shell:
+
+```
+R CMD build UnitTrans
+R CMD check UnitTrans_0.1.0.tar.gz
+```
+
+or inside R: `testthat::test_local("UnitTrans")`. Expect `FAIL 0`.
+
+## Step 2. Check domain compatibility
+
+```{r}
+detect_transformations("gamma", c(shape = 3, rate = 1))
+check_domain("norm", c(0, 1), "rational")$message
+```
+
+## Step 3. Simulate data
+
+```{r}
+set.seed(1)
+x <- rtrans(300, "gamma", c(2, 1), "rational")
+summary(x)
+```
+
+## Step 4. Fit one model
+
+```{r}
+fit <- fit_trans(x, "gamma", "rational")
+summary(fit)
+```
+
+## Step 5. Rank all candidates
+
+```{r}
+res <- fit_all(x, c("gamma", "lnorm", "weibull"), criterion = "AIC")
+res
+best <- best_model(res)
+```
+
+## Step 6. Diagnostics
+
+```{r}
+plot(best)
+```
+
+```{r}
+gof_trans(best, B = 50, seed = 1)
+```
+
+If a p-value is small, return to Step 5 with other baselines or transformations.
+
+## Step 7. Inference
+
+```{r}
+confint(best)
+summary_trans(best$dist, best$coef, best$trans)
+hazard_trans(c(.2, .5, .8), best$dist, best$coef, best$trans)
+```
+
+## Step 8. Validate the estimator
+
+```{r}
+simulation_study(best$dist, best$coef, best$trans, n = c(50, 100), R = 20, seed = 1)
+```
+
+Use a larger `R` (for example 500) and more sample sizes for a publication.
