@@ -18,6 +18,7 @@ Usage
 Steps: (1) download the repository archive (no git needed), keep the folder LR-Fuzzy-Quantile;
        (2) pip install numpy scipy pandas openpyxl matplotlib (skip with --no-install);
        (3) run: simulation (Excel), inference (JSON), horizontal (JSON), base_paper (figures);
+       (3b) make_tables.py writes the LaTeX tables of the article (results/latex_tables);
        (4) merge everything into ONE Excel workbook, LR_all_results.xlsx (one sheet per table);
        (5) save the workbook, the individual files and the figures to Google Drive.
 
@@ -227,6 +228,8 @@ def main():
                                     os.path.join(res, "base_paper_figures")],
                                    os.path.join(code, "base_paper"))
 
+    if os.path.exists(os.path.join(res, "horizontal_results.json")) and os.path.exists(os.path.join(res, "inference_results.json")):
+        status["tables"] = run([py, "make_tables.py", "--results", res, "--outdir", os.path.join(res, "latex_tables")], code)
     workbook = build_workbook(res, os.path.join(res, "LR_all_results.xlsx"))
     dest = drive_target(a)
     if dest:

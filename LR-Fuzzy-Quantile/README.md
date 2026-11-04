@@ -102,6 +102,12 @@ Requirements: Python 3.9+ ; numpy, scipy, pandas, openpyxl ; matplotlib for the 
 ---
 
 
+### Article tables
+
+`make_tables.py` turns the FULL-run JSON results into the exact LaTeX tables and figure data of the article (Sections 5.4 and 5.6):
+`python make_tables.py --results results --outdir tables`. `get_and_run.py` runs it automatically (output in `results/latex_tables`).
+Use the full run (no `--quick`) for the numbers printed in the paper.
+
 ### Saving results to Excel / Google Drive
 
 `get_and_run.py` merges every result table into one workbook, `LR_all_results.xlsx` (one sheet per table).
