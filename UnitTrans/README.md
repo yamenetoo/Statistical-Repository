@@ -1,4 +1,4 @@
-# UnitTrans
+# UnitTrans <img src="man/figures/logo.png" align="right" height="139" alt="UnitTrans logo" />
 
 **Distributions on the unit interval via transformations of baseline laws**
 

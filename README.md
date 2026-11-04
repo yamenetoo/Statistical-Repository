@@ -376,6 +376,8 @@ Two exploratory Jupyter notebooks, `DLE1.ipynb` and `Dr homai.ipynb` (large file
 
 ### 3.12 UnitTrans (R package)
 
+<img src="UnitTrans/man/figures/logo.png" align="right" height="120" alt="UnitTrans logo" />
+
 Builds new distributions on (0,1) by applying a monotone transformation `V = g(Y)` (rational, exponential, logit, arcsecant-hyperbolic, probit, complementary log-log) to a baseline random variable `Y` with any available `d/p/q/r` functions.
 
 - `dtrans`, `ptrans`, `qtrans`, `rtrans` — density, CDF, quantile, random generation
