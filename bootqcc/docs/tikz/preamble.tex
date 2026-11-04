@@ -1,0 +1,33 @@
+% Shared preamble for the bootqcc TikZ figures.
+\usepackage[T1]{fontenc}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{amsmath}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,backgrounds,calc}
+
+\definecolor{navy}{HTML}{1F3A5F}
+\definecolor{sky}{HTML}{5AA9E6}
+\definecolor{coral}{HTML}{FF6B6B}
+\definecolor{slate}{HTML}{6B7A8F}
+
+\tikzset{
+  box/.style={rectangle, rounded corners=4pt, draw=navy, fill=sky!15, thick,
+              align=center, minimum height=1.0cm, inner sep=6pt, text width=4.6cm},
+  inbox/.style={rectangle, rounded corners=4pt, draw=slate, fill=slate!10, thick,
+              align=center, minimum height=0.9cm, inner sep=5pt, text width=3.0cm,
+              font=\small},
+  io/.style={trapezium, trapezium left angle=72, trapezium right angle=108,
+             draw=navy, fill=white, thick, align=center, minimum height=1.2cm,
+             inner sep=5pt, text width=3.0cm},
+  result/.style={rectangle, rounded corners=8pt, draw=coral, fill=coral!10, thick,
+              align=center, minimum height=1.0cm, inner sep=6pt, text width=4.0cm},
+  term/.style={rectangle, rounded corners=12pt, draw=navy, fill=navy, text=white,
+               thick, align=center, minimum height=0.9cm, inner sep=6pt, text width=4.2cm},
+  dec/.style={diamond, aspect=2.6, draw=navy, fill=white, thick, align=center,
+              inner sep=0pt, text width=2.7cm, font=\small},
+  err/.style={rectangle, rounded corners=4pt, draw=coral, fill=coral!15, thick,
+              align=center, minimum height=0.9cm, inner sep=6pt, text width=3.2cm},
+  arr/.style={-{Latex[length=3mm]}, thick, navy},
+  lab/.style={font=\footnotesize\bfseries, text=navy, fill=white, inner sep=1.5pt},
+  phase/.style={rounded corners=8pt, draw=navy!45, dashed, thick, inner sep=12pt},
+}

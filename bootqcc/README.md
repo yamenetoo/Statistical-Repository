@@ -21,25 +21,26 @@
 1. [Overview](#overview)
 2. [Why bootqcc](#why-bootqcc)
 3. [How it works](#how-it-works)
-4. [Installation](#installation)
-5. [Quick start](#quick-start)
-6. [Using your own distribution](#using-your-own-distribution)
-7. [Reproducing the Lindley-geometric chart](#reproducing-the-lindley-geometric-chart)
-8. [Out-of-control performance and Phase II](#out-of-control-performance-and-phase-ii)
-9. [Calibrating the false-alarm rate](#calibrating-the-false-alarm-rate)
-10. [Other statistics and estimators](#other-statistics-and-estimators)
-11. [Simulation studies over a grid](#simulation-studies-over-a-grid)
-12. [Function reference](#function-reference)
-13. [Argument reference for `bootqcc()`](#argument-reference-for-bootqcc)
-14. [What the result contains](#what-the-result-contains)
-15. [Tips for speed and reproducibility](#tips-for-speed-and-reproducibility)
-16. [Troubleshooting](#troubleshooting)
-17. [Limitations](#limitations)
-18. [Roadmap](#roadmap)
-19. [Testing](#testing)
-20. [Relation to the original code](#relation-to-the-original-code)
-21. [Citation](#citation)
-22. [Author and license](#author-and-license)
+4. [Diagrams and flowcharts](#diagrams-and-flowcharts)
+5. [Installation](#installation)
+6. [Quick start](#quick-start)
+7. [Using your own distribution](#using-your-own-distribution)
+8. [Reproducing the Lindley-geometric chart](#reproducing-the-lindley-geometric-chart)
+9. [Out-of-control performance and Phase II](#out-of-control-performance-and-phase-ii)
+10. [Calibrating the false-alarm rate](#calibrating-the-false-alarm-rate)
+11. [Other statistics and estimators](#other-statistics-and-estimators)
+12. [Simulation studies over a grid](#simulation-studies-over-a-grid)
+13. [Function reference](#function-reference)
+14. [Argument reference for `bootqcc()`](#argument-reference-for-bootqcc)
+15. [What the result contains](#what-the-result-contains)
+16. [Tips for speed and reproducibility](#tips-for-speed-and-reproducibility)
+17. [Troubleshooting](#troubleshooting)
+18. [Limitations](#limitations)
+19. [Roadmap](#roadmap)
+20. [Testing](#testing)
+21. [Relation to the original code](#relation-to-the-original-code)
+22. [Citation](#citation)
+23. [Author and license](#author-and-license)
 
 ---
 
@@ -103,6 +104,129 @@ is fitted to each, and `T(θ̂)` is compared with `[LCL, UCL]`. The run length i
 the number of samples up to and including the first signal. Repeating this
 `arl_rep` times gives the ARL and its standard deviation. Drawing from shifted
 parameters gives the out-of-control ARL.
+
+<div align="center">
+
+<img src="man/figures/workflow.png" alt="bootqcc workflow: inputs, Phase I bootstrap, control limits, then ARL evaluation and Phase II monitoring" width="100%">
+
+*Workflow: the limits are built once by `bootqcc()`, then used to evaluate the ARL and to monitor new samples.*
+
+<img src="man/figures/chart-illustration.png" alt="Bootstrap distribution of the statistic and the resulting Phase II control chart" width="75%">
+
+*The `alpha/2` and `1 - alpha/2` quantiles of the bootstrap distribution (left) become the control limits of the Phase II chart (right).*
+
+</div>
+
+## Diagrams and flowcharts
+
+All figures below are included in the repository. The TikZ sources are in
+[`docs/tikz`](docs/tikz) (PDF versions next to them), and the diagrams written
+in Mermaid are rendered directly by GitHub.
+
+### Phase I: bootstrap algorithm
+
+<div align="center">
+
+<img src="man/figures/bootstrap-flow.png" alt="Flowchart of the Phase I bootstrap algorithm" width="70%">
+
+</div>
+
+Every attempt to draw and fit a sample counts towards a budget of
+`max_fit_tries * B` tries per Monte Carlo iteration. Failed fits are redrawn
+until the budget is used up, which stops the run with an informative error
+instead of looping forever.
+
+### Run length (ARL) algorithm
+
+<div align="center">
+
+<img src="man/figures/arl-flow.png" alt="Flowchart of the average run length simulation" width="65%">
+
+</div>
+
+A failed fit does not count as a sample: the run length only increases when a
+valid statistic has been computed. A run that reaches `max_run_length` without
+a signal is recorded at the cap and reported as *censored*.
+
+### Package architecture
+
+<div align="center">
+
+<img src="man/figures/architecture.png" alt="Functions of the package and how they call each other" width="85%">
+
+</div>
+
+### Choosing how to specify your distribution
+
+```mermaid
+flowchart TD
+    A([Start: which distribution?]) --> B{"Built into R or in a<br/>loaded package?"}
+    B -- yes --> C["distr = 'weibull'<br/>d, q, r found by name"]
+    B -- no --> D{"Do you have<br/>d, q and r functions?"}
+    D -- yes --> E["distr = list(name, d, q, r)"]
+    D -- no --> F["Write the density, the quantile<br/>function and a random generator"]
+    F --> E
+    C --> G{"Closed-form estimator<br/>available?"}
+    E --> G
+    G -- yes --> H["fit_fn = function(x) list(...)"]
+    G -- no --> I["Default maximum likelihood<br/>(set start and bounds if needed)"]
+    H --> J([bootqcc])
+    I --> J
+```
+
+### A typical session
+
+```mermaid
+sequenceDiagram
+    actor U as User
+    participant BQ as bootqcc()
+    participant F as MLE fitter
+    participant A as arl()
+    participant MON as bootqcc_monitor()
+    U->>BQ: distr, params, u, n, alpha, B, M
+    loop M iterations
+        loop B bootstrap samples
+            BQ->>BQ: draw a sample with r(n, params)
+            BQ->>F: fit the sample
+            F-->>BQ: estimates, or a failure
+            BQ->>BQ: T = statistic(estimates)
+        end
+        BQ->>BQ: LCL_m and UCL_m from the quantiles of T
+    end
+    BQ->>A: chart with the averaged limits
+    A-->>BQ: ARL, SD and censored runs
+    BQ-->>U: chart object
+    U->>MON: new samples
+    MON-->>U: statistic and status of each sample
+```
+
+### What happens to a new sample in Phase II
+
+```mermaid
+stateDiagram-v2
+    [*] --> NewSample
+    NewSample --> Fit: fit the distribution
+    Fit --> FitFailed: no convergence
+    Fit --> Compare: estimates found
+    Compare --> InControl: T inside the limits
+    Compare --> OutOfControl: T outside the limits
+    InControl --> [*]
+    OutOfControl --> [*]
+    FitFailed --> [*]
+```
+
+### Rebuilding the TikZ figures
+
+```bash
+cd docs/tikz
+./build.sh          # needs pdflatex with TikZ and pdftocairo
+```
+
+This writes the PDF next to each `.tex` file and the PNG used in this README to
+`man/figures`. The figures share the colors and styles defined in
+[`docs/tikz/preamble.tex`](docs/tikz/preamble.tex). To use a figure in a paper,
+include the PDF with `\includegraphics`, or copy the `tikzpicture` environment
+together with the style definitions from the preamble.
 
 ## Installation
 
@@ -282,6 +406,16 @@ for (a in c(0.0027, 0.0015, 0.001, 0.0005)) {
                   alpha = a, B = 500, M = 10, arl_rep = 300, seed = 1)
   cat(sprintf("alpha = %.4f  ARL0 = %.0f\n", a, ch_a$arl$mean))
 }
+```
+
+```mermaid
+flowchart LR
+    A[Choose a target ARL0] --> B[Pick a value of alpha]
+    B --> C["Run bootqcc() with that alpha"]
+    C --> D{"Simulated ARL0<br/>close to the target?"}
+    D -- too low --> E[Decrease alpha] --> C
+    D -- too high --> F[Increase alpha] --> C
+    D -- yes --> G([Use this chart])
 ```
 
 Increase `arl_rep` for a stable estimate: the ARL has a large standard

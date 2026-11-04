@@ -1,0 +1,51 @@
+\documentclass[tikz,border=8pt]{standalone}
+\input{preamble}
+\begin{document}
+\begin{tikzpicture}[x=1cm,y=1cm]
+
+  % ---- Phase I: bootstrap distribution of the statistic (sideways) ----
+  \def\mu{3.0}\def\sg{0.85}\def\dw{2.8}
+  % tails beyond the alpha/2 quantiles
+  \fill[coral!35] (0,{\mu+1.9}) -- plot[domain={\mu+1.9}:{\mu+3.0}, samples=30, variable=\y]
+        ({\dw*exp(-(\y-\mu)*(\y-\mu)/(2*\sg*\sg))},\y) -- (0,{\mu+3.0}) -- cycle;
+  \fill[coral!35] (0,{\mu-1.9}) -- plot[domain={\mu-1.9}:{\mu-3.0}, samples=30, variable=\y]
+        ({\dw*exp(-(\y-\mu)*(\y-\mu)/(2*\sg*\sg))},\y) -- (0,{\mu-3.0}) -- cycle;
+  \draw[navy, very thick, domain={\mu-3.0}:{\mu+3.0}, samples=80, variable=\y]
+        plot ({\dw*exp(-(\y-\mu)*(\y-\mu)/(2*\sg*\sg))},\y);
+  \draw[navy, thick, -{Latex}] (0,-0.2) -- (0,6.9) node[above, font=\small] {statistic $T$};
+  \node[navy, font=\footnotesize\bfseries, align=center] at (1.6,-0.9)
+        {Phase I\\ bootstrap distribution\\ of $T(\hat{\boldsymbol\theta})$};
+  \node[coral!80!black, font=\footnotesize, anchor=west] at (0.9,{\mu+2.55}) {$\alpha/2$};
+  \node[coral!80!black, font=\footnotesize, anchor=west] at (0.9,{\mu-2.55}) {$\alpha/2$};
+
+  % ---- control limits carried over to the chart ----
+  \def\ucl{4.9}\def\lcl{1.1}
+  \draw[coral, very thick, dashed] (0,\ucl) -- (13.4,\ucl);
+  \draw[coral, very thick, dashed] (0,\lcl) -- (13.4,\lcl);
+  \draw[slate, thick] (4.2,\mu) -- (13.4,\mu);
+  \node[coral!80!black, font=\small\bfseries, anchor=west] at (13.5,\ucl) {UCL};
+  \node[coral!80!black, font=\small\bfseries, anchor=west] at (13.5,\lcl) {LCL};
+  \node[slate, font=\small, anchor=west] at (13.5,\mu) {centre};
+
+  % ---- Phase II chart ----
+  \draw[navy, thick, -{Latex}] (4.2,-0.2) -- (13.2,-0.2) node[right, font=\small] {sample};
+  \draw[navy, thick, -{Latex}] (4.2,-0.2) -- (4.2,6.9);
+  \node[navy, font=\footnotesize\bfseries] at (8.8,-0.9) {Phase II: new samples compared with the limits};
+
+  \coordinate (p1) at (5.0,3.3);
+  \coordinate (p2) at (5.9,2.6);
+  \coordinate (p3) at (6.8,3.5);
+  \coordinate (p4) at (7.7,2.9);
+  \coordinate (p5) at (8.6,3.6);
+  \coordinate (p6) at (9.5,4.4);
+  \coordinate (p7) at (10.4,5.7);
+  \coordinate (p8) at (11.3,4.0);
+  \coordinate (p9) at (12.2,3.1);
+  \draw[navy, thick] (p1)--(p2)--(p3)--(p4)--(p5)--(p6)--(p7)--(p8)--(p9);
+  \foreach \p in {p1,p2,p3,p4,p5,p6,p8,p9} \fill[navy] (\p) circle (3pt);
+  \fill[coral] (p7) circle (5pt);
+  \draw[coral, thick] (p7) circle (7pt);
+  \node[coral!80!black, font=\footnotesize\bfseries, anchor=south] at ($(p7)+(0,0.45)$) {signal};
+
+\end{tikzpicture}
+\end{document}

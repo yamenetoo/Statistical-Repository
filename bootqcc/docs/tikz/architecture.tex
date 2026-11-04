@@ -1,0 +1,40 @@
+\documentclass[tikz,border=8pt]{standalone}
+\input{preamble}
+\begin{document}
+\begin{tikzpicture}
+
+  % user-facing functions
+  \node[box, text width=3.6cm] (grid) at (0,6.4)  {\texttt{bootqcc\_grid()}\\ simulation study};
+  \node[box, text width=3.6cm] (main) at (0,3.2)  {\texttt{bootqcc()}\\ build the chart};
+  \node[box, text width=3.6cm] (arl)  at (0,-0.2) {\texttt{arl()}\\ run lengths};
+  \node[result, text width=4.2cm] (obj) at (7.2,3.2)
+    {chart object\\ \footnotesize \texttt{limits, sd\_limits, arl}\\ \texttt{fitter, statistic, distr}};
+  \node[box, text width=3.6cm] (mon) at (14.4,5.4) {\texttt{bootqcc\_monitor()}\\ Phase II};
+  \node[box, text width=3.6cm] (pp)  at (14.4,1.0) {\texttt{print()}, \texttt{plot()}\\ summaries and charts};
+
+  % internal helpers
+  \node[inbox] (h1) at (-0.2,-4.6) {\texttt{.resolve\_distr()}\\ name or list of $d,q,r$};
+  \node[inbox] (h2) at (3.5,-4.6)  {\texttt{.check\_params()}\\ named numeric list};
+  \node[inbox] (h3) at (7.2,-4.6)  {\texttt{.make\_mle\_fitter()}\\ \texttt{optim()} on $-\log L$};
+  \node[inbox] (h4) at (10.9,-4.6) {\texttt{.call\_fun()}\\ call with named args};
+
+  \begin{pgfonlayer}{background}
+    \node[phase, draw=slate, fit=(h1)(h2)(h3)(h4), name=helpers,
+          label={[slate,font=\bfseries]below:internal helpers (not exported)}] {};
+  \end{pgfonlayer}
+
+  % calls between the user-facing functions
+  \draw[arr] (grid) -- node[lab, right=2pt, pos=0.5] {calls} (main);
+  \draw[arr] (main) -- node[lab, right=2pt, pos=0.5] {calls} (arl);
+  \draw[arr] (main) -- (obj);
+  \draw[arr] (arl.east) -| node[lab, pos=0.2, above=1pt] {stores ARL} (obj.south);
+
+  % the chart object feeds Phase II and the print/plot methods
+  \draw[arr] (obj.east) -- ++(1.1,0) |- node[lab, pos=0.78, above=1pt] {uses} (mon.west);
+  \draw[arr] (obj.east) -- ++(1.1,0) |- node[lab, pos=0.78, above=1pt] {uses} (pp.west);
+
+  % helpers
+  \draw[arr, slate] (main.west) -- (-3.6,3.2) |- node[lab, pos=0.12, above=1pt, text=slate] {uses} (helpers.west);
+  \draw[arr, slate] (arl.south) -- node[lab, right=2pt, pos=0.45, text=slate] {uses} (arl.south |- helpers.north);
+\end{tikzpicture}
+\end{document}

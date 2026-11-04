@@ -1,0 +1,35 @@
+\documentclass[tikz,border=8pt]{standalone}
+\input{preamble}
+\begin{document}
+\begin{tikzpicture}[node distance=1cm]
+
+  \node[io]  (inp) at (0,0)
+    {\textbf{Inputs}\\[2pt] distribution $d,q,r$\\ parameters $\boldsymbol\theta$\\ $u,\ n,\ \alpha$};
+  \node[box] (p1)  at (5.6,0)
+    {\textbf{Phase I}\\ parametric bootstrap\\ $M\times B$ samples\\ maximum likelihood fits};
+  \node[box] (lim) at (11.4,0)
+    {\textbf{Control limits}\\ $[\mathrm{LCL},\ \mathrm{UCL}]$\\ mean over $M$ iterations};
+
+  \node[box] (arl) at (18.6,2.2)
+    {\texttt{arl()}\\ run-length simulation\\ in control or shifted};
+  \node[box] (mon) at (18.6,-2.2)
+    {\texttt{bootqcc\_monitor()}\\ fit each new sample\\ compare with limits};
+
+  \node[result] (arlo) at (24.4,2.2)
+    {$\mathrm{ARL}_0$, $\mathrm{ARL}_1$\\ SD and censored runs};
+  \node[result] (mono) at (24.4,-2.2)
+    {in / out of control\\ \texttt{plot()} of the chart};
+
+  \draw[arr] (inp) -- (p1);
+  \draw[arr] (p1)  -- (lim);
+  \draw[arr] (lim.east) -- ++(0.9,0) |- (arl.west);
+  \draw[arr] (lim.east) -- ++(0.9,0) |- (mon.west);
+  \draw[arr] (arl) -- (arlo);
+  \draw[arr] (mon) -- (mono);
+
+  \begin{pgfonlayer}{background}
+    \node[phase, fit=(inp)(p1)(lim), label={[navy,font=\bfseries]above:Build the chart (\texttt{bootqcc()})}] {};
+    \node[phase, fit=(arl)(mon)(arlo)(mono), label={[navy,font=\bfseries]above:Evaluate and use the chart}] {};
+  \end{pgfonlayer}
+\end{tikzpicture}
+\end{document}

@@ -1,0 +1,50 @@
+\documentclass[tikz,border=8pt]{standalone}
+\input{preamble}
+\begin{document}
+\begin{tikzpicture}
+
+  \node[term] (start) at (0,0) {Start ARL estimation};
+  \node[box]  (init)  at (0,-1.7)
+    {for $r=1,\dots,\texttt{arl\_rep}$:\\ run length $\ell\leftarrow 0$};
+  \node[box, text width=5.6cm]  (draw)  at (0,-3.7)
+    {Draw a sample of size $n$ from\\ the true or shifted parameters};
+  \node[box]  (fit)   at (0,-5.7)
+    {Fit $\hat{\boldsymbol\theta}$, compute $T(\hat{\boldsymbol\theta})$};
+  \node[dec]  (valid) at (0,-8.1) {fit and statistic valid?};
+  \node[box]  (incr)  at (0,-10.6) {$\ell\leftarrow\ell+1$};
+  \node[dec]  (out)   at (0,-12.8) {$T<\mathrm{LCL}$ or $T>\mathrm{UCL}$?};
+  \node[dec]  (cap)   at (0,-15.5) {$\ell\ge$ \texttt{max\_run\_length}?};
+
+  \node[box]  (rec1)  at (7.0,-12.8) {signal:\\ record $\ell$};
+  \node[box]  (rec2)  at (7.0,-15.5) {cap reached:\\ record $\ell$, count as \emph{censored}};
+
+  \node[dec]  (rdec)  at (0,-18.4) {$r<\texttt{arl\_rep}$?};
+  \node[box]  (res)   at (0,-20.9)
+    {$\mathrm{ARL}$ = mean of run lengths\\ SD, number of censored runs};
+  \node[term] (end)   at (0,-22.7) {Return result};
+
+  \draw[arr] (start) -- (init);
+  \draw[arr] (init)  -- (draw);
+  \draw[arr] (draw)  -- (fit);
+  \draw[arr] (fit)   -- (valid);
+  \draw[arr] (valid) -- node[lab, pos=0.45, right=2pt] {yes} (incr);
+  \draw[arr] (incr)  -- (out);
+  \draw[arr] (out)   -- node[lab, pos=0.4, right=2pt] {no} (cap);
+  \draw[arr] (out)   -- node[lab, pos=0.4, above=1pt] {yes} (rec1);
+  \draw[arr] (cap)   -- node[lab, pos=0.4, above=1pt] {yes} (rec2);
+  \draw[arr] (rdec)  -- node[lab, pos=0.4, right=2pt] {no} (res);
+  \draw[arr] (res)   -- (end);
+
+  % failed fit: the run length is not increased, redraw
+  \draw[arr] (valid.east) -- node[lab, pos=0.3, above=1pt] {no} (4.4,-8.1) |- (draw.east);
+  % no signal and not capped: draw the next sample
+  \draw[arr] (cap.west) -- node[lab, pos=0.3, above=1pt] {no} (-4.9,-15.5) |- (draw.west);
+
+  % both ways of ending a run go to the repetition test
+  \draw (rec1.east) -- (10.4,-12.8) -- (10.4,-18.4);
+  \draw (rec2.east) -- (10.4,-15.5);
+  \draw[arr] (10.4,-18.4) -- (rdec.east);
+  % next repetition
+  \draw[arr] (rdec.west) -- node[lab, pos=0.3, above=1pt] {yes} (-6.5,-18.4) |- (init.west);
+\end{tikzpicture}
+\end{document}
