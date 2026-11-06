@@ -5,7 +5,7 @@ Title: Stress-Strength Reliability of Single and Multicomponent Systems for
 Version: 0.1.0
 Authors@R: c(
     person("Mohamad Yamen", "AL Mohamad", email = "yamenmohamad@tabrizu.ac.ir",
-           role = c("aut", "cre"), comment = c(ORCID = "0000-0003-4658-9095")),
+           role = c("aut", "cre"), comment = c(ORCID = "0009-0009-1665-7203")),
     person("Ali Akbar", "Heydari", email = "heydari@tabrizu.ac.ir",
            role = "aut", comment = c(ORCID = "0000-0002-1236-3189")),
     person("Hossein", "Jabbari Khamnei", email = "h_jabbari@tabrizu.ac.ir",
