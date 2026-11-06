@@ -25,9 +25,24 @@
 #' @param base Point method used inside the jackknife and bootstrap.
 #' @param start Optional starting values (named or in parameter order).
 #' @param ... Passed to \code{ss_bootstrap} or \code{ss_bayes}.
-#' @return An object of class \code{"ss_fit"}.
+#' @return An object of class \code{"ss_fit"}: a list with the estimate
+#'   (\code{estimate}), the method, and method-specific components such as
+#'   the covariance matrix \code{vcov} (MLE), standard errors \code{se},
+#'   resampling replicates or posterior draws.
+#' @references Cheng, R. C. H. and Amin, N. A. K. (1983). Estimating
+#'   parameters in continuous univariate distributions with a shifted origin.
+#'   \emph{Journal of the Royal Statistical Society B}, 45, 394--403.
+#'   \doi{10.1111/j.2517-6161.1983.tb01268.x}
+#' @examples
+#' set.seed(1)
+#' GR <- ss_dist("genrayleigh")
+#' y <- rgenrayleigh(50, shape = 1.5, rate = 2)
+#' ss_fit(y, GR, method = "mle")
+#' ss_fit(y, GR, method = "mps")
 #' @export
-ss_fit <- function(x, dist, method = c(.point_methods, "jackknife", "bootstrap", "bayes"),
+ss_fit <- function(x, dist,
+                   method = c("mle", "mps", "lse", "wlse", "cvm", "ad",
+                              "jackknife", "bootstrap", "bayes"),
                    base = "mle", start = NULL, ...) {
   method <- match.arg(method)
   x <- .check_data(x, dist)
@@ -46,6 +61,13 @@ ss_fit <- function(x, dist, method = c(.point_methods, "jackknife", "bootstrap",
 #' space, the mean of the leave-one-out estimates is returned with a warning.
 #'
 #' @inheritParams ss_fit
+#' @return An object of class \code{"ss_fit"} with the corrected estimate,
+#'   the jackknife standard errors \code{se}, the full-sample fit and the
+#'   leave-one-out estimates \code{replicates}.
+#' @examples
+#' set.seed(1)
+#' TL <- ss_dist("toppleone")
+#' ss_jackknife(rtoppleone(20, shape = 0.7), TL)
 #' @export
 ss_jackknife <- function(x, dist, base = "mle", start = NULL) {
   base <- match.arg(base, .point_methods)
@@ -77,6 +99,13 @@ ss_jackknife <- function(x, dist, base = "mle", start = NULL) {
 #' @param B Number of bootstrap samples.
 #' @param type \code{"parametric"} or \code{"nonparametric"}.
 #' @param ... Ignored.
+#' @return An object of class \code{"ss_fit"} with the corrected estimate,
+#'   the bootstrap standard errors \code{se}, the full-sample fit and the
+#'   bootstrap estimates \code{replicates}.
+#' @examples
+#' set.seed(1)
+#' TL <- ss_dist("toppleone")
+#' ss_bootstrap(rtoppleone(20, shape = 0.7), TL, B = 50)
 #' @export
 ss_bootstrap <- function(x, dist, base = "mle", start = NULL, B = 200,
                          type = c("parametric", "nonparametric"), ...) {
@@ -121,6 +150,13 @@ ss_bootstrap <- function(x, dist, base = "mle", start = NULL, B = 200,
 #' @param ... Ignored.
 #' @return An \code{ss_fit} with the posterior mean as \code{estimate}, the
 #'   posterior median, the draws and the acceptance rate.
+#' @examples
+#' set.seed(1)
+#' TL <- ss_dist("toppleone")
+#' fb <- ss_bayes(rtoppleone(30, shape = 0.7), TL,
+#'                prior = function(th) dgamma(th, 1, 1, log = TRUE),
+#'                iter = 2000, burnin = 500)
+#' fb
 #' @export
 ss_bayes <- function(x, dist, prior = NULL, iter = 10000, burnin = 2000, thin = 1,
                      start = NULL, proposal = NULL, ...) {

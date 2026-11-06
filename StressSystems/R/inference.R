@@ -31,7 +31,20 @@
 #' @param ndraw Maximum number of posterior draws used to compute R.
 #' @param ... Passed to \code{\link{ss_fit}} (e.g. \code{iter}, \code{burnin},
 #'   \code{prior} for Bayes).
-#' @return An object of class \code{"ss_R_est"}.
+#' @return An object of class \code{"ss_R_est"}: a list with the estimate,
+#'   its standard error \code{se}, the interval limits \code{lower} and
+#'   \code{upper}, and the two fitted models \code{fit_x} and \code{fit_y}.
+#' @examples
+#' set.seed(1)
+#' X <- ss_dist("toppleone")
+#' Y <- ss_dist("genrayleigh")
+#' x <- rtoppleone(30, shape = 0.7)
+#' y <- rgenrayleigh(30, shape = 1, rate = 2)
+#' ss_estimate_R(x, y, X, Y, method = "mle")
+#' \donttest{
+#' ss_estimate_R(x, y, X, Y, method = "mle", ci = "boot", B = 200)
+#' ss_estimate_R(x, y, X, Y, method = "bayes", iter = 3000, burnin = 1000)
+#' }
 #' @export
 ss_estimate_R <- function(x, y, strength, stress, method = "mle",
                           ci = c("auto", "delta", "boot", "bayes", "none"),

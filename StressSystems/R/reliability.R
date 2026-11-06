@@ -22,6 +22,11 @@
 #' X <- ss_dist("exp", par = c(rate = 2))
 #' Y <- ss_dist("exp", par = c(rate = 3))
 #' ss_R(X, Y)        # exact value 3 / 5
+#' ss_R(X, Y, c = 2) # stress doubled
+#'
+#' TL <- ss_dist("toppleone")
+#' GR <- ss_dist("genrayleigh")
+#' ss_R(TL, GR, par_x = c(shape = 0.7), par_y = c(shape = 1, rate = 2))
 #' @export
 ss_R <- function(strength, stress, par_x = NULL, par_y = NULL, c = 1,
                  method = "auto", rel.tol = 1e-8) {

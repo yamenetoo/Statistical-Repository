@@ -1,29 +1,36 @@
 Package: StressSystems
 Type: Package
-Title: Stress-Strength Reliability of Single and Multicomponent Systems for
-    Arbitrary Distributions
+Title: Stress-Strength Reliability for Arbitrary Distributions
 Version: 0.1.0
+Date: 2026-11-06
 Authors@R: c(
     person("Mohamad Yamen", "AL Mohamad", email = "yamenmohamad@tabrizu.ac.ir",
-           role = c("aut", "cre"), comment = c(ORCID = "0009-0009-1665-7203")),
+           role = c("aut", "cre", "cph"), comment = c(ORCID = "0009-0009-1665-7203")),
     person("Ali Akbar", "Heydari", email = "heydari@tabrizu.ac.ir",
            role = "aut", comment = c(ORCID = "0000-0002-1236-3189")),
     person("Hossein", "Jabbari Khamnei", email = "h_jabbari@tabrizu.ac.ir",
            role = "aut", comment = c(ORCID = "0000-0003-0902-0967")))
-Description: Computes and estimates stress-strength reliability R = P(Y < X)
+Description: Computes and estimates the stress-strength reliability
+    R = P(Y < X) (Kotz, Lumelskii and Pensky, 2003, World Scientific)
     for any pair of continuous distributions given by their density and
-    distribution functions, including standard R families found by name.
-    Beyond the single-component model it covers multi-stress environments,
-    the three-variable model P(Z < Y < X), s-out-of-k systems and cascade
+    distribution functions, including the standard families of 'R' found by
+    name. Beyond the single-component model it covers multi-stress
+    environments, the three-variable model P(Z < Y < X), s-out-of-k systems
+    (Bhattacharyya and Johnson, 1974, <doi:10.2307/2286173>) and cascade
     systems. Parameters are estimated by maximum likelihood, maximum product
-    of spacings, least squares, weighted least squares, Cramer-von Mises and
-    Anderson-Darling methods, by jackknife and bootstrap bias correction, and
-    by Bayesian Metropolis-Hastings sampling. Confidence intervals for R are
-    given by the delta method, the parametric bootstrap and posterior
-    intervals, and a Monte Carlo engine reports bias, mean squared error and
-    coverage over grids of sample sizes and parameters.
+    of spacings (Cheng and Amin, 1983,
+    <doi:10.1111/j.2517-6161.1983.tb01268.x>), least squares, weighted least
+    squares, Cramer-von Mises and Anderson-Darling minimum distance, by
+    jackknife and bootstrap bias correction, and by Bayesian
+    Metropolis-Hastings sampling. Confidence intervals for R are given by the
+    delta method, the parametric bootstrap and posterior intervals, and a
+    Monte Carlo engine reports bias, mean squared error and coverage over
+    grids of sample sizes and parameter values.
 License: GPL (>= 3)
+URL: https://github.com/yamenetoo/Statistical-Repository/tree/main/StressSystems
+BugReports: https://github.com/yamenetoo/Statistical-Repository/issues
 Encoding: UTF-8
+Language: en-US
 Depends: R (>= 3.6.0)
 Imports: stats, utils, parallel
 Suggests: testthat (>= 3.0.0)

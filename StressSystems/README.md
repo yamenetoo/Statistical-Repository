@@ -62,6 +62,8 @@ estimators, interval estimation for $R$ and simulation tools.
 
 ## Installation
 
+Development version from GitHub:
+
 ```r
 # install.packages("remotes")
 remotes::install_github("yamenetoo/Statistical-Repository", subdir = "StressSystems")

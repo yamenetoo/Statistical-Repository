@@ -10,6 +10,17 @@
 #' @param shape Shape parameter \eqn{\nu > 0} (a single value).
 #' @param log,log.p Logical; return log values.
 #' @param lower.tail Logical; if \code{TRUE} probabilities are \eqn{P(X \le x)}.
+#' @return \code{dtoppleone} gives the density, \code{ptoppleone} the
+#'   distribution function, \code{qtoppleone} the quantile function and
+#'   \code{rtoppleone} random deviates, as numeric vectors.
+#' @references Topp, C. W. and Leone, F. C. (1955). A family of J-shaped
+#'   frequency functions. \emph{Journal of the American Statistical
+#'   Association}, 50, 209--219.
+#' @examples
+#' dtoppleone(c(0.2, 0.5, 0.8), shape = 0.7)
+#' ptoppleone(0.5, shape = 2)
+#' qtoppleone(c(0.1, 0.9), shape = 2)
+#' x <- rtoppleone(5, shape = 0.7)
 #' @name toppleone
 #' @export
 dtoppleone <- function(x, shape, log = FALSE) {
@@ -51,7 +62,19 @@ rtoppleone <- function(n, shape) qtoppleone(runif(n), shape)
 #' Note that \code{VGAM::dgenray} uses \code{scale = 1 / rate}.
 #'
 #' @inheritParams toppleone
+#' @param shape Shape parameter \eqn{\alpha > 0} (a single value).
 #' @param rate Rate (inverse scale) parameter \eqn{\lambda > 0}.
+#' @return \code{dgenrayleigh} gives the density, \code{pgenrayleigh} the
+#'   distribution function, \code{qgenrayleigh} the quantile function and
+#'   \code{rgenrayleigh} random deviates, as numeric vectors.
+#' @references Kundu, D. and Raqab, M. Z. (2005). Generalized Rayleigh
+#'   distribution: different methods of estimations. \emph{Computational
+#'   Statistics and Data Analysis}, 49, 187--200.
+#' @examples
+#' dgenrayleigh(c(0.5, 1, 2), shape = 1.5, rate = 1)
+#' pgenrayleigh(1, shape = 1.5, rate = 2)
+#' qgenrayleigh(0.5, shape = 1.5, rate = 2)
+#' y <- rgenrayleigh(5, shape = 1.5, rate = 2)
 #' @name genrayleigh
 #' @export
 dgenrayleigh <- function(x, shape, rate = 1, log = FALSE) {

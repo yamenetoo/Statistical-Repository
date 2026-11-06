@@ -76,6 +76,7 @@ test_that("estimators recover parameters", {
 })
 
 test_that("jackknife, bootstrap and Bayes run and give sensible R", {
+  skip_on_cran()
   set.seed(2)
   TL <- ss_dist("toppleone")
   GR <- ss_dist("genrayleigh")

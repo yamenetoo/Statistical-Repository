@@ -19,6 +19,13 @@
 #' @param c Stress scaling factor.
 #' @param components \code{"shared"} or \code{"independent"}.
 #' @param ... Passed to the integration (\code{method}, \code{rel.tol}).
+#' @return A number in [0, 1].
+#' @examples
+#' X <- ss_dist("toppleone", par = c(shape = 0.7))
+#' Y <- ss_dist("genrayleigh")
+#' st <- data.frame(shape = c(1, 2), rate = c(2, 3))
+#' ss_multistress(X, Y, par_y = st)
+#' ss_multistress(X, Y, par_y = st, components = "independent")
 #' @export
 ss_multistress <- function(strength, stresses, par_x = NULL, par_y = NULL, c = 1,
                            components = c("shared", "independent"), ...) {
@@ -49,6 +56,12 @@ ss_multistress <- function(strength, stresses, par_x = NULL, par_y = NULL, c = 1
 #' @param upper Distribution of the upper bound \eqn{X}.
 #' @param par_z,par_y,par_x Parameter vectors.
 #' @param ... Passed to the integration.
+#' @return A number in [0, 1].
+#' @examples
+#' Z <- ss_dist("exp", par = c(rate = 1))
+#' Y <- ss_dist("exp", par = c(rate = 2))
+#' X <- ss_dist("exp", par = c(rate = 0.5))
+#' ss_R3(Z, Y, X)          # exact value 2/2.5 - 2/3.5
 #' @export
 ss_R3 <- function(lower, stress, upper, par_z = NULL, par_y = NULL, par_x = NULL, ...) {
   par_z <- .need_par(lower, par_z)
@@ -63,7 +76,7 @@ ss_R3 <- function(lower, stress, upper, par_z = NULL, par_y = NULL, par_x = NULL
 #' The system has \eqn{k} independent components with strengths
 #' \eqn{X_1, \dots, X_k} from the same distribution and works if at least
 #' \eqn{s} of them exceed the common stress \eqn{cY}:
-#' \deqn{R_{s,k} = \sum_{i=s}^{k} \binom{k}{i}
+#' \deqn{R_{s,k} = \sum_{i=s}^{k} {k \choose i}
 #'   E_Y\big[(1 - F_X(cY))^{i} F_X(cY)^{k-i}\big].}
 #'
 #' @param strength,stress Objects from \code{\link{ss_dist}}.
@@ -71,6 +84,15 @@ ss_R3 <- function(lower, stress, upper, par_z = NULL, par_y = NULL, par_x = NULL
 #' @param par_x,par_y Parameter vectors.
 #' @param c Stress scaling factor.
 #' @param ... Passed to the integration.
+#' @return A number in [0, 1].
+#' @references Bhattacharyya, G. K. and Johnson, R. A. (1974). Estimation of
+#'   reliability in a multicomponent stress-strength model. \emph{Journal of
+#'   the American Statistical Association}.
+#'   \doi{10.2307/2286173}
+#' @examples
+#' X <- ss_dist("toppleone", par = c(shape = 0.7))
+#' Y <- ss_dist("genrayleigh", par = c(shape = 1, rate = 2))
+#' sapply(1:3, function(s) ss_sk(X, Y, s = s, k = 3))
 #' @export
 ss_sk <- function(strength, stress, s, k, par_x = NULL, par_y = NULL, c = 1, ...) {
   if (!(s >= 1 && k >= s)) stop("need 1 <= s <= k")
@@ -97,6 +119,10 @@ ss_sk <- function(strength, stress, s, k, par_x = NULL, par_y = NULL, c = 1, ...
 #' @param ... Passed to \code{\link{ss_R}}.
 #' @return An object of class \code{"ss_cascade"} with the system reliability
 #'   \code{R}, the stage probabilities \code{P} and each stage's contribution.
+#' @examples
+#' X <- ss_dist("toppleone", par = c(shape = 0.7))
+#' Y <- ss_dist("genrayleigh", par = c(shape = 1, rate = 2))
+#' ss_cascade(X, Y, n = 3, c = 0.8)
 #' @export
 ss_cascade <- function(strength, stress, n, c = 1, par_x = NULL, par_y = NULL, ...) {
   .check_c(c)

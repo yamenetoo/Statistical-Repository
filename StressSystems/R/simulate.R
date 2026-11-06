@@ -23,6 +23,17 @@
 #' @return An object of class \code{"ss_sim"} with \code{summary} (for R),
 #'   \code{parameters} (per-parameter bias and MSE), \code{true_R} and
 #'   optionally \code{raw}.
+#' @examples
+#' X <- ss_dist("toppleone")
+#' Y <- ss_dist("genrayleigh")
+#' sim <- ss_simulate(X, Y, par_x = c(shape = 0.7), par_y = c(shape = 1, rate = 2),
+#'                    n = 20, MC = 5, methods = "mle", seed = 1)
+#' sim$summary
+#' \donttest{
+#' sim <- ss_simulate(X, Y, par_x = c(shape = 0.7), par_y = c(shape = 1, rate = 2),
+#'                    n = c(10, 25), MC = 50, methods = c("mle", "mps"), seed = 1)
+#' sim
+#' }
 #' @export
 ss_simulate <- function(strength, stress, par_x, par_y, n, MC = 1000,
                         methods = c("mle", "jackknife", "bayes"), c = 1,
@@ -78,6 +89,17 @@ ss_simulate <- function(strength, stress, par_x, par_y, n, MC = 1000,
 #' @param grid_x,grid_y Data frames (or matrices with column names) of
 #'   strength and stress parameter values, one scenario per row.
 #' @param ... Passed to \code{\link{ss_simulate}}.
+#' @return A list with data frames \code{summary} (results for R) and
+#'   \code{parameters} (results for each parameter), with the true parameter
+#'   values as leading columns, and \code{raw} when \code{keep_raw = TRUE}.
+#' @examples
+#' X <- ss_dist("toppleone")
+#' Y <- ss_dist("genrayleigh")
+#' res <- ss_simulate_grid(X, Y,
+#'                         grid_x = data.frame(shape = c(0.3, 0.9)),
+#'                         grid_y = data.frame(shape = 1, rate = 2),
+#'                         n = 15, MC = 3, methods = "mle", seed = 1)
+#' res$summary
 #' @export
 ss_simulate_grid <- function(strength, stress, grid_x, grid_y, n, ...,
                              keep_raw = FALSE) {
