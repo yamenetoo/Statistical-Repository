@@ -23,6 +23,9 @@ Each folder is **self-contained** (its own code, and in most cases its own READM
    - [3.10 CommonCountModelDistributions](#310-commoncountmodeldistributions)
    - [3.11 Else](#311-else)
    - [3.12 UnitTrans](#312-unittrans-r-package)
+   - [3.13 BKwG](#313-bkwg-r-package)
+   - [3.14 StressSystems](#314-stresssystems-r-package)
+   - [3.15 bootqcc](#315-bootqcc-r-package)
 4. [Getting started](#4-getting-started)
 5. [Requirements](#5-requirements)
 6. [Reproducibility notes](#6-reproducibility-notes)
@@ -88,6 +91,16 @@ Statistical-Repository/
 │   ├── man/  tests/testthat/  inst/CITATION  notebooks/BKwG_examples.ipynb (Colab)
 │   ├── DESCRIPTION  NAMESPACE  NEWS.md  README.md
 │
+├── StressSystems/                 R package StressSystems (v0.1.0): stress–strength reliability, any two distributions
+│   ├── R/                         dist, reliability, systems, estimate, inference, simulate, builtin
+│   ├── tests/testthat/  inst/scripts/  notebooks/StressSystems_examples.ipynb (Colab)
+│   ├── DESCRIPTION  NAMESPACE  README.md
+│
+├── bootqcc/                       R package bootqcc (v0.1.0): parametric bootstrap control charts, any distribution
+│   ├── R/                         bootqcc, phase1, monitor, distribution, methods
+│   ├── man/  tests/testthat/  vignettes/bootqcc.Rmd  inst/validation/  docs/ (TikZ diagrams)
+│   ├── DESCRIPTION  NAMESPACE  NEWS.md  LICENSE  cran-comments.md  README.md
+│
 ├── KME/                           Python: stress–strength reliability for the KM-Exponential distribution
 │   └── PyCode.py
 │
@@ -103,6 +116,8 @@ Statistical-Repository/
 | `UnitTransformDist` | R ≥ 4.1 | Same transform, any user-supplied base distribution; corrected profile-likelihood CI | R package + 2 manuscripts | v0.1.0, pre-CRAN, testthat |
 | `UnitTrans` | R ≥ 3.5 | Laws on (0,1) from a baseline Y via rational / exponential / logit / arcsech / probit / cloglog transforms; MLE, model search, bootstrap GoF | R package | v0.1.0, testthat, vignette |
 | `BKwG` | R ≥ 3.5 | Beta Kumaraswamy-G family (Handique et al., 2017) for 12 built-in or user baselines; 6 nested sub-models; MLE/MPS/AD/CvM/LSE/WLSE; LR, Wald and bootstrap GoF tests | R package | v0.1.0, testthat, Colab notebook |
+| `StressSystems` | R ≥ 3.6 | Stress–strength reliability R = P(Y < X) for any two distributions; multi-stress, P(Z < Y < X), s-out-of-k and cascade systems; MLE/MPS/LSE/WLSE/CvM/AD, jackknife, bootstrap, Bayes; delta / bootstrap / posterior intervals; Monte Carlo engine | R package | v0.1.0, testthat, Colab notebook |
+| `bootqcc` | R ≥ 4.0 | Parametric bootstrap Phase I control limits for a quantile (or any statistic) of any distribution; ARL by Monte Carlo; Phase II monitoring; simulation grids | R package | v0.1.0, testthat, vignette, validation scripts |
 | `KwLccharts` | R ≥ 3.6 | Kumaraswamy–Lindley (KwL) distribution and bootstrap percentile control charts | R package | v0.1.0, `R CMD check`-clean per its README |
 | `LGBootStrapControlChart` | R | Bootstrap control chart for Lindley-Geometric percentiles | Scripts | Research code |
 | `LR-Fuzzy-Quantile` | Python ≥ 3.9 | LR random fuzzy numbers: quantile generator, simulations, inference | Scripts + notebook | Reproducible, seeded |
@@ -412,6 +427,39 @@ remotes::install_github("yamenetoo/Statistical-Repository", subdir = "BKwG")
 
 See [`BKwG/README.md`](BKwG/README.md) and the worked-examples notebook [`BKwG/notebooks/BKwG_examples.ipynb`](BKwG/notebooks/BKwG_examples.ipynb) [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yamenetoo/Statistical-Repository/blob/main/BKwG/notebooks/BKwG_examples.ipynb).
 
+### 3.14 StressSystems (R package)
+
+Stress–strength reliability `R = P(Y < X)` for **any** pair of continuous distributions given by their density and distribution functions (standard R families can be named directly). It generalises the Topp-Leone / generalized-Rayleigh code in `TPL_GRL_SS_MODEL`.
+
+- `ss_dist`, `ss_R` — define the strength and stress laws and compute `R` (with an optional stress-scaling factor)
+- `ss_multistress`, `ss_R3`, `ss_sk`, `ss_cascade` — multi-stress environments, the three-variable model `P(Z < Y < X)`, s-out-of-k and cascade systems
+- `ss_fit`, `ss_jackknife`, `ss_bootstrap`, `ss_bayes` — MLE, MPS, LSE, WLSE, Cramér–von Mises, Anderson–Darling; bias-corrected and Bayesian (Metropolis–Hastings) estimators
+- `ss_estimate_R` — point estimate of `R` with delta-method, bootstrap or posterior intervals
+- `ss_simulate`, `ss_simulate_grid` — Monte Carlo bias, MSE, coverage and interval length over grids of sample sizes and parameters
+- built-in Topp-Leone (`dtoppleone`, …) and generalized-Rayleigh (`dgenrayleigh`, …) distributions
+
+```r
+remotes::install_github("yamenetoo/Statistical-Repository", subdir = "StressSystems")
+```
+
+See [`StressSystems/README.md`](StressSystems/README.md) and the worked-examples notebook [`StressSystems/notebooks/StressSystems_examples.ipynb`](StressSystems/notebooks/StressSystems_examples.ipynb) [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yamenetoo/Statistical-Repository/blob/main/StressSystems/notebooks/StressSystems_examples.ipynb).
+
+### 3.15 bootqcc (R package)
+
+Parametric bootstrap control charts for **any** distribution with `d/q/r` functions, built into R or user-defined. It generalises the Lindley-geometric code in `LGBootStrapControlChart`.
+
+- `bootqcc` — Phase I control limits for a quantile (or any user statistic) by parametric bootstrap with MLE, plus the in-control ARL by Monte Carlo
+- `bootqcc_phase1` — build the chart from Phase I data when the parameters are unknown
+- `bootqcc_monitor` — Phase II monitoring of new samples, with `plot()` and `summary()` methods
+- `arl` — in-control and out-of-control average run length
+- `bootqcc_grid` — simulation studies over grids of sample sizes, quantiles and parameters
+
+```r
+remotes::install_github("yamenetoo/Statistical-Repository", subdir = "bootqcc", build_vignettes = TRUE)
+```
+
+See [`bootqcc/README.md`](bootqcc/README.md), the `bootqcc` vignette and the validation scripts in `bootqcc/inst/validation/`.
+
 ---
 
 ## 4. Getting started
@@ -427,10 +475,14 @@ Pick a project from the table in section 2, `cd` into it and follow its section 
 |---|---|
 | model proportions or any (0,1) data, in Python | `UnitI Python` → `pip install -e .` |
 | do the same in R with my own base distribution | `UnitTransformDist` |
-| build a control chart for percentiles | `KwLccharts` (3-parameter) or `LGBootStrapControlChart` |
+| build a control chart for percentiles of any distribution | `bootqcc` |
+| build a control chart for Kumaraswamy–Lindley or Lindley-geometric percentiles | `KwLccharts` or `LGBootStrapControlChart` |
 | simulate or analyse LR fuzzy numbers | `LR-Fuzzy-Quantile` |
 | fit XGamma-type distributions | `XGD/<variant>` |
-| estimate stress–strength reliability | `TPL_GRL_SS_MODEL` (R) or `KME` (Python) |
+| estimate stress–strength reliability for any two distributions or for systems | `StressSystems` |
+| reproduce the Topp-Leone / generalized-Rayleigh or KM-Exponential studies | `TPL_GRL_SS_MODEL` (R) or `KME` (Python) |
+| fit beta Kumaraswamy-G models | `BKwG` |
+| build (0,1) laws from a baseline by a monotone transform | `UnitTrans` |
 | compute Bayes estimators for Topp-Leone | `Bayesian Estimation for Topp-Leone Distribution` |
 
 ## 5. Requirements
@@ -438,7 +490,7 @@ Pick a project from the table in section 2, `cd` into it and follow its section 
 | Stack | Needed by | Packages |
 |---|---|---|
 | Python ≥ 3.9 | `UnitI Python`, `LR-Fuzzy-Quantile`, `XGD`, `KME` | numpy, scipy, matplotlib; pandas + openpyxl (LR-Fuzzy); torch + tqdm (GXGD); tensorflow + scikit-learn (ANNE); pytest, sphinx (dev) |
-| R ≥ 3.6 (≥ 4.1 for `UnitTransformDist`) | `KwLccharts`, `UnitTransformDist`, `LGBootStrapControlChart`, `Bayesian Estimation…`, `TPL_GRL_SS_MODEL` | `stats`; `LindleyPowerSeries`, `fitdistrplus` (LG chart); `gtools`, `gsl`, `VGAM` (Bayesian losses); `VGAM`, `MCMCpack`, an `integral()` provider (TPL-GRL); `testthat`, `knitr`, `rmarkdown`, `ggplot2` (optional) |
+| R ≥ 3.6 (≥ 4.0 for `bootqcc`, ≥ 4.1 for `UnitTransformDist`) | `StressSystems`, `bootqcc`, `BKwG`, `UnitTrans`, `KwLccharts`, `UnitTransformDist`, `LGBootStrapControlChart`, `Bayesian Estimation…`, `TPL_GRL_SS_MODEL` | `stats`, `utils`, `graphics`, `parallel` (StressSystems, bootqcc and BKwG use base R only); `LindleyPowerSeries`, `fitdistrplus` (LG chart); `gtools`, `gsl`, `VGAM` (Bayesian losses); `VGAM`, `MCMCpack`, an `integral()` provider (TPL-GRL); `testthat`, `knitr`, `rmarkdown`, `ggplot2` (optional) |
 
 ## 6. Reproducibility notes
 
@@ -467,6 +519,9 @@ If you use code from this repository, cite the corresponding paper or package.
 ```
 Al-Mohamad, M. Y., Parchami, A., Hydari, A. A.  Quantile representation of LR random fuzzy numbers. Manuscript.
 Al-Mohamad, M. Y., Heydari, A. A., Jabbari Khamnei, H.  A Parametric Bootstrap Control Chart for Kumaraswamy–Lindley Percentiles. Manuscript.
+Al-Mohamad, M. Y., Heydari, A. A., Jabbari Khamnei, H. (2026). StressSystems: Stress-Strength Reliability of Single and Multicomponent Systems for Arbitrary Distributions. R package version 0.1.0.
+Al-Mohamad, M. Y., Heydari, A. A., Jabbari Khamnei, H. (2026). bootqcc: Parametric Bootstrap Control Charts for Any Distribution. R package version 0.1.0.
+Al-Mohamad, M. Y., Heydari, A. A., Jabbari Khamnei, H. (2026). BKwG: The Beta Kumaraswamy-G Family of Distributions. R package version 0.1.0.
 Al-Mohamad, M. Y., Heydari, A. A., Jabbari Khamnei, H. (2026). unitTransformDist: Generalized (0,1)-Interval Distributions from Any Base Distribution on (0, ∞). R package version 0.1.0.
 Al-Mohamad, M. Y., Heydari, A. A., Jabbari Khamnei, H. (2026). unit_transform_dist: Probability distributions on (0,1) via the unit transform. Python package version 0.3.0.
 ```
@@ -476,6 +531,7 @@ Original works that the code reproduces or extends:
 - Parchami, A., Grzegorzewski, P., Romaniuk, M. (2024). Statistical simulations with LR random fuzzy numbers. *Statistical Papers* 65, 3585–3609.
 - Sindhu, T. N., Saleem, M., Aslam, M. (2013). Bayesian estimation for Topp Leone distribution under trimmed samples. *J. Basic Appl. Sci. Res.* 3(10), 347–360.
 - Al-Lami, Jabbari Khamnei, Heydari (2025). Bootstrap control chart for the Lindley-Geometric distribution. doi:10.1371/journal.pone.0316449.
+- Handique, L., Chakraborty, S., Ali, M. M. (2017). Beta generated Kumaraswamy-G family of distributions. *Pakistan Journal of Statistics* 33(6), 467–490.
 - Cordeiro, G. M., de Castro, M. (2011). A new family of generalized distributions (Kumaraswamy-G). *J. Stat. Comput. Simul.*
 - Kavya, P., Manoharan, M. (2021, 2023). KM-Exponential distribution and its stress–strength reliability.
 - Sen, S., Maiti, S. S., Chandra, N. (2016). The XGamma distribution. *J. Mod. Appl. Stat. Methods.*
@@ -497,4 +553,4 @@ yamenmohamad@tabrizu.ac.ir · ORCID [0009-0009-1665-7203](https://orcid.org/0009
 
 Co-authors on the various projects: **Ali Akbar Heydari** (heydari@tabrizu.ac.ir), **Hossein Jabbari Khamnei** (h_jabbari@tabrizu.ac.ir), Department of Statistics, University of Tabriz; **Abbas Parchami** (Shahid Bahonar University of Kerman) for the LR-fuzzy work.
 
-Each sub-project declares its own license (MIT for `KwLccharts`, `UnitTransformDist` and `UnitI Python`); check the folder before reuse.
+Each sub-project declares its own license (MIT for `bootqcc`, `KwLccharts`, `UnitTransformDist` and `UnitI Python`; GPL (≥ 3) for `StressSystems` and `BKwG`); check the folder before reuse.
