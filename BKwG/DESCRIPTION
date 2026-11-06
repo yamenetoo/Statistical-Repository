@@ -1,0 +1,37 @@
+Package: BKwG
+Type: Package
+Title: The Beta Kumaraswamy-G Family of Distributions
+Version: 0.1.0
+Date: 2026-11-06
+Authors@R: person("Mohamad Yamen", "AL Mohamad",
+    email = "yamenmohamad@tabrizu.ac.ir", role = c("aut", "cre"),
+    comment = c(ORCID = "0000-0003-4658-9095"))
+Description: A complete toolbox for the beta Kumaraswamy-G (BKw-G) family of
+    distributions of Handique, Chakraborty and Ali (2017)
+    <doi:10.48550/arXiv.1603.00634>, with cumulative distribution function
+    F(x) = I_{1-[1-G(x)^a]^b}(alpha, beta). It provides density, distribution,
+    quantile, survival, hazard, cumulative hazard and random generation
+    functions for twelve built-in baseline distributions G or any
+    user-supplied baseline; the analytical score vector; the nested
+    sub-models (Kumaraswamy-G, beta-G, exponentiated Kumaraswamy-G, beta
+    exponentiated-G, exponentiated-G and G itself); estimation by maximum
+    likelihood, maximum product of spacings, minimum Anderson-Darling and
+    Cramer-von Mises distances, ordinary and weighted least squares;
+    likelihood ratio and Wald tests; goodness-of-fit statistics
+    (Cramer-von Mises W*, Anderson-Darling A*, Kolmogorov-Smirnov) with
+    parametric bootstrap p-values; model comparison tables (AIC, CAIC, BIC,
+    HQIC); moments, generating function, entropies, mean residual life,
+    order statistics and the infinite-mixture representation of the family.
+License: GPL (>= 3)
+Encoding: UTF-8
+Depends: R (>= 3.5.0)
+Imports:
+    stats,
+    graphics
+Suggests:
+    numDeriv,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+URL: https://github.com/yamenetoo/Statistical-Repository/tree/main/BKwG
+BugReports: https://github.com/yamenetoo/Statistical-Repository/issues
+NeedsCompilation: no
