@@ -3,9 +3,14 @@ Type: Package
 Title: The Beta Kumaraswamy-G Family of Distributions
 Version: 0.1.0
 Date: 2026-11-06
-Authors@R: person("Mohamad Yamen", "AL Mohamad",
-    email = "yamenmohamad@tabrizu.ac.ir", role = c("aut", "cre"),
-    comment = c(ORCID = "0000-0003-4658-9095"))
+Authors@R: c(
+    person("Mohamad Yamen", "AL Mohamad",
+           email = "yamenmohamad@tabrizu.ac.ir", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0003-4658-9095")),
+    person("Ali Akbar", "Heydari", email = "heydari@tabrizu.ac.ir",
+           role = "aut", comment = c(ORCID = "0000-0002-1236-3189")),
+    person("Hossein", "Jabbari Khamnei", email = "h_jabbari@tabrizu.ac.ir",
+           role = "aut", comment = c(ORCID = "0000-0003-0902-0967")))
 Description: A complete toolbox for the beta Kumaraswamy-G (BKw-G) family of
     distributions of Handique, Chakraborty and Ali (2017)
     <doi:10.48550/arXiv.1603.00634>, with cumulative distribution function

@@ -1,11 +1,13 @@
 bibentry(
   bibtype = "Manual",
   title = "{BKwG}: The Beta Kumaraswamy-G Family of Distributions",
-  author = person("Mohamad Yamen", "AL Mohamad"),
+  author = c(person("Mohamad Yamen", "AL Mohamad"),
+             person("Ali Akbar", "Heydari"),
+             person("Hossein", "Jabbari Khamnei")),
   year = "2026",
   note = "R package version 0.1.0",
   url = "https://github.com/yamenetoo/Statistical-Repository/tree/main/BKwG",
-  textVersion = paste("AL Mohamad, M. Y. (2026).",
+  textVersion = paste("AL Mohamad, M. Y., Heydari, A. A. and Jabbari Khamnei, H. (2026).",
                       "BKwG: The Beta Kumaraswamy-G Family of Distributions.",
                       "R package version 0.1.0.")
 )

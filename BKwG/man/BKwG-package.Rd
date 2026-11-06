@@ -32,7 +32,9 @@ Main functions:
 }
 }
 \author{
-Mohamad Yamen AL Mohamad \email{yamenmohamad@tabrizu.ac.ir}
+Mohamad Yamen AL Mohamad \email{yamenmohamad@tabrizu.ac.ir} (maintainer),
+Ali Akbar Heydari \email{heydari@tabrizu.ac.ir},
+Hossein Jabbari Khamnei \email{h_jabbari@tabrizu.ac.ir}
 }
 \references{
 Handique, L., Chakraborty, S. and Ali, M. M. (2017). Beta generated

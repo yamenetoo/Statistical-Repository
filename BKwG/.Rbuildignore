@@ -1,4 +1,7 @@
+^README\.md$
+^\.Rbuildignore$
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.git$
 ^\.github$
+^notebooks$

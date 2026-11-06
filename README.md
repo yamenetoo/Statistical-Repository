@@ -85,7 +85,7 @@ Statistical-Repository/
 │
 ├── BKwG/                          R package BKwG (v0.1.0): beta Kumaraswamy-G family of distributions
 │   ├── R/                         bkwg (d/p/q/r/h, score), baselines, properties, fit, inference, methods
-│   ├── man/  tests/testthat/  inst/CITATION
+│   ├── man/  tests/testthat/  inst/CITATION  notebooks/BKwG_examples.ipynb (Colab)
 │   ├── DESCRIPTION  NAMESPACE  NEWS.md  README.md
 │
 ├── KME/                           Python: stress–strength reliability for the KM-Exponential distribution
@@ -102,7 +102,7 @@ Statistical-Repository/
 | `UnitI Python` | Python ≥ 3.9 | Distributions, regression, mixtures, Bayes, censoring on (0,1) via `Y = 1/(1+X)` | Installable package | v0.3.0, 10 test files, CI, Sphinx docs |
 | `UnitTransformDist` | R ≥ 4.1 | Same transform, any user-supplied base distribution; corrected profile-likelihood CI | R package + 2 manuscripts | v0.1.0, pre-CRAN, testthat |
 | `UnitTrans` | R ≥ 3.5 | Laws on (0,1) from a baseline Y via rational / exponential / logit / arcsech / probit / cloglog transforms; MLE, model search, bootstrap GoF | R package | v0.1.0, testthat, vignette |
-| `BKwG` | R ≥ 3.5 | Beta Kumaraswamy-G family (Handique et al., 2017) for 12 built-in or user baselines; 6 nested sub-models; MLE/MPS/AD/CvM/LSE/WLSE; LR, Wald and bootstrap GoF tests | R package | v0.1.0, testthat |
+| `BKwG` | R ≥ 3.5 | Beta Kumaraswamy-G family (Handique et al., 2017) for 12 built-in or user baselines; 6 nested sub-models; MLE/MPS/AD/CvM/LSE/WLSE; LR, Wald and bootstrap GoF tests | R package | v0.1.0, testthat, Colab notebook |
 | `KwLccharts` | R ≥ 3.6 | Kumaraswamy–Lindley (KwL) distribution and bootstrap percentile control charts | R package | v0.1.0, `R CMD check`-clean per its README |
 | `LGBootStrapControlChart` | R | Bootstrap control chart for Lindley-Geometric percentiles | Scripts | Research code |
 | `LR-Fuzzy-Quantile` | Python ≥ 3.9 | LR random fuzzy numbers: quantile generator, simulations, inference | Scripts + notebook | Reproducible, seeded |
@@ -410,7 +410,7 @@ The beta Kumaraswamy-G (BKw-G) family of Handique, Chakraborty and Ali (2017), w
 remotes::install_github("yamenetoo/Statistical-Repository", subdir = "BKwG")
 ```
 
-See [`BKwG/README.md`](BKwG/README.md).
+See [`BKwG/README.md`](BKwG/README.md) and the worked-examples notebook [`BKwG/notebooks/BKwG_examples.ipynb`](BKwG/notebooks/BKwG_examples.ipynb) [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yamenetoo/Statistical-Repository/blob/main/BKwG/notebooks/BKwG_examples.ipynb).
 
 ---
 
