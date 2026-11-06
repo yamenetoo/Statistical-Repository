@@ -32,10 +32,14 @@ parameter space, so the usual chi-squared limit applies.
 \seealso{\code{\link{fit_bkwg}}, \code{\link{compare_bkwg}}}
 \examples{
 set.seed(3)
-x <- rbkwg(300, a = 3, b = 0.5, alpha = 2, beta = 0.6, par = c(1, 1))
-fit <- fit_bkwg(x, baseline = "weibull")
-lrt_bkwg(fit, "KwG")     # H0: alpha = beta = 1
-lrt_bkwg(fit, "G")       # H0: the baseline Weibull is enough
-wald_bkwg(fit, c(alpha = 1, beta = 1))
+x <- rbkwg(200, a = 3, b = 0.5, alpha = 2, beta = 1, baseline = "exp",
+           par = c(rate = 1))
+fit <- fit_bkwg(x, baseline = "exp", submodel = "EKwG", fixed = c(rate = 1))
+lrt_bkwg(fit, "KwG")     # H0: alpha = 1
+wald_bkwg(fit, c(alpha = 1))
+\donttest{
+fit_full <- fit_bkwg(x, baseline = "exp")
+lrt_bkwg(fit_full, "G")  # H0: the exponential baseline is enough
+}
 }
 \keyword{htest}

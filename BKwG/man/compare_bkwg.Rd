@@ -28,10 +28,13 @@ stored in the attribute \code{"fits"}.
 \examples{
 set.seed(7)
 x <- rbkwg(200, a = 2, b = 0.7, alpha = 3, beta = 0.8, par = c(1.2, 1))
-tab <- compare_bkwg(x, baseline = "weibull",
-                    submodels = c("BKwG", "KwG", "BetaG", "G"))
+tab <- compare_bkwg(x, baseline = "weibull", submodels = c("KwG", "G"),
+                    fixed = c(scale = 1))
 tab
 \donttest{
+compare_bkwg(x, baseline = "weibull",
+             submodels = c("BKwG", "KwG", "BetaG", "G"))
+
 ## several baselines at once
 compare_bkwg(x, baseline = c("weibull", "gamma", "lnorm"),
              submodels = c("BKwG", "G"))

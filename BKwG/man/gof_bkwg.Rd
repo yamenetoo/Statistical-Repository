@@ -42,7 +42,8 @@ goodness-of-fit test. \emph{Journal of Quality Technology}, \bold{27},
 \examples{
 set.seed(10)
 x <- rbkwg(150, a = 2, b = 1, alpha = 0.5, beta = 2, par = c(1.5, 1))
-fit <- fit_bkwg(x, baseline = "weibull", submodel = "BetaG")
+fit <- fit_bkwg(x, baseline = "weibull", submodel = "BetaG",
+                fixed = c(scale = 1))
 gof_bkwg(fit)
 \donttest{
 gof_bkwg(fit, B = 50, seed = 1)

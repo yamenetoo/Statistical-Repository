@@ -5,3 +5,6 @@
 ^\.git$
 ^\.github$
 ^notebooks$
+^cran-comments\.md$
+^man/figures/logo\.svg$
+^CRAN-SUBMISSION$

@@ -10,6 +10,7 @@ test_that("maximum likelihood recovers the baseline model", {
 })
 
 test_that("sub-models are nested in terms of log-likelihood", {
+  skip_on_cran()
   set.seed(12)
   x <- rbkwg(300, a = 3, b = 0.5, alpha = 2, beta = 0.6, par = c(1, 1))
   fG <- fit_bkwg(x, submodel = "G", hessian = FALSE)
@@ -24,6 +25,7 @@ test_that("sub-models are nested in terms of log-likelihood", {
 })
 
 test_that("all estimation methods run and give sensible fits", {
+  skip_on_cran()
   set.seed(13)
   x <- rbkwg(200, a = 2, b = 1.5, alpha = 1, beta = 1, baseline = "exp",
              par = c(rate = 1))
@@ -36,6 +38,7 @@ test_that("all estimation methods run and give sensible fits", {
 })
 
 test_that("methods and inference functions work", {
+  skip_on_cran()
   set.seed(14)
   x <- rbkwg(150, a = 2, b = 1, alpha = 3, beta = 0.8, par = c(1.2, 1))
   f <- fit_bkwg(x, submodel = "BKwG", fixed = c(scale = 1))

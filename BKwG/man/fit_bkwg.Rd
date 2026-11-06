@@ -84,21 +84,24 @@ An object of class \code{"bkwgfit"}, a list with components
 \code{\link{lrt_bkwg}}, \code{\link{compare_bkwg}}
 }
 \examples{
-set.seed(123)
-x <- rbkwg(300, a = 2, b = 0.8, alpha = 0.7, beta = 1.5,
-           baseline = "weibull", par = c(shape = 1.5, scale = 2))
-
-fit <- fit_bkwg(x, baseline = "weibull")
-fit
-summary(fit)
-confint(fit, type = "log")
-
-## sub-models and other estimation methods
-fit_kw <- fit_bkwg(x, baseline = "weibull", submodel = "KwG")
-fit_mps <- fit_bkwg(x, baseline = "weibull", method = "mps")
-fit_fix <- fit_bkwg(x, baseline = "weibull", fixed = c(scale = 2))
-
 bkwg_submodels()
+
+set.seed(123)
+x <- rbkwg(200, a = 2, b = 1.5, baseline = "weibull",
+           par = c(shape = 1.5, scale = 2))
+
+## Kumaraswamy-Weibull sub-model with a known scale
+fit_kw <- fit_bkwg(x, baseline = "weibull", submodel = "KwG",
+                   fixed = c(scale = 2))
+fit_kw
+summary(fit_kw)
+confint(fit_kw, type = "log")
+\donttest{
+## the full model and other estimation methods
+fit <- fit_bkwg(x, baseline = "weibull")
+summary(fit)
+fit_mps <- fit_bkwg(x, baseline = "weibull", submodel = "KwG", method = "mps")
+}
 }
 \keyword{models}
 \keyword{distribution}

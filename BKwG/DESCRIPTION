@@ -5,16 +5,19 @@ Version: 0.1.0
 Date: 2026-11-06
 Authors@R: c(
     person("Mohamad Yamen", "AL Mohamad",
-           email = "yamenmohamad@tabrizu.ac.ir", role = c("aut", "cre"),
+           email = "yamenmohamad@tabrizu.ac.ir",
+           role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0009-0009-1665-7203")),
     person("Ali Akbar", "Heydari", email = "heydari@tabrizu.ac.ir",
            role = "aut", comment = c(ORCID = "0000-0002-1236-3189")),
     person("Hossein", "Jabbari Khamnei", email = "h_jabbari@tabrizu.ac.ir",
            role = "aut", comment = c(ORCID = "0000-0003-0902-0967")))
-Description: A complete toolbox for the beta Kumaraswamy-G (BKw-G) family of
-    distributions of Handique, Chakraborty and Ali (2017)
-    <doi:10.48550/arXiv.1603.00634>, with cumulative distribution function
-    F(x) = I_{1-[1-G(x)^a]^b}(alpha, beta). It provides density, distribution,
+Description: Tools for the beta Kumaraswamy-G (BKw-G) family of
+    distributions of Handique, Chakraborty and Ali (2017, Pakistan Journal of
+    Statistics, 33(6), 467-490) <doi:10.48550/arXiv.1603.00634>, whose
+    cumulative distribution function is the regularised incomplete beta
+    function evaluated at the Kumaraswamy-G distribution function
+    1 - (1 - G(x)^a)^b. The package provides density, distribution,
     quantile, survival, hazard, cumulative hazard and random generation
     functions for twelve built-in baseline distributions G or any
     user-supplied baseline; the analytical score vector; the nested
