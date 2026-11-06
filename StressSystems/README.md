@@ -1,4 +1,4 @@
-# StressSystems
+# StressSystems <img src="man/figures/logo.png" align="right" height="160" alt="StressSystems logo" />
 
 **Stress-strength reliability for any pair of continuous distributions — single components and multicomponent systems, with estimation, confidence intervals and Monte Carlo studies.**
 
