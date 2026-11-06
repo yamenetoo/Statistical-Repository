@@ -414,6 +414,8 @@ See [`UnitTrans/README.md`](UnitTrans/README.md) and the `workflow` vignette.
 
 ### 3.13 BKwG (R package)
 
+<img src="BKwG/man/figures/logo.png" align="right" height="120" alt="BKwG logo" />
+
 The beta Kumaraswamy-G (BKw-G) family of Handique, Chakraborty and Ali (2017), with cdf `F(x) = I_{1-[1-G(x)^a]^b}(alpha, beta)` for any baseline `G`.
 
 - `dbkwg`, `pbkwg`, `qbkwg`, `rbkwg`, `sbkwg`, `hbkwg`, `chbkwg` — distribution functions; 12 built-in baselines or `bkwg_baseline()` for your own

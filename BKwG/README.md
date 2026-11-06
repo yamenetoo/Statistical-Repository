@@ -1,4 +1,4 @@
-# BKwG
+# BKwG <img src="man/figures/logo.png" align="right" height="139" alt="BKwG logo" />
 
 **The beta Kumaraswamy-G family of distributions in R — distribution functions for any baseline, six nested sub-models, six estimation methods, likelihood-ratio / Wald / goodness-of-fit tests, and the structural properties of the family.**
 
