@@ -2,7 +2,7 @@
 
 # UnitTransformDist
 
-**[Mohamad Yamen Al Mohamad¹](https://orcid.org/0009-0009-1665-7203), [Ali Akbar Heydari¹](https://orcid.org/0000-000X-XXXX-XXXX), [Hossein Jabbari Khamnei¹](https://orcid.org/0000-000X-XXXX-XXXX)**
+**[Mohamad Yamen Al Mohamad¹](https://orcid.org/0009-0009-1665-7203), [Ali Akbar Heydari¹](https://orcid.org/0000-0002-1236-3189), [Hossein Jabbari Khamnei¹](https://orcid.org/0000-000X-XXXX-XXXX)**
 
 ¹Department of Statistics, Faculty of Mathematics, Statistics, and Computer Sciences, University of Tabriz, Tabriz, Iran
 
@@ -330,7 +330,7 @@ the behaviour you're fixing or adding.
 Department of Statistics, Faculty of Mathematics, Statistics, and Computer Sciences, University of Tabriz, Tabriz, Iran
 Email: [yamenmohamad@tabrizu.ac.ir](mailto:yamenmohamad@tabrizu.ac.ir)
 
-**[Ali Akbar Heydari](https://orcid.org/0000-000X-XXXX-XXXX)** — author
+**[Ali Akbar Heydari](https://orcid.org/0000-0002-1236-3189)** — author
 Department of Statistics, Faculty of Mathematics, Statistics, and Computer Sciences, University of Tabriz, Tabriz, Iran
 Email: [heydari@tabrizu.ac.ir](mailto:heydari@tabrizu.ac.ir)
 

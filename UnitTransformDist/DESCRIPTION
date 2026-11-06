@@ -5,7 +5,8 @@ Version: 0.1.0
 Authors@R: c(
     person("Mohamad Yamen", "Al Mohamad", email = "yamenmohamad@tabrizu.ac.ir",
            role = c("aut", "cre")),
-    person("Ali Akbar", "Heydari", email = "heydari@tabrizu.ac.ir", role = "aut"),
+    person("Ali Akbar", "Heydari", email = "heydari@tabrizu.ac.ir", role = "aut",
+           comment = c(ORCID = "0000-0002-1236-3189")),
     person("Hossein", "Jabbari Khamnei", email = "h_jabbari@tabrizu.ac.ir", role = "aut"))
 Description: Constructs, fits, and diagnoses continuous probability
     distributions on the open interval (0,1), obtained from an arbitrary
