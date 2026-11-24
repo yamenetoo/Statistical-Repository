@@ -1,0 +1,37 @@
+Package: FuzzyMFD
+Type: Package
+Title: Membership Functions, Fuzzification and Defuzzification
+Version: 0.1.0
+Date: 2026-11-24
+Authors@R:
+    person("Mohamad Yamen", "AL Mohamad",
+           email = "yamenmohamad@tabrizu.ac.ir",
+           role = c("aut", "cre", "cph"),
+           comment = c(ORCID = "0009-0009-1665-7203"))
+Description: Implements the methods of T. J. Ross (2000) "Membership
+    Functions, Fuzzification and Defuzzification", in P. S. Szczepaniak,
+    P. J. G. Lisboa and J. Kacprzyk (eds.), Fuzzy Systems in Medicine,
+    Springer-Verlag, Berlin Heidelberg, 49-78. Fuzzy sets on the real line are stored as exact
+    piecewise-linear membership functions. The package provides standard
+    membership function shapes; the features of a membership function
+    (core, support, boundaries, height, normality, convexity, crossover
+    points, prototype); exact union, intersection and complement;
+    fuzzification of crisp readings; membership value assignment by rank
+    ordering of pairwise preferences and by inductive reasoning with
+    entropy minimisation (primary, secondary and tertiary thresholds and
+    the resulting partitions); and defuzzification by the max-membership,
+    centroid, weighted-average and mean-max methods. The worked examples
+    of the chapter are included as data and example sets.
+License: GPL (>= 3)
+Encoding: UTF-8
+Depends: R (>= 3.6.0)
+Imports:
+    stats,
+    graphics,
+    grDevices
+Suggests:
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+URL: https://github.com/yamenetoo/Statistical-Repository/tree/main/FuzzyMFD
+BugReports: https://github.com/yamenetoo/Statistical-Repository/issues
+NeedsCompilation: no

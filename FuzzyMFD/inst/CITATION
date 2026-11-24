@@ -1,0 +1,28 @@
+bibentry(
+  bibtype = "Manual",
+  title = "{FuzzyMFD}: Membership Functions, Fuzzification and Defuzzification",
+  author = person("Mohamad Yamen", "AL Mohamad"),
+  year = "2026",
+  note = "R package version 0.1.0",
+  url = "https://github.com/yamenetoo/Statistical-Repository/tree/main/FuzzyMFD",
+  textVersion = paste("AL Mohamad, M. Y. (2026).",
+                      "FuzzyMFD: Membership Functions, Fuzzification and Defuzzification.",
+                      "R package version 0.1.0.")
+)
+
+bibentry(
+  bibtype = "InCollection",
+  title = "Membership Functions, Fuzzification and Defuzzification",
+  author = person("Timothy J.", "Ross"),
+  booktitle = "Fuzzy Systems in Medicine",
+  editor = c(person("Piotr S.", "Szczepaniak"), person("Paulo J. G.", "Lisboa"),
+             person("Janusz", "Kacprzyk")),
+  publisher = "Springer-Verlag",
+  address = "Berlin Heidelberg",
+  year = "2000",
+  pages = "49--78",
+  textVersion = paste("Ross, T. J. (2000). Membership functions, fuzzification",
+                      "and defuzzification. In P. S. Szczepaniak, P. J. G. Lisboa",
+                      "and J. Kacprzyk (eds.), Fuzzy Systems in Medicine,",
+                      "Springer-Verlag, Berlin Heidelberg, 49-78.")
+)

@@ -26,6 +26,7 @@ Each folder is **self-contained** (its own code, and in most cases its own READM
    - [3.13 BKwG](#313-bkwg-r-package)
    - [3.14 StressSystems](#314-stresssystems-r-package)
    - [3.15 bootqcc](#315-bootqcc-r-package)
+   - [3.16 FuzzyMFD](#316-fuzzymfd-r-package)
 4. [Getting started](#4-getting-started)
 5. [Requirements](#5-requirements)
 6. [Reproducibility notes](#6-reproducibility-notes)
@@ -101,6 +102,12 @@ Statistical-Repository/
 │   ├── man/  tests/testthat/  vignettes/bootqcc.Rmd  inst/validation/  docs/ (TikZ diagrams)
 │   ├── DESCRIPTION  NAMESPACE  NEWS.md  LICENSE  cran-comments.md  README.md
 │
+├── FuzzyMFD/                      R package FuzzyMFD (v0.1.0): membership functions, fuzzification, defuzzification
+│   ├── R/                         fuzzyset, membership, properties, operations, fuzzification, assignment,
+│   │                              defuzzification, plot
+│   ├── man/  data/  tests/testthat/  inst/examples/  notebooks/FuzzyMFD_examples.ipynb (Colab)
+│   ├── DESCRIPTION  NAMESPACE  NEWS.md  README.md
+│
 ├── KME/                           Python: stress–strength reliability for the KM-Exponential distribution
 │   └── PyCode.py
 │
@@ -118,6 +125,7 @@ Statistical-Repository/
 | `BKwG` | R ≥ 3.5 | Beta Kumaraswamy-G family (Handique et al., 2017) for 12 built-in or user baselines; 6 nested sub-models; MLE/MPS/AD/CvM/LSE/WLSE; LR, Wald and bootstrap GoF tests | R package | v0.1.0, testthat, Colab notebook |
 | `StressSystems` | R ≥ 3.6 | Stress–strength reliability R = P(Y < X) for any two distributions; multi-stress, P(Z < Y < X), s-out-of-k and cascade systems; MLE/MPS/LSE/WLSE/CvM/AD, jackknife, bootstrap, Bayes; delta / bootstrap / posterior intervals; Monte Carlo engine | R package | v0.1.0, testthat, Colab notebook |
 | `bootqcc` | R ≥ 4.0 | Parametric bootstrap Phase I control limits for a quantile (or any statistic) of any distribution; ARL by Monte Carlo; Phase II monitoring; simulation grids | R package | v0.1.0, testthat, vignette, validation scripts |
+| `FuzzyMFD` | R ≥ 3.6 | Membership functions, fuzzification and defuzzification (Ross, 2000): exact piecewise-linear fuzzy sets, core/support/convexity, rank ordering, entropy-minimisation partitions, centroid / weighted / max / mean-max defuzzification | R package | v0.1.0, testthat, Colab notebook |
 | `KwLccharts` | R ≥ 3.6 | Kumaraswamy–Lindley (KwL) distribution and bootstrap percentile control charts | R package | v0.1.0, `R CMD check`-clean per its README |
 | `LGBootStrapControlChart` | R | Bootstrap control chart for Lindley-Geometric percentiles | Scripts | Research code |
 | `LR-Fuzzy-Quantile` | Python ≥ 3.9 | LR random fuzzy numbers: quantile generator, simulations, inference | Scripts + notebook | Reproducible, seeded |
@@ -461,6 +469,23 @@ remotes::install_github("yamenetoo/Statistical-Repository", subdir = "bootqcc", 
 ```
 
 See [`bootqcc/README.md`](bootqcc/README.md), the `bootqcc` vignette and the validation scripts in `bootqcc/inst/validation/`.
+
+### 3.16 FuzzyMFD (R package)
+
+Membership functions, fuzzification and defuzzification, following T. J. Ross (2000), *Fuzzy Systems in Medicine*, Springer, 49–78. Fuzzy sets are stored as exact piecewise-linear membership functions, so unions, intersections and centroids carry no grid error.
+
+- `fuzzy_set`, `fs_triangular`, `fs_trapezoidal`, `fs_rectangular`, `fs_gaussian`, `mf_*` — fuzzy sets and membership function shapes
+- `fuzzy_core`, `fuzzy_support`, `fuzzy_boundary`, `fuzzy_height`, `is_normal`, `is_convex`, `is_fuzzy_number`, `crossover_points`, `fuzzy_prototype` — features of a membership function
+- `fuzzy_union`, `fuzzy_intersection`, `fuzzy_complement`, `fuzzify`, `agreement` — operations and fuzzification of crisp readings
+- `rank_ordering`, `entropy_threshold`, `entropy_partition`, `partition_sets`, `inductive_mf` — membership assignment by rank ordering and by inductive reasoning (entropy minimisation)
+- `defuzzify`, `defuzz_max`, `defuzz_centroid`, `defuzz_weighted`, `defuzz_meanmax` — defuzzification
+- `ross_colors`, `ross_ellipse`, `ross2000_sets` — the worked examples of the chapter
+
+```r
+remotes::install_github("yamenetoo/Statistical-Repository", subdir = "FuzzyMFD")
+```
+
+See [`FuzzyMFD/README.md`](FuzzyMFD/README.md) and the worked-examples notebook [`FuzzyMFD/notebooks/FuzzyMFD_examples.ipynb`](FuzzyMFD/notebooks/FuzzyMFD_examples.ipynb) [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yamenetoo/Statistical-Repository/blob/main/FuzzyMFD/notebooks/FuzzyMFD_examples.ipynb).
 
 ---
 
