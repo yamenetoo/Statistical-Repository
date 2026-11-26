@@ -13,7 +13,15 @@ Description: Builds Phase I control limits for a quantile (or any user-defined
     Monte Carlo estimates of the average run length (ARL). The distribution can
     be any family with d/q/r functions, whether built into R or defined by the
     user, so the same code serves Weibull, gamma, Kumaraswamy, Lindley-type and
-    other lifetime models. Phase II monitoring of new samples is supported.
+    other lifetime models. Phase II monitoring of new samples is supported, and
+    limits can be built from raw Phase I data with a correction for the effect of
+    parameter estimation. The methods use the parametric bootstrap of
+    Efron (1979) <doi:10.1214/aos/1176344552> and Efron and Tibshirani (1993,
+    ISBN:9780412042317), percentile charts for lifetime data as in Padgett and
+    Spurrier (1990) <doi:10.1080/00224065.1990.11979260>, the Lindley Geometric
+    percentile chart of Al-Lami, Jabbari Khamnei and Heydari (2025)
+    <doi:10.1371/journal.pone.0316449>, and the bootstrap treatment of
+    estimation error of Gandy and Kvaloy (2013) <arXiv:1111.4180>.
 License: MIT + file LICENSE
 URL: https://github.com/yamenetoo/Statistical-Repository/tree/main/bootqcc
 BugReports: https://github.com/yamenetoo/Statistical-Repository/issues

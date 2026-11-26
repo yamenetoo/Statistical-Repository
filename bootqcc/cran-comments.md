@@ -1,6 +1,14 @@
 ## Submission
 
-This is a new submission.
+This is a new submission (resubmission after the first review).
+
+Changes in response to the reviewer:
+
+* References describing the methods were added to the Description field of
+  DESCRIPTION in the form authors (year) <doi:...>.
+* No example, test or vignette uses more than one core. The only script that
+  uses parallel code (`inst/validation/exponential-validation.R`, not run during
+  checks) is limited to at most 2 cores.
 
 ## Test environments
 

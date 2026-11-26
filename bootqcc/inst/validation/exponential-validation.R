@@ -6,7 +6,7 @@
 #
 # Usage: Rscript inst/validation/exponential-validation.R   (about 15 minutes)
 library(bootqcc)
-cores <- max(1, parallel::detectCores() - 1)
+cores <- min(2L, max(1L, parallel::detectCores() - 1L))   # never more than 2 cores
 u <- 0.5; n <- 5; cc <- -log(1 - u)
 fit <- function(x) list(rate = 1 / mean(x))
 
