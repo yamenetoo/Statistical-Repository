@@ -33,6 +33,7 @@ Encoding: UTF-8
 Language: en-US
 Depends: R (>= 3.6.0)
 Imports: stats, utils, parallel
-Suggests: testthat (>= 3.0.0)
+Suggests: knitr, rmarkdown, testthat (>= 3.0.0)
+VignetteBuilder: knitr
 Config/testthat/edition: 3
 RoxygenNote: 7.3.2

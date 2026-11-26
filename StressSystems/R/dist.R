@@ -9,6 +9,19 @@
 #' Only \code{d} and \code{p} are required; missing quantile and random
 #' functions are replaced by numerical inversion of \code{p}.
 #'
+#' Parameter names are taken from the arguments of \code{d}, leaving out
+#' \code{x}, \code{log} and similar arguments. If the density has both
+#' \code{rate} and \code{scale} arguments (as \code{dgamma} does), only
+#' \code{rate} is used. When neither \code{par} nor \code{constraints}
+#' says otherwise, starting values for estimation come from the density's
+#' default arguments or the middle of each parameter's range.
+#'
+#' When \code{lower} or \code{upper} is missing for a family that is not
+#' built in, the support is guessed by evaluating the density just outside
+#' (0, 1): it is taken as (0, 1), (0, Inf), (-Inf, 1) or (-Inf, Inf), and a
+#' message reports the guess. Give \code{lower} and \code{upper} to set the
+#' support explicitly and silence the message.
+#'
 #' @param name Family name, e.g. \code{"weibull"}, \code{"gamma"},
 #'   \code{"toppleone"}, \code{"genrayleigh"}.
 #' @param d,p,q,r Optional density, distribution, quantile and random
@@ -28,6 +41,14 @@
 #' X <- ss_dist("toppleone")
 #' Y <- ss_dist("weibull", par = c(shape = 2, scale = 1))
 #' Z <- ss_dist("gamma")            # parameters: shape, rate
+#' N <- ss_dist("norm", lower = -Inf, upper = Inf)
+#'
+#' # A user-defined power distribution, F(x) = x^a on (0, 1)
+#' dpower <- function(x, a) ifelse(x > 0 & x < 1, a * x^(a - 1), 0)
+#' ppower <- function(q, a) pmin(pmax(q, 0), 1)^a
+#' P <- ss_dist(d = dpower, p = ppower, lower = 0, upper = 1)
+#' P
+#' ss_R(P, X, par_x = c(a = 2), par_y = c(shape = 0.7))
 #' @export
 ss_dist <- function(name = NULL, d = NULL, p = NULL, q = NULL, r = NULL,
                     par = NULL, constraints = NULL, lower = NULL, upper = NULL,

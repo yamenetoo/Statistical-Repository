@@ -4,6 +4,18 @@
 #' for the Topp-Leone distribution on (0, 1) with
 #' \eqn{F(x) = [x(2 - x)]^{\nu}}, \eqn{\nu > 0}.
 #'
+#' The density is \eqn{f(x) = 2\nu(1 - x)[x(2 - x)]^{\nu - 1}} for
+#' \eqn{0 < x < 1} and 0 elsewhere. It is J-shaped (unbounded at 0) for
+#' \eqn{\nu < 1}. Quantiles are available in closed form,
+#' \eqn{Q(u) = 1 - \sqrt{1 - u^{1/\nu}}}, so random generation is by
+#' inversion.
+#'
+#' Unlike the distribution functions of base R, these functions are
+#' vectorised over \code{x}, \code{q}, \code{p} and \code{n} but not over
+#' \code{shape}, which must be a single value. Use \code{sapply()} to
+#' evaluate several parameter values. Probabilities outside [0, 1] give
+#' \code{NaN} in \code{qtoppleone}.
+#'
 #' @param x,q Vector of quantiles.
 #' @param p Vector of probabilities.
 #' @param n Number of observations.
@@ -60,6 +72,17 @@ rtoppleone <- function(n, shape) qtoppleone(runif(n), shape)
 #' \eqn{F(x) = (1 - e^{-(\lambda x)^2})^{\alpha}}, \eqn{x > 0}.
 #' Here \code{shape} is \eqn{\alpha} and \code{rate} is \eqn{\lambda}.
 #' Note that \code{VGAM::dgenray} uses \code{scale = 1 / rate}.
+#'
+#' The density is \eqn{f(x) = 2\alpha\lambda^2 x e^{-(\lambda x)^2}
+#' (1 - e^{-(\lambda x)^2})^{\alpha - 1}} for \eqn{x > 0}. With
+#' \eqn{\alpha = 1} it is the Rayleigh distribution. Quantiles are
+#' \eqn{Q(u) = \sqrt{-\log(1 - u^{1/\alpha})} / \lambda}, and random
+#' generation is by inversion.
+#'
+#' These functions are vectorised over \code{x}, \code{q}, \code{p} and
+#' \code{n} but not over \code{shape} or \code{rate}, which must be single
+#' values. Probabilities outside [0, 1] give \code{NaN} in
+#' \code{qgenrayleigh}.
 #'
 #' @inheritParams toppleone
 #' @param shape Shape parameter \eqn{\alpha > 0} (a single value).

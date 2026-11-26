@@ -19,6 +19,8 @@
 #'     Carlo studies.
 #' }
 #'
+#' See \code{vignette("StressSystems")} for a worked introduction.
+#'
 #' @references Kotz, S., Lumelskii, Y. and Pensky, M. (2003). \emph{The
 #'   Stress-Strength Model and Its Generalizations: Theory and Applications}.
 #'   World Scientific, Singapore.
