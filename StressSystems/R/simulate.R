@@ -33,7 +33,7 @@
 #' sim$summary
 #' \donttest{
 #' sim <- ss_simulate(X, Y, par_x = c(shape = 0.7), par_y = c(shape = 1, rate = 2),
-#'                    n = c(10, 25), MC = 50, methods = c("mle", "mps"), seed = 1)
+#'                    n = c(10, 25), MC = 20, methods = c("mle", "mps"), seed = 1)
 #' sim
 #' }
 #' @export
