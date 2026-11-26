@@ -21,7 +21,7 @@ Description: Builds Phase I control limits for a quantile (or any user-defined
     Spurrier (1990) <doi:10.1080/00224065.1990.11979260>, the Lindley Geometric
     percentile chart of Al-Lami, Jabbari Khamnei and Heydari (2025)
     <doi:10.1371/journal.pone.0316449>, and the bootstrap treatment of
-    estimation error of Gandy and Kvaloy (2013) <arXiv:1111.4180>.
+    estimation error of Gandy and Kvaloy (2013) <doi:10.48550/arXiv.1111.4180>.
 License: MIT + file LICENSE
 URL: https://github.com/yamenetoo/Statistical-Repository/tree/main/bootqcc
 BugReports: https://github.com/yamenetoo/Statistical-Repository/issues
