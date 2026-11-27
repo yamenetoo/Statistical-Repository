@@ -60,7 +60,7 @@ bkwg_submodels <- function() {
       .pbkwg_raw(xs, a, b, al, be, B, bp, lower.tail = lower.tail,
                  log.p = log.p)
     val <- switch(method,
-      mle = -sum(.ldens(x, a, b, al, be, B, bp)),
+      mle = -sum(.ldens(x, a, b, al, be, B, bp, check = TRUE)),
       mps = {
         d <- diff(c(0, Fx(), 1))
         -sum(log(pmax(d, 1e-300)))
@@ -182,7 +182,10 @@ fit_bkwg <- function(x, baseline = "weibull", submodel = "BKwG",
     best <- NULL
     for (s0 in cands) {
       if (any(s0 <= lo | s0 >= up)) next
-      fz <- function(z) obj(.from_z(z, lo, up))
+      ## trial points the optimiser visits can be extreme (e.g. shape -> 0);
+      ## their "NaNs produced" warnings are expected and handled by the
+      ## objective, so keep them away from the user
+      fz <- function(z) suppressWarnings(obj(.from_z(z, lo, up)))
       r <- .optimize(.to_z(s0, lo, up), fz, control)
       if (!is.null(r) && (is.null(best) || r$value < best$value)) best <- r
     }
@@ -210,7 +213,8 @@ fit_bkwg <- function(x, baseline = "weibull", submodel = "BKwG",
       if (!.shape_ok(v[["a"]], v[["b"]], v[["alpha"]], v[["beta"]]) ||
           (length(b0) && (any(b0 <= B$lower) || any(b0 >= B$upper))))
         return(NA_real_)
-      -sum(.ldens(x, v[["a"]], v[["b"]], v[["alpha"]], v[["beta"]], B, b0))
+      -sum(.ldens(x, v[["a"]], v[["b"]], v[["alpha"]], v[["beta"]], B, b0,
+                 check = TRUE))
     }
     H <- tryCatch({
       if (requireNamespace("numDeriv", quietly = TRUE)) {

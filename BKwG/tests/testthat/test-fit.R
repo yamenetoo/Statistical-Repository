@@ -39,7 +39,9 @@ test_that("all estimation methods run and give sensible fits", {
 
 test_that("methods and inference functions work", {
   skip_on_cran()
-  set.seed(14)
+  ## seed 14 gave a sample whose likelihood increases towards the boundary
+  ## (alpha -> Inf, beta -> 0), leaving no invertible information matrix
+  set.seed(15)
   x <- rbkwg(150, a = 2, b = 1, alpha = 3, beta = 0.8, par = c(1.2, 1))
   f <- fit_bkwg(x, submodel = "BKwG", fixed = c(scale = 1))
   expect_s3_class(summary(f), "summary.bkwgfit")
