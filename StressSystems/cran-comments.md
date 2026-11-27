@@ -10,18 +10,17 @@ Monte Carlo tools.
 
 ## Test environments
 
-<!-- Update this section and the results below with the actual output
-     of the checks before submitting. -->
-
-* local: R release
-* win-builder: R-devel and R-release
-* R-hub: Linux, macOS, Windows
+* local: Ubuntu 24.04, R 4.3.3
+* win-builder: R-release (R 4.6.2, Windows Server 2022)
 
 ## R CMD check results
 
 0 errors | 0 warnings | 1 note
 
 * This is a new submission.
+* Possibly misspelled words in DESCRIPTION (Amin, Bhattacharyya, Cheng,
+  Cramer, Kotz, Lumelskii, Mises, Pensky, spacings, von) are author
+  names and standard statistical terms.
 
 ## Notes for reviewers
 
