@@ -17,13 +17,18 @@ simulation_study(dist, par, trans, n = c(50, 100, 200), R = 200, seed = NULL)
 }
 \value{
 A data frame with one row per sample size and parameter, including
-  the number of `failed` replications.
+the number of \code{failed} replications.
 }
 \description{
 Repeatedly simulates from a transformed distribution, refits it and
 summarizes bias, root mean squared error and the coverage of Wald intervals.
 Coverage is computed over the replications with available standard errors.
+Each replication starts the optimiser at the true values, so the study
+measures the behaviour of the estimator rather than of the starting rule.
 }
 \examples{
 simulation_study("norm", c(mean = 0, sd = 1), "logit", n = c(50, 100), R = 20, seed = 1)
+}
+\seealso{
+\code{\link[=fit_trans]{fit_trans()}}.
 }

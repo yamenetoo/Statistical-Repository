@@ -1,0 +1,416 @@
+---
+title: "Introduction to UnitTrans: distributions on the unit interval via transformations of baseline laws"
+author: "Mohamad Yamen AL Mohamad and Ali Akbar Heydari"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to UnitTrans}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 6.5,
+                      fig.height = 4, fig.align = "center", dpi = 96)
+op <- options(digits = 4)
+```
+
+*Department of Statistics, Faculty of Mathematics, Statistics and Computer
+Science, University of Tabriz, Tabriz, Iran.*
+
+| Author | ORCID | Email |
+|---|---|---|
+| Mohamad Yamen AL Mohamad (maintainer) | [0009-0009-1665-7203](https://orcid.org/0009-0009-1665-7203) | yamenmohamad@tabrizu.ac.ir |
+| Ali Akbar Heydari | [0000-0002-1236-3189](https://orcid.org/0000-0002-1236-3189) | heydari@tabrizu.ac.ir |
+
+## 1. Overview
+
+Data recorded as proportions, rates, fractions or indices live on the unit
+interval $(0, 1)$. The beta distribution is the usual model for such data, but
+it is far from the only one. A simple and very general way to build new laws on
+$(0, 1)$ is to take a random variable $Y$ with a familiar distribution (the
+*baseline*) and map it into the unit interval with a monotone transformation
+$g$:
+
+$$V = g(Y) \in (0, 1).$$
+
+Many known unit distributions arise this way: the logit-normal (normal
+baseline, logistic map), the unit-gamma (gamma baseline, $V = e^{-Y}$), the
+Kumaraswamy-type and unit-Weibull families, and so on. **UnitTrans** turns this
+idea into a complete toolbox. For *any* baseline that has `d`, `p` and `q`
+functions in R and for six built-in transformations it provides
+
+* density, distribution, quantile and random generation functions
+  (`dtrans()`, `ptrans()`, `qtrans()`, `rtrans()`), with accurate tails;
+* checks that a baseline and a transformation are compatible
+  (`check_domain()`, `detect_transformations()`);
+* maximum likelihood fitting with information criteria (`fit_trans()`) and
+  Wald, profile-likelihood and parametric bootstrap confidence intervals;
+* automatic model search over baseline/transformation pairs with Akaike
+  weights (`fit_all()`, `best_model()`);
+* goodness-of-fit tests with parametric-bootstrap p-values (`gof_trans()`);
+* moments, survival and hazard functions (`moments_trans()`,
+  `summary_trans()`, `survival_trans()`, `hazard_trans()`);
+* Monte Carlo studies of the estimator (`simulation_study()`).
+
+```{r}
+library(UnitTrans)
+```
+
+## 2. The construction
+
+Let $Y$ have density $f_Y$, distribution function $F_Y$ and quantile function
+$Q_Y$, and let $g$ be a strictly monotone, differentiable map from the support
+of $Y$ onto $(0, 1)$ with inverse $g^{-1}$. By the change-of-variables formula
+the density of $V = g(Y)$ is
+
+$$f_V(v) = f_Y\{g^{-1}(v)\}\, \left|\frac{d g^{-1}(v)}{dv}\right|, \qquad 0 < v < 1.$$
+
+If $g$ is increasing,
+$$F_V(v) = F_Y\{g^{-1}(v)\}, \qquad Q_V(p) = g\{Q_Y(p)\},$$
+and if $g$ is decreasing,
+$$F_V(v) = 1 - F_Y\{g^{-1}(v)\}, \qquad Q_V(p) = g\{Q_Y(1 - p)\}.$$
+
+UnitTrans never forms $1 - F$ numerically: for a decreasing map it calls the
+baseline's upper tail (`lower.tail = FALSE`) directly, and the log-Jacobian
+$\log |d g^{-1}(v)/dv|$ is coded in closed form. Densities, tail
+probabilities and hazards therefore stay accurate close to 0 and 1.
+
+### The six transformations
+
+```{r}
+trans_list()
+```
+
+| Name | $V = g(Y)$ | $Y = g^{-1}(V)$ | $\lvert dY/dV \rvert$ | Baseline support |
+|---|---|---|---|---|
+| `rational`    | $Y/(1+Y)$          | $V/(1-V)$          | $(1-V)^{-2}$ | $Y \ge 0$ |
+| `exponential` | $e^{-Y}$           | $-\log V$          | $1/V$ | $Y > 0$ |
+| `logit`       | $1/(1+e^{-Y})$     | $\log\{V/(1-V)\}$  | $1/\{V(1-V)\}$ | $\mathbb{R}$ |
+| `tanh`        | $2/(1+e^{Y}) = 1 - \tanh(Y/2)$ | $\log(2/V - 1)$ | $2/\{V(2-V)\}$ | $Y > 0$ |
+| `probit`      | $\Phi(Y)$          | $\Phi^{-1}(V)$     | $1/\phi\{\Phi^{-1}(V)\}$ | $\mathbb{R}$ |
+| `cloglog`     | $1 - e^{-e^{Y}}$   | $\log\{-\log(1-V)\}$ | $1/\{-(1-V)\log(1-V)\}$ | $\mathbb{R}$ |
+
+`exponential` and `tanh` are decreasing; the other four are increasing. Each
+transformation is an object with the forward map, inverse and log-Jacobian:
+
+```{r}
+tr <- get_transformation("rational")
+tr
+tr$g(c(0.5, 1, 4))
+inverse_transformation(c(0.2, 0.5, 0.8), "rational")
+```
+
+### Baselines
+
+A baseline is given by its name: `"gamma"` means that `dgamma()`, `pgamma()`
+and `qgamma()` are used. The package looks for the functions on the search
+path first (so user-written baselines work, see Section 9), then in the
+**extraDistr** package if it is installed, then in **stats**. Parameter names
+are read from the formals of the density:
+
+```{r}
+baseline_params("gamma")
+baseline_params("weibull")
+baseline_params("norm")
+```
+
+Parameters may be supplied named, or unnamed in this order.
+
+### Compatibility of a pair
+
+A transformation can only be applied to a baseline whose support lies in its
+domain: `rational` needs $Y \ge 0$, `exponential` and `tanh` need $Y > 0$, and
+the other three accept the whole real line. `check_domain()` computes the
+probability that the baseline places outside the admissible domain (for
+example $P(Y < 0)$ for `rational`) and reports the range of $V$ that is
+effectively reached; `detect_transformations()` does this for all six maps.
+
+```{r}
+check_domain("norm", c(0, 1), "rational")$message
+detect_transformations("gamma", c(shape = 3, rate = 1))
+```
+
+`fit_trans()` refuses incompatible pairs unless `check_support = FALSE`.
+
+## 3. Density, distribution, quantile and random numbers
+
+```{r}
+dtrans(c(0.2, 0.5, 0.8), "gamma", c(shape = 2, rate = 1), "rational")
+ptrans(c(0.2, 0.5, 0.8), "gamma", c(2, 1), "rational")
+qtrans(c(0.1, 0.5, 0.9), "gamma", c(2, 1), "rational")
+set.seed(42)
+rtrans(5, "gamma", c(2, 1), "rational")
+```
+
+The quantile function inverts the cdf and the density integrates to one:
+
+```{r}
+p <- c(0.1, 0.5, 0.9)
+ptrans(qtrans(p, "weibull", c(2, 1), "exponential"), "weibull", c(2, 1), "exponential")
+integrate(function(v) dtrans(v, "gamma", c(2, 1), "rational"), 0, 1)$value
+```
+
+Several classical unit laws are recovered exactly. With an Exp($\lambda$)
+baseline and $V = e^{-Y}$, $V$ is Beta($\lambda$, 1); with $Y \sim N(0,1)$ and
+the probit map, or $Y$ logistic and the logit map, $V$ is uniform:
+
+```{r}
+v <- c(0.1, 0.4, 0.7)
+all.equal(dtrans(v, "exp", 3, "exponential"), dbeta(v, 3, 1))
+dtrans(v, "norm", c(0, 1), "probit")
+dtrans(v, "logis", c(0, 1), "logit")
+```
+
+The family is flexible. The same baseline produces quite different shapes under
+different transformations, and the baseline parameters move the mass across the
+interval:
+
+```{r shapes, fig.height = 3.6}
+vv <- seq(0.001, 0.999, length.out = 400)
+op2 <- par(mfrow = c(1, 2), mar = c(4, 4, 2, 1))
+plot(vv, dtrans(vv, "gamma", c(0.5, 1), "rational"), type = "l", lwd = 2,
+     ylim = c(0, 4), xlab = "v", ylab = "density", main = "Gamma + rational")
+for (i in 2:4)
+  lines(vv, dtrans(vv, "gamma", list(c(2, 1), c(5, 1), c(5, 5))[[i - 1]],
+                   "rational"), lwd = 2, col = i)
+legend("topright", lwd = 2, col = 1:4, bty = "n", cex = 0.8,
+       legend = c("(0.5, 1)", "(2, 1)", "(5, 1)", "(5, 5)"))
+plot(vv, dtrans(vv, "gamma", c(2, 1), "rational"), type = "l", lwd = 2,
+     ylim = c(0, 3), xlab = "v", ylab = "density", main = "Gamma(2, 1)")
+lines(vv, dtrans(vv, "gamma", c(2, 1), "exponential"), lwd = 2, col = 2)
+lines(vv, dtrans(vv, "gamma", c(2, 1), "tanh"), lwd = 2, col = 4)
+legend("topright", lwd = 2, col = c(1, 2, 4), bty = "n", cex = 0.8,
+       legend = c("rational", "exponential", "tanh"))
+par(op2)
+```
+
+### Accurate tails
+
+`ptrans()` and `qtrans()` accept `lower.tail` and `log.p`. Because the upper
+tail is taken from the baseline rather than computed as `1 - p`, it keeps full
+relative precision:
+
+```{r}
+ptrans(1 - 1e-10, "lnorm", c(0, 1), "rational", lower.tail = FALSE)
+1 - ptrans(1 - 1e-10, "lnorm", c(0, 1), "rational")   # naive: cancellation
+ptrans(0.3, "norm", c(0, 1), "logit", log.p = TRUE)
+```
+
+## 4. Maximum likelihood estimation
+
+For a sample $v_1, \dots, v_n$ in $(0, 1)$ the log-likelihood is
+$$\ell(\theta) = \sum_{i=1}^n \log f_Y\{g^{-1}(v_i); \theta\}
+  + \sum_{i=1}^n \log\left|\frac{d g^{-1}(v_i)}{dv}\right|,$$
+so the second sum does not depend on $\theta$ and the problem is a
+maximum likelihood fit of the baseline to the back-transformed data.
+`fit_trans()` maximises $\ell$ numerically on an unconstrained scale (positive
+parameters on the log scale) with BFGS and a Nelder-Mead fallback, starting from
+the default values, from a quantile-matching solution and from random
+perturbations (`n_start`). Standard errors come from the observed information;
+the fit records whether the Hessian was positive definite (`hessian_ok`).
+
+```{r}
+set.seed(1)
+x <- rtrans(300, "weibull", c(shape = 2, scale = 1.5), "exponential")
+fit <- fit_trans(x, "weibull", "exponential", seed = 1)
+summary(fit)
+```
+
+The usual generics work:
+
+```{r}
+coef(fit)
+vcov(fit)
+logLik(fit)
+c(AIC = AIC(fit), BIC = BIC(fit), n = nobs(fit))
+```
+
+Starting values, bounds and the number of starts can be controlled, and
+`loglik_trans()` evaluates the log-likelihood at any parameter value:
+
+```{r}
+fit2 <- fit_trans(x, "weibull", "exponential", start = c(shape = 1, scale = 1),
+                  lower = c(1e-6, 1e-6), upper = c(20, 20), n_start = 5, seed = 2)
+coef(fit2)
+loglik_trans(coef(fit2), x, "weibull", "exponential")
+```
+
+Data containing exact zeros or ones can be fitted with `adjust = TRUE`, which
+applies the Smithson-Verkuilen correction $(v(n-1) + 0.5)/n$.
+
+### Confidence intervals
+
+```{r}
+confint(fit)                           # Wald
+confint(fit, method = "profile")       # profile likelihood
+```
+
+A parametric percentile bootstrap is available with
+`confint(fit, method = "bootstrap", B = ...)`; it refits the model to `B`
+samples simulated from the estimate.
+
+### Diagnostics
+
+`plot()` draws a histogram with the fitted density, the empirical and fitted
+cdf, and Q-Q and P-P plots. Normalised quantile residuals
+$\Phi^{-1}\{\hat F(v_i)\}$ are approximately standard normal for an adequate
+model.
+
+```{r diag, fig.height = 5.5}
+plot(fit)
+```
+
+```{r}
+r <- residuals(fit)
+c(mean = mean(r), sd = sd(r))
+predict(fit, c(0.2, 0.5, 0.8), type = "cdf")
+```
+
+## 5. Choosing a model
+
+With several candidate baselines and transformations, `fit_all()` fits every
+compatible pair, drops pairs whose support is incompatible or whose optimiser
+did not converge, and ranks the rest by AIC, BIC or AICc. The table reports
+the difference to the best criterion value and the Akaike weights
+$w_j \propto \exp(-\Delta_j / 2)$.
+
+```{r}
+set.seed(4)
+y <- rtrans(300, "gamma", c(3, 2), "rational")
+res <- fit_all(y, dists = c("gamma", "lnorm", "weibull"),
+               trans = c("rational", "exponential", "tanh"),
+               criterion = "AIC", seed = 1)
+res
+best <- best_model(res)
+best
+```
+
+The data-generating model (gamma + rational) is ranked first. Models within
+about two AIC units of the best (here lognormal + tanh) are similarly
+supported by the data, which the Akaike weights make explicit.
+
+## 6. Goodness of fit
+
+`gof_trans()` computes the Kolmogorov-Smirnov, Cramér-von Mises and
+Anderson-Darling statistics of the probability integral transform
+$\hat F(v_i)$. Because the parameters are estimated, the classical null
+distributions do not apply; the p-values are obtained by a parametric
+bootstrap that re-estimates the parameters in each replication, as
+$(1 + \#\{T^* \ge T\}) / (B + 1)$.
+
+```{r}
+gof_trans(best, B = 50, seed = 1)
+```
+
+A poorly fitting model (normal baseline with the probit map) is rejected
+at the 5% level by the Cramér-von Mises and Anderson-Darling tests, which are
+more sensitive than Kolmogorov-Smirnov:
+
+```{r}
+wrong <- fit_trans(y, "norm", "probit")
+gof_trans(wrong, B = 50, seed = 1)
+```
+
+Use a larger `B` (for example 500 or 1000) in applications.
+
+## 7. Moments, survival and hazard
+
+Raw moments $E(V^r) = \int_0^1 Q_V(p)^r\, dp$ are computed by numerical
+integration of the quantile function. `summary_trans()` returns the mean,
+variance, skewness and excess kurtosis, integrating central moments directly to
+avoid cancellation.
+
+```{r}
+moments_trans("gamma", c(2, 1), "rational", r = 1:4)
+summary_trans("gamma", c(2, 1), "rational")
+set.seed(6)
+z <- rtrans(1e5, "gamma", c(2, 1), "rational")
+c(mean = mean(z), variance = var(z))
+```
+
+The survival function $S_V(v) = P(V > v)$ and the hazard
+$h_V(v) = f_V(v) / S_V(v)$ are evaluated from the baseline tails and on the
+log scale:
+
+```{r hazard, fig.height = 3.6}
+survival_trans(c(0.1, 0.5, 0.9), "weibull", c(2, 1), "rational")
+vv <- seq(0.01, 0.95, length.out = 300)
+hz <- sapply(c(0.8, 2, 4), function(k)
+  hazard_trans(vv, "weibull", c(k, 1), "rational"))
+matplot(vv, hz, type = "l", lty = 1, lwd = 2, col = c(1, 2, 4), log = "y",
+        xlab = "v", ylab = "hazard (log scale)",
+        main = "Weibull + rational: hazard rate")
+legend("topleft", lwd = 2, col = c(1, 2, 4), bty = "n",
+       legend = paste("shape =", c(0.8, 2, 4)))
+```
+
+## 8. Simulation studies
+
+`simulation_study()` checks the estimator: for each sample size it simulates
+`R` samples from the true model, refits, and reports the bias, root mean
+squared error and the coverage of nominal 95% Wald intervals.
+
+```{r}
+simulation_study("gamma", c(shape = 2, rate = 1), "rational",
+                 n = c(50, 200), R = 50, seed = 1)
+```
+
+Bias and RMSE shrink as $n$ grows and coverage is close to 0.95 (with only
+50 replications the coverage estimates are noisy). For a publication use,
+for example, `R = 1000` and more sample sizes.
+
+## 9. Other baselines
+
+Every distribution in **extraDistr** can be used by name once the package is
+installed (it does not need to be attached):
+
+```{r, eval = requireNamespace("extraDistr", quietly = TRUE)}
+baseline_params("rayleigh")
+dtrans(c(0.2, 0.5), "rayleigh", c(sigma = 1), "rational")
+```
+
+A user-defined baseline only needs `d`, `p` and `q` functions with the usual
+R signatures. Arguments such as `log`, `lower.tail` and `log.p` are optional;
+when they are missing UnitTrans falls back to computing them itself.
+
+```{r}
+dmyexp <- function(x, lambda, log = FALSE) dexp(x, rate = lambda, log = log)
+pmyexp <- function(q, lambda, lower.tail = TRUE) pexp(q, rate = lambda,
+                                                      lower.tail = lower.tail)
+qmyexp <- function(p, lambda) qexp(p, rate = lambda)
+baseline_params("myexp")
+set.seed(9)
+w <- rtrans(200, "myexp", c(lambda = 2), "rational")
+coef(fit_trans(w, "myexp", "rational", seed = 1))
+```
+
+## 10. A complete workflow
+
+```{r, eval = FALSE}
+# 'y' holds proportions strictly inside (0, 1)
+res  <- fit_all(y, c("gamma", "lnorm", "weibull", "exp", "norm", "logis"),
+                criterion = "AIC", seed = 1)     # all six transformations
+best <- best_model(res)
+summary(best)
+plot(best)
+gof_trans(best, B = 1000, seed = 1)
+confint(best, method = "profile")
+summary_trans(best$dist, best$coef, best$trans)
+```
+
+## References
+
+Cribari-Neto, F. and Zeileis, A. (2010). Beta regression in R. *Journal of
+Statistical Software*, 34(2), 1--24.
+
+Johnson, N. L. (1949). Systems of frequency curves generated by methods of
+translation. *Biometrika*, 36(1/2), 149--176.
+
+Smithson, M. and Verkuilen, J. (2006). A better lemon squeezer?
+Maximum-likelihood regression with beta-distributed dependent variables.
+*Psychological Methods*, 11(1), 54--71.
+
+```{r, include = FALSE}
+options(op)
+```

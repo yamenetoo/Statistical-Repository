@@ -1,5 +1,18 @@
 # UnitTrans 0.2.0
 
+## Documentation
+* New vignette "Introduction to UnitTrans" (`vignette("UnitTrans")`) covering
+  the construction, the six transformations, d/p/q/r functions, maximum
+  likelihood, model selection, goodness of fit, moments, hazards, simulation
+  studies and user-defined baselines. It replaces the short "run and test
+  workflow" vignette.
+* Help pages are now rendered from Markdown (`Roxygen: list(markdown = TRUE)`),
+  so code and links display correctly, and they have fuller details,
+  references and cross-links.
+* Author metadata corrected: co-author name spelled Heydari, ORCIDs added.
+* PDF versions of the vignette and reference manual in `docs/` (not part of
+  the package tarball).
+
 ## Bug fixes
 * The transformation `V = 2 / (1 + exp(Y))` was called `"arcsech"` but equals
   `1 - tanh(Y / 2)`. It is now `"tanh"`; `"arcsech"` still works as a

@@ -36,17 +36,20 @@ kept.}
 \item{seed}{Optional seed for the random perturbations. The caller's random
 number stream is restored afterwards.}
 
-\item{adjust}{If `TRUE`, data are mapped into the open interval with the
-Smithson-Verkuilen correction `(y (n - 1) + 0.5) / n`, which allows
+\item{adjust}{If \code{TRUE}, data are mapped into the open interval with the
+Smithson-Verkuilen correction \code{(y (n - 1) + 0.5) / n}, which allows
 observations equal to 0 or 1.}
 
-\item{check_support}{If `TRUE` (default), stop when the baseline puts mass
-outside the domain of the transformation (see [check_domain()]).}
+\item{check_support}{If \code{TRUE} (default), stop when the baseline puts mass
+outside the domain of the transformation (see \code{\link[=check_domain]{check_domain()}}).}
 }
 \value{
-An object of class `transfit` with `coef`, `se`, `vcov`, `logLik`,
-  `AIC`, `BIC`, `AICc`, `n`, `convergence` and `hessian_ok` (whether the
-  Hessian was positive definite, so that standard errors are available).
+An object of class \code{transfit} with \code{coef}, \code{se}, \code{vcov}, \code{logLik},
+\code{AIC}, \code{BIC}, \code{AICc}, \code{n}, \code{convergence} and \code{hessian_ok} (whether the
+Hessian was positive definite, so that standard errors are available).
+Methods exist for \code{\link[=print]{print()}}, \code{\link[=summary]{summary()}}, \code{\link[=coef]{coef()}}, \code{\link[=vcov]{vcov()}},
+\code{\link[=logLik]{logLik()}} (hence \code{\link[=AIC]{AIC()}} and \code{\link[=BIC]{BIC()}}), \code{\link[=nobs]{nobs()}}, \code{\link[=confint]{confint()}},
+\code{\link[=residuals]{residuals()}}, \code{\link[=predict]{predict()}} and \code{\link[=plot]{plot()}}.
 }
 \description{
 Fits the distribution of \eqn{V = g(Y)} to data in (0,1) by maximizing the
@@ -55,9 +58,37 @@ out on an unconstrained scale (logarithmic for positive parameters), starting
 from the default values, from a quantile-matching solution and from random
 perturbations; the best optimum is kept.
 }
+\details{
+The log-likelihood is
+\deqn{\ell(\theta) = \sum_i \log f_Y\{g^{-1}(v_i);\theta\} +
+  \sum_i \log |d g^{-1}(v_i)/dv|,}
+see \code{\link[=loglik_trans]{loglik_trans()}}. Each start is optimised with BFGS; if BFGS fails or
+does not converge, Nelder-Mead is tried. Standard errors are obtained by
+inverting a numerical Hessian of the negative log-likelihood at the
+estimate; when the Hessian is not positive definite they are \code{NA} and
+\code{hessian_ok} is \code{FALSE}.
+
+Parameters whose names look like locations (\code{mean}, \code{mu}, \code{location},
+\code{meanlog}, ...) are unbounded by default; all others are constrained to be
+positive.
+}
 \examples{
 set.seed(1)
 x <- rtrans(200, "norm", c(0.5, 1), "logit")
 fit <- fit_trans(x, "norm", "logit")
 fit
+summary(fit)
+AIC(fit)
+
+# data with exact zeros or ones
+fit_trans(c(0, 1, x), "norm", "logit", adjust = TRUE)
+}
+\references{
+Smithson, M. and Verkuilen, J. (2006). A better lemon squeezer?
+Maximum-likelihood regression with beta-distributed dependent variables.
+\emph{Psychological Methods}, 11(1), 54--71. \doi{10.1037/1082-989X.11.1.54}
+}
+\seealso{
+\code{\link[=fit_all]{fit_all()}} to compare many models, \code{\link[=confint.transfit]{confint.transfit()}},
+\code{\link[=gof_trans]{gof_trans()}}, \code{\link[=plot.transfit]{plot.transfit()}}.
 }

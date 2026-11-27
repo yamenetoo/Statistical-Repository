@@ -3,6 +3,8 @@
 #' Repeatedly simulates from a transformed distribution, refits it and
 #' summarizes bias, root mean squared error and the coverage of Wald intervals.
 #' Coverage is computed over the replications with available standard errors.
+#' Each replication starts the optimiser at the true values, so the study
+#' measures the behaviour of the estimator rather than of the starting rule.
 #'
 #' @param dist,par,trans True model.
 #' @param n Sample size(s).
@@ -10,6 +12,7 @@
 #' @param seed Optional seed (the caller's random number stream is restored).
 #' @return A data frame with one row per sample size and parameter, including
 #'   the number of `failed` replications.
+#' @seealso [fit_trans()].
 #' @examples
 #' simulation_study("norm", c(mean = 0, sd = 1), "logit", n = c(50, 100), R = 20, seed = 1)
 #' @export

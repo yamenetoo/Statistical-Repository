@@ -10,21 +10,24 @@ moments_trans(dist, par, trans, r = 1:4)
 summary_trans(dist, par, trans)
 }
 \arguments{
-\item{dist, par, trans}{As in [dtrans()].}
+\item{dist, par, trans}{As in \code{\link[=dtrans]{dtrans()}}.}
 
 \item{r}{Order(s) of the raw moments.}
 }
 \value{
-`moments_trans` returns a named vector of raw moments;
-  `summary_trans` returns mean, variance, skewness and excess kurtosis.
+\code{moments_trans} returns a named vector of raw moments;
+\code{summary_trans} returns mean, variance, skewness and excess kurtosis.
 }
 \description{
 Computed by numerical integration of the quantile function,
-\eqn{E[V^r] = \int_0^1 Q(p)^r dp}. Central moments in `summary_trans` are
+\eqn{E[V^r] = \int_0^1 Q(p)^r dp}. Central moments in \code{summary_trans} are
 integrated directly (not obtained from raw moments), which avoids
-cancellation errors.
+cancellation errors. Moments always exist because \eqn{V} is bounded.
 }
 \examples{
 moments_trans("gamma", c(2, 1), "rational", r = 1:2)
 summary_trans("norm", c(0, 1), "logit")
+}
+\seealso{
+\code{\link[=dtrans]{dtrans()}}, \code{\link[=qtrans]{qtrans()}}.
 }

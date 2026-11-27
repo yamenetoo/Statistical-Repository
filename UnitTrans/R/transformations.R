@@ -47,6 +47,13 @@
 
 #' List the available transformations
 #'
+#' The transformations map a baseline variable \eqn{Y} into (0,1):
+#' `"rational"` \eqn{Y/(1+Y)} for \eqn{Y \ge 0}; `"exponential"`
+#' \eqn{e^{-Y}} and `"tanh"` \eqn{2/(1+e^Y) = 1 - \tanh(Y/2)} for
+#' \eqn{Y > 0}; `"logit"` \eqn{1/(1+e^{-Y})}, `"probit"` \eqn{\Phi(Y)} and
+#' `"cloglog"` \eqn{1 - \exp(-e^Y)} for real \eqn{Y}.
+#'
+#' @seealso [get_transformation()], [check_domain()].
 #' @return A data frame with the name, forward formula, inverse formula,
 #'   admissible baseline domain and monotonicity of each transformation.
 #' @examples

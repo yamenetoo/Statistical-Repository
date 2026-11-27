@@ -8,11 +8,18 @@ trans_list()
 }
 \value{
 A data frame with the name, forward formula, inverse formula,
-  admissible baseline domain and monotonicity of each transformation.
+admissible baseline domain and monotonicity of each transformation.
 }
 \description{
-List the available transformations
+The transformations map a baseline variable \eqn{Y} into (0,1):
+\code{"rational"} \eqn{Y/(1+Y)} for \eqn{Y \ge 0}; \code{"exponential"}
+\eqn{e^{-Y}} and \code{"tanh"} \eqn{2/(1+e^Y) = 1 - \tanh(Y/2)} for
+\eqn{Y > 0}; \code{"logit"} \eqn{1/(1+e^{-Y})}, \code{"probit"} \eqn{\Phi(Y)} and
+\code{"cloglog"} \eqn{1 - \exp(-e^Y)} for real \eqn{Y}.
 }
 \examples{
 trans_list()
+}
+\seealso{
+\code{\link[=get_transformation]{get_transformation()}}, \code{\link[=check_domain]{check_domain()}}.
 }

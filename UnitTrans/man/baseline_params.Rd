@@ -7,14 +7,16 @@
 baseline_params(dist)
 }
 \arguments{
-\item{dist}{Name of the baseline distribution, e.g. `"gamma"`.}
+\item{dist}{Name of the baseline distribution, e.g. \code{"gamma"}.
+Distributions that accept either \code{rate} or \code{scale} (such as the gamma) are
+parameterised by \code{rate}.}
 }
 \value{
 Character vector of parameter names.
 }
 \description{
-Reads the parameter names from the formals of the `d<dist>` function,
-dropping the first argument and arguments such as `log`.
+Reads the parameter names from the formals of the \verb{d<dist>} function,
+dropping the first argument and arguments such as \code{log}.
 }
 \examples{
 baseline_params("gamma")

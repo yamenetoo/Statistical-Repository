@@ -14,6 +14,11 @@
 #' valid with estimated parameters). The p-value is
 #' `(1 + number of T* >= T) / (B + 1)`, so it is never exactly zero.
 #'
+#' The statistics are computed from the probability integral transform
+#' \eqn{u_i = \hat F(v_i)}. With `refit = FALSE` the parameters are not
+#' re-estimated in the bootstrap; this is faster but the test is then
+#' conservative.
+#'
 #' @param fit A `transfit` object.
 #' @param B Number of bootstrap replications.
 #' @param refit Re-estimate the parameters in each replication.
@@ -21,6 +26,11 @@
 #' @return A data frame with statistic and bootstrap p-value for each test, and
 #'   `valid_boot`, the number of replications that could be fitted. A warning
 #'   is issued when some replications fail.
+#' @references
+#' Stephens, M. A. (1974). EDF statistics for goodness of fit and some
+#' comparisons. *Journal of the American Statistical Association*, 69(347),
+#' 730--737. \doi{10.1080/01621459.1974.10480196}
+#' @seealso [fit_trans()], [residuals.transfit()].
 #' @examples
 #' set.seed(3)
 #' fit <- fit_trans(rtrans(100, "norm", c(0, 1), "logit"), "norm", "logit")

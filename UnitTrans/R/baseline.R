@@ -101,6 +101,8 @@
 #' Reads the parameter names from the formals of the `d<dist>` function,
 #' dropping the first argument and arguments such as `log`.
 #' @param dist Name of the baseline distribution, e.g. `"gamma"`.
+#' Distributions that accept either `rate` or `scale` (such as the gamma) are
+#' parameterised by `rate`.
 #' @return Character vector of parameter names.
 #' @examples
 #' baseline_params("gamma")
@@ -130,6 +132,7 @@ baseline_params <- function(dist) .as_base(dist)$params
 #' @param par Baseline parameters (named vector/list or unnamed in formals order).
 #' @param trans Transformation name or object.
 #' @param tol Largest tolerated probability mass outside the admissible domain.
+#' @seealso [detect_transformations()], [trans_list()].
 #' @return A list with `valid` (logical), `range` (approximate support of V),
 #'   `mass_outside` and `message`.
 #' @examples
@@ -176,6 +179,8 @@ check_domain <- function(dist, par, trans, tol = 1e-8) {
 }
 
 #' Detect which transformations suit a baseline distribution
+#'
+#' Runs [check_domain()] for each of the six transformations.
 #'
 #' @param dist Baseline distribution name.
 #' @param par Baseline parameters.

@@ -7,17 +7,19 @@
 \method{plot}{transfit}(x, which = 1:4, ...)
 }
 \arguments{
-\item{x}{A `transfit` object.}
+\item{x}{A \code{transfit} object.}
 
 \item{which}{Which of the four panels to draw (subset of 1:4).}
 
 \item{...}{Unused.}
 }
 \value{
-Invisibly `x`.
+Invisibly \code{x}.
 }
 \description{
-Histogram with fitted density, plus fitted vs empirical CDF, Q-Q and P-P.
+Diagnostic plots: (1) histogram with the fitted density, (2) empirical and
+fitted cdf, (3) Q-Q plot of the sample against fitted quantiles and (4) P-P
+plot. Points close to the diagonal in panels 3 and 4 indicate a good fit.
 }
 \examples{
 set.seed(1)

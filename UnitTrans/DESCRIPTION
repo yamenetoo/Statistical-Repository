@@ -4,11 +4,12 @@ Title: Distributions on the Unit Interval via Transformations of
         Baseline Laws
 Version: 0.2.0
 Authors@R: c(
-    person("Mohamad Yamen", "Al-Mohamad", role = c("aut", "cre"),
-    email = "yamenmohamad@tabrizu.ac.ir",
-    comment = c(ORCID = "0009-0009-1665-7203")),
-    person("Ali Akbar", "Hydari", role = "aut",
-    email = "heydari@tabrizu.ac.ir"))
+    person("Mohamad Yamen", "AL Mohamad", role = c("aut", "cre", "cph"),
+           email = "yamenmohamad@tabrizu.ac.ir",
+           comment = c(ORCID = "0009-0009-1665-7203")),
+    person("Ali Akbar", "Heydari", role = "aut",
+           email = "heydari@tabrizu.ac.ir",
+           comment = c(ORCID = "0000-0002-1236-3189")))
 Description: Builds new probability distributions on (0,1) by applying a
     monotone transformation (rational, exponential, logit, 'tanh', probit,
     complementary log-log) to a baseline random variable Y with any
@@ -27,4 +28,5 @@ Imports: stats, graphics, parallel
 Suggests: extraDistr, testthat (>= 3.0.0), knitr, rmarkdown
 VignetteBuilder: knitr
 Config/testthat/edition: 3
+Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1

@@ -16,17 +16,20 @@ check_domain(dist, par, trans, tol = 1e-08)
 \item{tol}{Largest tolerated probability mass outside the admissible domain.}
 }
 \value{
-A list with `valid` (logical), `range` (approximate support of V),
-  `mass_outside` and `message`.
+A list with \code{valid} (logical), \code{range} (approximate support of V),
+\code{mass_outside} and \code{message}.
 }
 \description{
 Verifies that the support of Y is compatible with the transformation. When
 the baseline cdf is available the probability mass that Y places outside
 the admissible domain of the transformation is computed exactly
-(for example `P(Y < 0)` for `"rational"`); otherwise a grid of quantiles is
+(for example \code{P(Y < 0)} for \code{"rational"}); otherwise a grid of quantiles is
 inspected. The range of V actually reached is also reported.
 }
 \examples{
 check_domain("norm", c(0, 1), "logit")
 check_domain("norm", c(0, 1), "rational")
+}
+\seealso{
+\code{\link[=detect_transformations]{detect_transformations()}}, \code{\link[=trans_list]{trans_list()}}.
 }

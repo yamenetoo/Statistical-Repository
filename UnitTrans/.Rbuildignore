@@ -4,3 +4,6 @@
 ^\.github$
 ^LICENSE\.md$
 ^cran-comments\.md$
+^docs$
+^\.gitignore$
+^man/figures/logo\.svg$
