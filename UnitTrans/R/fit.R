@@ -83,11 +83,16 @@
 
 #' Log-likelihood of the transformed distribution
 #'
+#' Sum of `dtrans(data, dist, par, trans, log = TRUE)`. Returns `-Inf`
+#' when any term is not finite (for example a parameter outside its range),
+#' which makes it safe to use inside an optimiser.
+#'
 #' @param par Baseline parameters.
 #' @param data Observations in (0,1).
 #' @param dist Baseline distribution name.
 #' @param trans Transformation name or object.
-#' @return Numeric scalar.
+#' @return Numeric scalar, the log-likelihood.
+#' @seealso [fit_trans()].
 #' @examples
 #' loglik_trans(c(0, 1), c(.2, .4, .7), "norm", "logit")
 #' @export
@@ -194,6 +199,19 @@ loglik_trans <- function(par, data, dist, trans) {
 #' from the default values, from a quantile-matching solution and from random
 #' perturbations; the best optimum is kept.
 #'
+#' The log-likelihood is
+#' \deqn{\ell(\theta) = \sum_i \log f_Y\{g^{-1}(v_i);\theta\} +
+#'   \sum_i \log |d g^{-1}(v_i)/dv|,}
+#' see [loglik_trans()]. Each start is optimised with BFGS; if BFGS fails or
+#' does not converge, Nelder-Mead is tried. Standard errors are obtained by
+#' inverting a numerical Hessian of the negative log-likelihood at the
+#' estimate; when the Hessian is not positive definite they are `NA` and
+#' `hessian_ok` is `FALSE`.
+#'
+#' Parameters whose names look like locations (`mean`, `mu`, `location`,
+#' `meanlog`, ...) are unbounded by default; all others are constrained to be
+#' positive.
+#'
 #' @param data Numeric vector with values strictly inside (0,1).
 #' @param dist Baseline distribution name.
 #' @param trans Transformation name or object.
@@ -213,11 +231,25 @@ loglik_trans <- function(par, data, dist, trans) {
 #' @return An object of class `transfit` with `coef`, `se`, `vcov`, `logLik`,
 #'   `AIC`, `BIC`, `AICc`, `n`, `convergence` and `hessian_ok` (whether the
 #'   Hessian was positive definite, so that standard errors are available).
+#'   Methods exist for [print()], [summary()], [coef()], [vcov()],
+#'   [logLik()] (hence [AIC()] and [BIC()]), [nobs()], [confint()],
+#'   [residuals()], [predict()] and [plot()].
+#' @references
+#' Smithson, M. and Verkuilen, J. (2006). A better lemon squeezer?
+#' Maximum-likelihood regression with beta-distributed dependent variables.
+#' *Psychological Methods*, 11(1), 54--71. \doi{10.1037/1082-989X.11.1.54}
+#' @seealso [fit_all()] to compare many models, [confint.transfit()],
+#'   [gof_trans()], [plot.transfit()].
 #' @examples
 #' set.seed(1)
 #' x <- rtrans(200, "norm", c(0.5, 1), "logit")
 #' fit <- fit_trans(x, "norm", "logit")
 #' fit
+#' summary(fit)
+#' AIC(fit)
+#'
+#' # data with exact zeros or ones
+#' fit_trans(c(0, 1, x), "norm", "logit", adjust = TRUE)
 #' @export
 fit_trans <- function(data, dist, trans, start = NULL, lower = NULL,
                       upper = NULL, n_start = 3, seed = NULL, adjust = FALSE,
@@ -367,6 +399,13 @@ print.summary.transfit <- function(x, ...) {
 
 #' Confidence intervals for a fitted model
 #'
+#' Wald intervals are \eqn{\hat\theta \pm z_{1-\alpha/2} SE}. Profile
+#' intervals contain the values \eqn{\theta_j} for which
+#' \eqn{2\{\ell(\hat\theta) - \ell_p(\theta_j)\} \le
+#' \chi^2_{1,1-\alpha}}, where \eqn{\ell_p} maximises over the other
+#' parameters. Bootstrap intervals are percentile intervals from `B` samples
+#' simulated at the estimate and refitted.
+#'
 #' @param object A `transfit` object.
 #' @param parm Parameter names or indices (default: all).
 #' @param level Confidence level.
@@ -428,7 +467,9 @@ confint.transfit <- function(object, parm, level = 0.95,
 
 #' Plot a fitted model
 #'
-#' Histogram with fitted density, plus fitted vs empirical CDF, Q-Q and P-P.
+#' Diagnostic plots: (1) histogram with the fitted density, (2) empirical and
+#' fitted cdf, (3) Q-Q plot of the sample against fitted quantiles and (4) P-P
+#' plot. Points close to the diagonal in panels 3 and 4 indicate a good fit.
 #' @param x A `transfit` object.
 #' @param which Which of the four panels to draw (subset of 1:4).
 #' @param ... Unused.
@@ -551,9 +592,17 @@ print.transfit_all <- function(x, ...) {
 
 #' Extract the best model from a [fit_all()] result
 #'
+#' Returns the fit with the smallest value of the chosen criterion.
+#'
 #' @param object A `transfit_all` object.
 #' @param criterion Criterion to use; defaults to the one used for ranking.
 #' @return The best `transfit` object.
+#' @seealso [fit_all()].
+#' @examples
+#' set.seed(2)
+#' x <- rtrans(150, "gamma", c(2, 1), "rational")
+#' res <- fit_all(x, c("gamma", "lnorm"), c("rational", "exponential"))
+#' best_model(res, "BIC")
 #' @export
 best_model <- function(object, criterion = object$criterion) {
   tab <- object$table

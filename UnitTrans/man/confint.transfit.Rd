@@ -15,15 +15,15 @@
 )
 }
 \arguments{
-\item{object}{A `transfit` object.}
+\item{object}{A \code{transfit} object.}
 
 \item{parm}{Parameter names or indices (default: all).}
 
 \item{level}{Confidence level.}
 
-\item{method}{`"wald"` (from the Hessian), `"bootstrap"` (parametric
-percentile bootstrap) or `"profile"` (profile likelihood, usually
-better for positive or skewed parameters). A limit returned as `NA` means
+\item{method}{\code{"wald"} (from the Hessian), \code{"bootstrap"} (parametric
+percentile bootstrap) or \code{"profile"} (profile likelihood, usually
+better for positive or skewed parameters). A limit returned as \code{NA} means
 that the profile did not cross the cut-off in the searched range.}
 
 \item{B}{Bootstrap replications.}
@@ -35,10 +35,15 @@ stream is restored afterwards).}
 }
 \value{
 Matrix with lower and upper limits. For the bootstrap the number of
-  failed replications is stored in the attribute `"failed"`.
+failed replications is stored in the attribute \code{"failed"}.
 }
 \description{
-Confidence intervals for a fitted model
+Wald intervals are \eqn{\hat\theta \pm z_{1-\alpha/2} SE}. Profile
+intervals contain the values \eqn{\theta_j} for which
+\eqn{2\{\ell(\hat\theta) - \ell_p(\theta_j)\} \le
+\chi^2_{1,1-\alpha}}, where \eqn{\ell_p} maximises over the other
+parameters. Bootstrap intervals are percentile intervals from \code{B} samples
+simulated at the estimate and refitted.
 }
 \examples{
 set.seed(1)

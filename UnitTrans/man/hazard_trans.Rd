@@ -12,10 +12,11 @@ survival_trans(v, dist, par, trans)
 \arguments{
 \item{v}{Values in (0,1).}
 
-\item{dist, par, trans}{As in [dtrans()].}
+\item{dist, par, trans}{As in \code{\link[=dtrans]{dtrans()}}.}
 }
 \value{
-Numeric vector.
+Numeric vector: \eqn{S(v) = P(V > v)} for \code{survival_trans} and
+\eqn{h(v) = f(v)/S(v)} for \code{hazard_trans}.
 }
 \description{
 The survival function is the upper tail computed directly from the baseline
@@ -23,4 +24,7 @@ and the hazard is evaluated on the log scale, so both stay accurate near 1.
 }
 \examples{
 hazard_trans(c(.2, .5), "gamma", c(2, 1), "rational")
+}
+\seealso{
+\code{\link[=dtrans]{dtrans()}}.
 }

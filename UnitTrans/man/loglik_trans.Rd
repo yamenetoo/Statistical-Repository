@@ -16,11 +16,16 @@ loglik_trans(par, data, dist, trans)
 \item{trans}{Transformation name or object.}
 }
 \value{
-Numeric scalar.
+Numeric scalar, the log-likelihood.
 }
 \description{
-Log-likelihood of the transformed distribution
+Sum of \code{dtrans(data, dist, par, trans, log = TRUE)}. Returns \code{-Inf}
+when any term is not finite (for example a parameter outside its range),
+which makes it safe to use inside an optimiser.
 }
 \examples{
 loglik_trans(c(0, 1), c(.2, .4, .7), "norm", "logit")
+}
+\seealso{
+\code{\link[=fit_trans]{fit_trans()}}.
 }

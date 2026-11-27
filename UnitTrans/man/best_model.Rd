@@ -2,18 +2,27 @@
 % Please edit documentation in R/fit.R
 \name{best_model}
 \alias{best_model}
-\title{Extract the best model from a [fit_all()] result}
+\title{Extract the best model from a \code{\link[=fit_all]{fit_all()}} result}
 \usage{
 best_model(object, criterion = object$criterion)
 }
 \arguments{
-\item{object}{A `transfit_all` object.}
+\item{object}{A \code{transfit_all} object.}
 
 \item{criterion}{Criterion to use; defaults to the one used for ranking.}
 }
 \value{
-The best `transfit` object.
+The best \code{transfit} object.
 }
 \description{
-Extract the best model from a [fit_all()] result
+Returns the fit with the smallest value of the chosen criterion.
+}
+\examples{
+set.seed(2)
+x <- rtrans(150, "gamma", c(2, 1), "rational")
+res <- fit_all(x, c("gamma", "lnorm"), c("rational", "exponential"))
+best_model(res, "BIC")
+}
+\seealso{
+\code{\link[=fit_all]{fit_all()}}.
 }

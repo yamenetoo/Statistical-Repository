@@ -11,22 +11,22 @@
 \method{predict}{transfit}(object, newdata = NULL, type = c("density", "cdf", "quantile"), ...)
 }
 \arguments{
-\item{object}{A `transfit` object.}
+\item{object}{A \code{transfit} object.}
 
-\item{type}{For `predict`: `"density"`, `"cdf"` or `"quantile"`.}
+\item{type}{For \code{predict}: \code{"density"}, \code{"cdf"} or \code{"quantile"}.}
 
 \item{...}{Unused.}
 
 \item{newdata}{Numeric vector of values in (0,1) (or probabilities when
-`type = "quantile"`). Defaults to the data used for the fit.}
+\code{type = "quantile"}). Defaults to the data used for the fit.}
 }
 \value{
 Numeric vector.
 }
 \description{
-`residuals(type = "quantile")` returns normalized quantile residuals
+\code{residuals(type = "quantile")} returns normalized quantile residuals
 \eqn{\Phi^{-1}(F(v_i))}, which are approximately standard normal when the
-model is adequate; `type = "pit"` returns the probability integral
+model is adequate; \code{type = "pit"} returns the probability integral
 transform \eqn{F(v_i)}, approximately uniform.
 }
 \examples{

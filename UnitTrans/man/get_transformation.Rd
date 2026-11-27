@@ -7,14 +7,14 @@
 get_transformation(name)
 }
 \arguments{
-\item{name}{One of the names returned by [trans_list()]. The old name
-`"arcsech"` is still accepted (with a warning) and refers to `"tanh"`:
-the map `V = 2/(1 + exp(Y))` equals `1 - tanh(Y/2)` and is not the
+\item{name}{One of the names returned by \code{\link[=trans_list]{trans_list()}}. The old name
+\code{"arcsech"} is still accepted (with a warning) and refers to \code{"tanh"}:
+the map \code{V = 2/(1 + exp(Y))} equals \code{1 - tanh(Y/2)} and is not the
 inverse hyperbolic secant.}
 }
 \value{
-An object of class `unitrans` with elements `g` (forward map),
-  `ginv` (inverse map), `logjac` (log |dY/dV|), `domain` and `decreasing`.
+An object of class \code{unitrans} with elements \code{g} (forward map),
+\code{ginv} (inverse map), \code{logjac} (log |dY/dV|), \code{domain} and \code{decreasing}.
 }
 \description{
 Get a transformation object by name

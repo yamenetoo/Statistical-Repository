@@ -7,7 +7,7 @@
 gof_trans(fit, B = 200, refit = TRUE, seed = NULL)
 }
 \arguments{
-\item{fit}{A `transfit` object.}
+\item{fit}{A \code{transfit} object.}
 
 \item{B}{Number of bootstrap replications.}
 
@@ -17,18 +17,32 @@ gof_trans(fit, B = 200, refit = TRUE, seed = NULL)
 }
 \value{
 A data frame with statistic and bootstrap p-value for each test, and
-  `valid_boot`, the number of replications that could be fitted. A warning
-  is issued when some replications fail.
+\code{valid_boot}, the number of replications that could be fitted. A warning
+is issued when some replications fail.
 }
 \description{
 Computes Kolmogorov-Smirnov, Cramer-von Mises and Anderson-Darling
 statistics for a fitted model and obtains p-values by a parametric bootstrap
 that re-estimates the parameters in every replication (so the p-values are
 valid with estimated parameters). The p-value is
-`(1 + number of T* >= T) / (B + 1)`, so it is never exactly zero.
+\verb{(1 + number of T* >= T) / (B + 1)}, so it is never exactly zero.
+}
+\details{
+The statistics are computed from the probability integral transform
+\eqn{u_i = \hat F(v_i)}. With \code{refit = FALSE} the parameters are not
+re-estimated in the bootstrap; this is faster but the test is then
+conservative.
 }
 \examples{
 set.seed(3)
 fit <- fit_trans(rtrans(100, "norm", c(0, 1), "logit"), "norm", "logit")
 gof_trans(fit, B = 50)
+}
+\references{
+Stephens, M. A. (1974). EDF statistics for goodness of fit and some
+comparisons. \emph{Journal of the American Statistical Association}, 69(347),
+730--737. \doi{10.1080/01621459.1974.10480196}
+}
+\seealso{
+\code{\link[=fit_trans]{fit_trans()}}, \code{\link[=residuals.transfit]{residuals.transfit()}}.
 }

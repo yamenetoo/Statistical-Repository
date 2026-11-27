@@ -2,6 +2,8 @@
 
 **Distributions on the unit interval via transformations of baseline laws**
 
+**Documentation:** [vignette (PDF)](docs/UnitTrans-vignette.pdf) · [reference manual (PDF)](docs/UnitTrans-manual.pdf)
+
 `UnitTrans` builds new probability distributions on (0, 1) by applying a monotone
 transformation `V = g(Y)` — rational, exponential, logit, tanh,
 probit or complementary log-log — to a baseline random variable `Y` with any
@@ -403,19 +405,47 @@ hazard_trans(1 - 1e-12, "lnorm", c(0, 1), "rational")
 
 ---
 
+## Documentation
+
+PDF versions are in [`docs/`](docs/):
+
+- [Introduction to UnitTrans (vignette, PDF)](docs/UnitTrans-vignette.pdf)
+- [Reference manual (all help pages, PDF)](docs/UnitTrans-manual.pdf)
+
+After installing with `build_vignettes = TRUE`, the vignette is also available
+in R with `vignette("UnitTrans")`, and every function has a help page
+(`?dtrans`, `?fit_trans`, ...).
+
 ## Running the tests
 
 ```sh
 R CMD build UnitTrans
-R CMD check UnitTrans_0.2.0.tar.gz
+R CMD check --as-cran UnitTrans_0.2.0.tar.gz
 ```
 
 or inside R: `testthat::test_local()`.
 
-## Author
+## Citation
 
-Mohamad Yamen Al-Mohamad — Department of Statistics, University of Tabriz
+```bibtex
+@Manual{UnitTrans,
+  title  = {UnitTrans: Distributions on the Unit Interval via Transformations
+            of Baseline Laws},
+  author = {Mohamad Yamen {AL Mohamad} and Ali Akbar Heydari},
+  year   = {2026},
+  note   = {R package version 0.2.0},
+  url    = {https://github.com/yamenetoo/Statistical-Repository/tree/main/UnitTrans}
+}
+```
 
-## License
+## Authors and license
 
-GPL-3
+| Author | ORCID | Email |
+|---|---|---|
+| Mohamad Yamen AL Mohamad (maintainer) | [0009-0009-1665-7203](https://orcid.org/0009-0009-1665-7203) | [yamenmohamad@tabrizu.ac.ir](mailto:yamenmohamad@tabrizu.ac.ir) |
+| Ali Akbar Heydari | [0000-0002-1236-3189](https://orcid.org/0000-0002-1236-3189) | [heydari@tabrizu.ac.ir](mailto:heydari@tabrizu.ac.ir) |
+
+Department of Statistics, Faculty of Mathematics, Statistics and Computer
+Science, University of Tabriz, Tabriz, Iran.
+
+License: GPL-3.

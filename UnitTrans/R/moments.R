@@ -3,7 +3,7 @@
 #' Computed by numerical integration of the quantile function,
 #' \eqn{E[V^r] = \int_0^1 Q(p)^r dp}. Central moments in `summary_trans` are
 #' integrated directly (not obtained from raw moments), which avoids
-#' cancellation errors.
+#' cancellation errors. Moments always exist because \eqn{V} is bounded.
 #' @param dist,par,trans As in [dtrans()].
 #' @param r Order(s) of the raw moments.
 #' @return `moments_trans` returns a named vector of raw moments;
@@ -11,6 +11,7 @@
 #' @examples
 #' moments_trans("gamma", c(2, 1), "rational", r = 1:2)
 #' summary_trans("norm", c(0, 1), "logit")
+#' @seealso [dtrans()], [qtrans()].
 #' @export
 moments_trans <- function(dist, par, trans, r = 1:4) {
   tr <- get_transformation(trans); bl <- .as_base(dist); par <- .name_par(par, bl)
@@ -39,7 +40,9 @@ summary_trans <- function(dist, par, trans) {
 #' and the hazard is evaluated on the log scale, so both stay accurate near 1.
 #' @param v Values in (0,1).
 #' @param dist,par,trans As in [dtrans()].
-#' @return Numeric vector.
+#' @return Numeric vector: \eqn{S(v) = P(V > v)} for `survival_trans` and
+#'   \eqn{h(v) = f(v)/S(v)} for `hazard_trans`.
+#' @seealso [dtrans()].
 #' @examples
 #' hazard_trans(c(.2, .5), "gamma", c(2, 1), "rational")
 #' @export

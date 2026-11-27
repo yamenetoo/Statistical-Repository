@@ -13,10 +13,10 @@ detect_transformations(dist, par)
 }
 \value{
 A data frame listing each transformation, whether it is valid and
-  the approximate range of V.
+the approximate range of V.
 }
 \description{
-Detect which transformations suit a baseline distribution
+Runs \code{\link[=check_domain]{check_domain()}} for each of the six transformations.
 }
 \examples{
 detect_transformations("gamma", c(shape = 3, rate = 1))

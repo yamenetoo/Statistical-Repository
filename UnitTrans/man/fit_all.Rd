@@ -23,31 +23,31 @@ fit_all(
 
 \item{trans}{Character vector of transformation names (default: all).}
 
-\item{criterion}{`"AIC"`, `"BIC"` or `"AICc"`.}
+\item{criterion}{\code{"AIC"}, \code{"BIC"} or \code{"AICc"}.}
 
 \item{verbose}{Print skipped combinations.}
 
 \item{drop_nonconverged}{Drop fits whose optimizer reported non-convergence.}
 
-\item{seed}{Optional seed passed to every [fit_trans()] call (the same seed
+\item{seed}{Optional seed passed to every \code{\link[=fit_trans]{fit_trans()}} call (the same seed
 for each combination, so results do not depend on the order of the
-combinations or on `cores`).}
+combinations or on \code{cores}).}
 
 \item{cores}{Number of processes (Unix-alike systems only; ignored on Windows).}
 
-\item{adjust}{Passed to [fit_trans()].}
+\item{adjust}{Passed to \code{\link[=fit_trans]{fit_trans()}}.}
 }
 \value{
-An object of class `transfit_all`: a ranking `table` (with
-  `delta` and Akaike `weight` for the chosen criterion) and the list of
-  `fits`.
+An object of class \code{transfit_all}: a ranking \code{table} (with
+\code{delta} and Akaike \code{weight} for the chosen criterion) and the list of
+\code{fits}.
 }
 \description{
 Fits every valid combination of baseline distributions and transformations
 and ranks them by an information criterion. Combinations whose baseline
 support is incompatible with the transformation, whose optimizer did not
 converge or whose fit puts mass outside the transformation domain are
-dropped (reported when `verbose = TRUE`).
+dropped (reported when \code{verbose = TRUE}).
 }
 \examples{
 set.seed(2)
