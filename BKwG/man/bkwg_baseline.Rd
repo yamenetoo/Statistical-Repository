@@ -21,7 +21,10 @@ bkwg_baseline(name, pG, dG, qG = NULL, par = numeric(0),
   \item{name}{a short name for the baseline.}
   \item{pG}{the baseline cdf, a function \code{function(q, par)} or
     \code{function(q, par, lower.tail = TRUE, log.p = FALSE)}; \code{par} is
-    a named numeric vector. Supplying \code{log.p} improves tail accuracy.}
+    a named numeric vector. Supplying \code{lower.tail} and \code{log.p}
+    is strongly recommended: without them the upper tail is computed as
+    \eqn{1 - G(x)}, which rounds to zero far in the right tail, and the
+    density there is then returned as zero.}
   \item{dG}{the baseline pdf, \code{function(x, par)} or
     \code{function(x, par, log = FALSE)}.}
   \item{qG}{optional quantile function \code{function(p, par)}. If

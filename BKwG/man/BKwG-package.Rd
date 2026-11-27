@@ -30,6 +30,8 @@ Main functions:
   \item Inference: \code{\link{gof_bkwg}}, \code{\link{lrt_bkwg}},
     \code{\link{wald_bkwg}}, \code{\link{compare_bkwg}}.
 }
+A worked introduction covering all of these is available with
+\code{vignette("BKwG", package = "BKwG")}.
 }
 \author{
 Mohamad Yamen AL Mohamad \email{yamenmohamad@tabrizu.ac.ir} (maintainer),

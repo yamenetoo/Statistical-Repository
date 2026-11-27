@@ -65,6 +65,32 @@ full model is weakly identified when the data point to
 preferable. Scale-type baseline parameters can also be confounded with the
 shape parameters (for instance the Weibull scale with \eqn{b}); always check
 the standard errors and compare with the sub-models.
+
+On some samples the likelihood of the full model increases towards the
+boundary of the parameter space (for example \eqn{\alpha \to \infty}{alpha
+-> Inf} with \eqn{\beta \to 0}{beta -> 0}). The optimiser then stops at very
+large or very small estimates and the information matrix cannot be inverted
+(a warning is given and the standard errors are \code{NA}). Such fits should
+not be interpreted; fix a parameter or use a sub-model instead.
+
+Parameter values at which the log-density can only be evaluated with large
+rounding error (because its terms are huge and cancel) are rejected during
+maximum likelihood estimation, so that the reported log-likelihood is always
+accurate.
+}
+\references{
+Handique, L., Chakraborty, S. and Ali, M. M. (2017). Beta generated
+Kumaraswamy-G family of distributions. \emph{Pakistan Journal of Statistics},
+\bold{33}(6), 467--490.
+
+Cheng, R. C. H. and Amin, N. A. K. (1983). Estimating parameters in
+continuous univariate distributions with a shifted origin. \emph{Journal of
+the Royal Statistical Society, Series B}, \bold{45}(3), 394--403.
+
+Swain, J. J., Venkatraman, S. and Wilson, J. R. (1988). Least-squares
+estimation of distribution functions in Johnson's translation system.
+\emph{Journal of Statistical Computation and Simulation}, \bold{29}(4),
+271--297.
 }
 \value{
 An object of class \code{"bkwgfit"}, a list with components
@@ -81,7 +107,8 @@ An object of class \code{"bkwgfit"}, a list with components
 }
 \seealso{
 \code{\link{summary.bkwgfit}}, \code{\link{gof_bkwg}},
-\code{\link{lrt_bkwg}}, \code{\link{compare_bkwg}}
+\code{\link{lrt_bkwg}}, \code{\link{compare_bkwg}};
+\code{vignette("BKwG", package = "BKwG")} for a worked introduction.
 }
 \examples{
 bkwg_submodels()

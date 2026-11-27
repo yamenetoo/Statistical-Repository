@@ -15,13 +15,28 @@
   list(logG = logG, log1mGa = log1mGa, logSK = logSK, logK = logK)
 }
 
-.ldens <- function(x, a, b, alpha, beta, B, par) {
+.ldens <- function(x, a, b, alpha, beta, B, par, check = FALSE) {
   P <- .parts(x, a, b, B, par)
   lg <- B$dG(x, par, log = TRUE)
-  ld <- log(a) + log(b) + lg + .mul(a - 1, P$logG) +
-    .mul(b * beta - 1, P$log1mGa) + .mul(alpha - 1, P$logK) -
-    lbeta(alpha, beta)
+  t2 <- .mul(a - 1, P$logG)
+  t3 <- .mul(b * beta - 1, P$log1mGa)
+  t4 <- .mul(alpha - 1, P$logK)
+  ld <- log(a) + log(b) + lg + t2 + t3 + t4 - lbeta(alpha, beta)
+  if (check) {
+    ## for extreme parameter values the terms can be huge (say 1e26) and
+    ## cancel, leaving a log-density that is pure rounding error; the
+    ## optimiser must not be rewarded for such points
+    err <- 8 * .Machine$double.eps *
+      (abs(lg) + abs(t2) + abs(t3) + abs(t4) + abs(log(a)) + abs(log(b)) +
+         abs(lbeta(alpha, beta)))
+    ld[!is.na(err) & err > 1e-3] <- -Inf
+  }
   ld[!is.na(lg) & lg == -Inf] <- -Inf
+  ## G(x) rounded to 1 inside the support (e.g. a user pG without
+  ## lower.tail/log.p): (1 - G^a)^(b*beta - 1) is then Inf * g(x), but the
+  ## true density there is negligible, so return 0 instead of Inf
+  ld[!is.na(ld) & ld == Inf & is.finite(lg) & P$log1mGa == -Inf &
+       x < B$support[2L]] <- -Inf
   ld[is.nan(ld)] <- -Inf
   ld
 }

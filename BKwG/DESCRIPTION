@@ -37,8 +37,11 @@ Imports:
     stats,
     graphics
 Suggests:
+    knitr,
     numDeriv,
+    rmarkdown,
     testthat (>= 3.0.0)
+VignetteBuilder: knitr
 Config/testthat/edition: 3
 URL: https://github.com/yamenetoo/Statistical-Repository/tree/main/BKwG
 BugReports: https://github.com/yamenetoo/Statistical-Repository/issues

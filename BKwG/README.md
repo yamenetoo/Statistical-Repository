@@ -25,7 +25,7 @@
 12. [User-defined baselines](#user-defined-baselines)
 13. [Numerical details](#numerical-details)
 14. [Function reference](#function-reference)
-15. [Examples notebook](#examples-notebook)
+15. [Vignette and examples notebook](#vignette-and-examples-notebook)
 16. [Testing](#testing)
 17. [Citation](#citation)
 18. [Authors and license](#authors-and-license)
@@ -93,7 +93,8 @@ so properties of BKw-G follow from those of Kw-G (`bkwg_mixture()`,
 ```r
 # from GitHub
 if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes")
-remotes::install_github("yamenetoo/Statistical-Repository", subdir = "BKwG")
+remotes::install_github("yamenetoo/Statistical-Repository", subdir = "BKwG",
+                        build_vignettes = TRUE)
 
 # or from a source tarball
 install.packages("BKwG_0.1.0.tar.gz", repos = NULL, type = "source")
@@ -284,7 +285,11 @@ qqnorm(residuals(fit)); abline(0, 1)
 > the model only through the product $b\beta$, and scale-type baseline
 > parameters can be partly confounded with the shape parameters. If the
 > standard errors are very large, fix a scale parameter or use a sub-model
-> selected by `lrt_bkwg()` / `compare_bkwg()`.
+> selected by `lrt_bkwg()` / `compare_bkwg()`. On some samples the likelihood
+> of the full model keeps increasing towards the boundary (for example
+> $\alpha \to \infty$ with $\beta \to 0$); `fit_bkwg()` then warns that the
+> information matrix could not be inverted, and the estimates should not be
+> interpreted.
 
 ---
 
@@ -345,6 +350,11 @@ y <- rbkwg(300, 2, 1, 1.5, 0.8, baseline = rayleigh, par = c(sigma = 2))
 fit_bkwg(y, baseline = rayleigh)
 ```
 
+For accurate right tails, write `pG` as
+`function(q, par, lower.tail = TRUE, log.p = FALSE)` and compute the upper
+tail directly (the vignette shows how). Otherwise $1 - G(x)$ rounds to zero
+far in the right tail and the density there is returned as zero.
+
 ---
 
 ## Numerical details
@@ -355,6 +365,9 @@ fit_bkwg(y, baseline = rayleigh)
   both tails keep full precision.
 - The quantile function uses `qbeta` with the complementary tail and
   `log1mexp`, and random generation inverts `rbeta(n, β, α)`.
+- During maximum likelihood, parameter values at which the terms of the
+  log-density are so large that they cancel to rounding error are rejected,
+  so the reported log-likelihood is always accurate.
 - The density, cdf, quantile function, analytical score and mixture
   representation were checked numerically against direct integration and
   finite differences for seven baselines.
@@ -383,7 +396,15 @@ Every function has a help page with examples: `help(package = "BKwG")`.
 
 ---
 
-## Examples notebook
+## Vignette and examples notebook
+
+The vignette is the best place to start. It is a worked introduction to the
+family, the distribution functions, the properties, estimation, testing,
+model comparison on real data and user-defined baselines:
+
+```r
+vignette("BKwG", package = "BKwG")
+```
 
 [`notebooks/BKwG_examples.ipynb`](notebooks/BKwG_examples.ipynb) walks through
 every feature: shapes of the density and hazard, properties, simulation,
@@ -399,6 +420,9 @@ badge at the top (choose *Runtime → Change runtime type → R*).
 devtools::test("BKwG")           # testthat suite
 devtools::check("BKwG")          # full R CMD check
 ```
+
+`R CMD check --as-cran` on the built tarball passes with no errors, warnings
+or notes (R 4.3.3, Ubuntu 24.04).
 
 The tests cover: the density integrating to one for every baseline, cdf versus
 integrated density, quantile/cdf inversion, closed forms of all sub-models,
