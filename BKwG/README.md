@@ -7,6 +7,8 @@
 ![license](https://img.shields.io/badge/license-GPL--3-green)
 ![R](https://img.shields.io/badge/R-%E2%89%A5%203.5-276DC3)
 
+**Documentation:** [vignette (PDF)](docs/BKwG-vignette.pdf) · [reference manual (PDF)](docs/BKwG-manual.pdf)
+
 ---
 
 ## Contents
@@ -405,6 +407,11 @@ model comparison on real data and user-defined baselines:
 ```r
 vignette("BKwG", package = "BKwG")
 ```
+
+PDF versions are in [`docs/`](docs/):
+
+- [Introduction to BKwG (vignette, PDF)](docs/BKwG-vignette.pdf)
+- [Reference manual (all help pages, PDF)](docs/BKwG-manual.pdf)
 
 [`notebooks/BKwG_examples.ipynb`](notebooks/BKwG_examples.ipynb) walks through
 every feature: shapes of the density and hazard, properties, simulation,
