@@ -5,7 +5,8 @@
 #' Works for any \code{\link{ss_dist}}. Optimisation is done on an
 #' unconstrained scale (log for positive parameters, logit for bounded ones),
 #' starting from a screened set of random starting points, so no starting
-#' values are needed.
+#' values are needed. Because the starting points are random, call
+#' \code{set.seed()} first if you need exactly reproducible results.
 #'
 #' Point methods:
 #' \describe{

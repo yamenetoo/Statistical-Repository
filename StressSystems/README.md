@@ -71,7 +71,16 @@ library(StressSystems)
 ```
 
 The package depends only on base R (`stats`, `utils`, `parallel`).
-`testthat` is needed only to run the tests.
+`testthat` is needed only to run the tests, and `knitr` and `rmarkdown`
+only to build the vignette.
+
+A step-by-step introduction is in the vignette:
+
+```r
+remotes::install_github("yamenetoo/Statistical-Repository", subdir = "StressSystems",
+                        build_vignettes = TRUE)
+vignette("StressSystems")
+```
 
 ---
 

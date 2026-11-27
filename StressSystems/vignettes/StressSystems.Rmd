@@ -1,0 +1,329 @@
+---
+title: "Getting started with StressSystems"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting started with StressSystems}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+```{r setup}
+library(StressSystems)
+```
+
+## The stress-strength model
+
+A component with random strength $X$ is exposed to a random stress $Y$. It
+survives as long as the stress does not exceed the strength, so its
+reliability is
+
+$$R = P(Y < X).$$
+
+StressSystems computes $R$ for any pair of independent continuous
+distributions, estimates it from data, and extends it to systems of several
+components or several stresses. The general version used throughout the
+package scales the stress by a constant $c > 0$, giving $R = P(cY < X)$.
+With $c = 1$ (the default) this is the usual model; $c > 1$ means the stress
+is amplified and $c < 1$ that it is attenuated.
+
+A typical workflow has three steps:
+
+1. describe the strength and stress distributions with `ss_dist()`;
+2. compute $R$ for known parameters with `ss_R()` or one of the system
+   functions;
+3. estimate $R$ from samples with `ss_estimate_R()`, or study estimators by
+   simulation with `ss_simulate()`.
+
+## Step 1: describing a distribution
+
+`ss_dist()` turns a distribution into an object the rest of the package can
+use. There are three ways to call it.
+
+**Built-in families.** The package ships the Topp-Leone distribution on
+$(0, 1)$ and the two-parameter generalized Rayleigh (Burr type X)
+distribution:
+
+```{r}
+TL <- ss_dist("toppleone")
+GR <- ss_dist("genrayleigh")
+TL
+GR
+```
+
+**Any R family, by name.** For a name such as `"weibull"`, `ss_dist()` looks
+up `dweibull()`, `pweibull()`, `qweibull()` and `rweibull()` and reads the
+parameter names from the arguments of the density. Any family that follows
+R's `d/p/q/r` naming convention works this way, including families from
+other packages once they are attached.
+
+```{r}
+W <- ss_dist("weibull")
+W$par_names
+```
+
+For families found by name the support is guessed by evaluating the density
+just outside $(0, 1)$, and a message reports the guess. Pass `lower` and
+`upper` to set the support yourself and silence the message:
+
+```{r}
+E <- ss_dist("exp", lower = 0, upper = Inf)
+```
+
+When a density has both `rate` and `scale` arguments (as `dgamma()` does),
+only `rate` is used as a parameter.
+
+**User-supplied functions.** Only a density `d` and a distribution function
+`p` are required. The first argument of each is the point; the remaining
+named arguments are the parameters. Missing quantile and random functions
+are obtained by numerically inverting `p`. Here is a power distribution
+$F(x) = x^a$ on $(0, 1)$:
+
+```{r}
+dpower <- function(x, a) ifelse(x > 0 & x < 1, a * x^(a - 1), 0)
+ppower <- function(q, a) pmin(pmax(q, 0), 1)^a
+P <- ss_dist(d = dpower, p = ppower, lower = 0, upper = 1)
+P
+```
+
+### Parameter values and constraints
+
+Parameter values can be stored in the object with `par`, or passed later to
+each function as `par_x`, `par_y`, and so on. Values passed to a function
+take precedence over stored ones.
+
+```{r}
+X <- ss_dist("exp", par = c(rate = 2), lower = 0, upper = Inf)
+X$par
+```
+
+Each parameter has a range, used to check values and to optimise on an
+unconstrained scale during estimation. The range is known for built-in
+families. Otherwise it is guessed from the parameter's name: location-type
+names such as `mean`, `mu` or `location` are taken as real, `prob` as lying
+in $(0, 1)$, and everything else as positive. Override a guess with
+`constraints`:
+
+```{r}
+N <- ss_dist("norm", constraints = list(mean = "real", sd = "positive"),
+             lower = -Inf, upper = Inf)
+N$constraints
+```
+
+## Step 2: reliability for known parameters
+
+### A single component
+
+`ss_R()` computes $R = P(cY < X)$. For two exponential distributions with
+rates 2 (strength) and 3 (stress) the exact value is $3/5$:
+
+```{r}
+X <- ss_dist("exp", par = c(rate = 2), lower = 0, upper = Inf)
+Y <- ss_dist("exp", par = c(rate = 3), lower = 0, upper = Inf)
+ss_R(X, Y)
+ss_R(X, Y, c = 2)   # stress doubled
+```
+
+The same call works for any pair of families:
+
+```{r}
+ss_R(TL, GR, par_x = c(shape = 0.7), par_y = c(shape = 1, rate = 2))
+ss_R(P, Y, par_x = c(a = 2))
+```
+
+By default the integral is computed on the probability scale,
+$R = \int_0^1 F_Y(Q_X(u)/c)\,du$, whose integrand is bounded, so unbounded
+densities and heavy tails cause no trouble. Without a quantile function the
+density is integrated piecewise instead (`method = "density"`). If numerical
+integration fails, a Monte Carlo estimate is returned with a warning.
+
+### Several stresses
+
+`ss_multistress()` handles a component exposed to $k$ independent stresses.
+With `components = "shared"` (the default) one component must withstand all
+of them; with `components = "independent"` each stress acts on its own copy
+of the component. Give one row of `par_y` per stress:
+
+```{r}
+st <- data.frame(shape = c(1, 2), rate = c(2, 3))
+ss_multistress(TL, GR, par_x = c(shape = 0.7), par_y = st)
+ss_multistress(TL, GR, par_x = c(shape = 0.7), par_y = st,
+               components = "independent")
+```
+
+The two answers differ because in the shared case every event involves the
+same strength.
+
+### A stress between two strengths
+
+`ss_R3()` computes $P(Z < Y < X)$, the probability that the stress lies
+between a lower bound $Z$ and an upper bound $X$:
+
+```{r}
+Z <- ss_dist("exp", par = c(rate = 1), lower = 0, upper = Inf)
+Y <- ss_dist("exp", par = c(rate = 2), lower = 0, upper = Inf)
+U <- ss_dist("exp", par = c(rate = 0.5), lower = 0, upper = Inf)
+ss_R3(Z, Y, U)
+2 / 2.5 - 2 / 3.5   # exact value
+```
+
+### s-out-of-k systems
+
+`ss_sk()` gives the reliability of a system of $k$ identical, independent
+components that works if at least $s$ of them exceed a common stress:
+
+```{r}
+X <- ss_dist("toppleone", par = c(shape = 0.7))
+Y <- ss_dist("genrayleigh", par = c(shape = 1, rate = 2))
+sapply(1:3, function(s) ss_sk(X, Y, s = s, k = 3))
+```
+
+With $s = 1$ the system is a parallel system and with $s = k$ a series
+system, so reliability falls as $s$ grows.
+
+### Cascade systems
+
+In a cascade (standby) system with $n$ stages, stage $i$ takes over when
+stage $i - 1$ fails, and its stress is scaled by $c^{i-1}$. `ss_cascade()`
+returns the system reliability together with each stage's probability and
+contribution:
+
+```{r}
+ss_cascade(X, Y, n = 3, c = 0.8)
+```
+
+Stages can also use different families or parameters: pass lists of
+`ss_dist` objects, or one row of `par_x` and `par_y` per stage.
+
+## Step 3: estimating R from data
+
+### Fitting one distribution
+
+`ss_fit()` estimates the parameters of any `ss_dist`. No starting values are
+needed. The available methods are:
+
+| method | estimator |
+|---|---|
+| `"mle"` | maximum likelihood, with an observed-information covariance |
+| `"mps"` | maximum product of spacings |
+| `"lse"`, `"wlse"` | least squares and weighted least squares on the CDF |
+| `"cvm"` | Cramer-von Mises minimum distance |
+| `"ad"` | Anderson-Darling minimum distance |
+| `"jackknife"` | jackknife bias correction of a `base` point method |
+| `"bootstrap"` | bootstrap bias correction of a `base` point method |
+| `"bayes"` | Bayesian estimation by Metropolis-Hastings |
+
+```{r}
+set.seed(1)
+y <- rgenrayleigh(50, shape = 1.5, rate = 2)
+ss_fit(y, GR, method = "mle")
+ss_fit(y, GR, method = "mps")
+```
+
+Fitting draws random starting points, so results can differ slightly between
+runs. Call `set.seed()` first when you need reproducible numbers.
+
+### Estimating R with a confidence interval
+
+`ss_estimate_R()` fits both samples and returns the plug-in estimate of $R$.
+With maximum likelihood it also gives a delta-method interval, built on the
+logit scale so that it stays inside $(0, 1)$:
+
+```{r}
+set.seed(1)
+x <- rtoppleone(30, shape = 0.7)
+y <- rgenrayleigh(30, shape = 1, rate = 2)
+ss_estimate_R(x, y, TL, GR, method = "mle")
+```
+
+Other choices of `ci` are `"boot"` (parametric bootstrap percentile
+interval, available for any point method), `"bayes"` (posterior interval,
+for `method = "bayes"`) and `"none"`. The fitted models are returned as
+`fit_x` and `fit_y`.
+
+```{r, eval = FALSE}
+ss_estimate_R(x, y, TL, GR, method = "mps", ci = "boot", B = 500)
+ss_estimate_R(x, y, TL, GR, method = "bayes", iter = 5000, burnin = 1000)
+```
+
+### Bayesian estimation
+
+`ss_bayes()` runs a random-walk Metropolis-Hastings sampler. The prior is a
+function of the named parameter vector that returns the log prior density on
+the natural scale; the default `NULL` is a flat prior. For example,
+independent Gamma(1, 1) priors on every parameter:
+
+```{r, eval = FALSE}
+prior <- function(th) sum(dgamma(th, 1, 1, log = TRUE))
+ss_estimate_R(x, y, TL, GR, method = "bayes", prior = prior,
+              iter = 5000, burnin = 1000)
+```
+
+The posterior draws of each fit are in `fit_x$draws` and `fit_y$draws`, the
+draws of $R$ in `draws`, and an HPD interval for $R$ in `hpd`.
+
+## Monte Carlo studies
+
+`ss_simulate()` repeatedly draws samples from known distributions, estimates
+$R$ with each method and summarises bias, mean squared error, interval
+coverage and interval length. Failed replications are counted in the
+`failed` column rather than dropped silently.
+
+```{r}
+sim <- ss_simulate(TL, GR, par_x = c(shape = 0.7),
+                   par_y = c(shape = 1, rate = 2),
+                   n = c(10, 30), MC = 20, methods = c("mle", "mps"),
+                   seed = 1)
+sim
+```
+
+Per-parameter results are in `sim$parameters`, and every replication in
+`sim$raw`. A realistic study uses `MC = 1000` or more. `ss_simulate_grid()`
+runs the same study over every combination of rows of two parameter grids
+and stacks the results, with the true parameters as leading columns. A
+complete example script is installed with the package:
+
+```{r, eval = FALSE}
+file.show(system.file("scripts", "toppleone_genrayleigh_study.R",
+                      package = "StressSystems"))
+```
+
+On Linux and macOS, `cores > 1` runs replications in parallel forked
+processes. In this version, results with `cores > 1` are not exactly
+reproducible from `seed`; use `cores = 1` when you need identical numbers
+across runs.
+
+## Things to know
+
+* The built-in `d/p/q/r` functions accept a vector of points but a single
+  value of each parameter, so `dtoppleone(0.5, shape = c(1, 2))` is an
+  error. Use `sapply()` over parameter values instead.
+* `qtoppleone()` and `qgenrayleigh()` return `NaN`, with a warning, for
+  probabilities outside $[0, 1]$.
+* The generalized Rayleigh distribution here has
+  $F(x) = (1 - e^{-(\lambda x)^2})^{\alpha}$ with `shape` $= \alpha$ and
+  `rate` $= \lambda$. `VGAM::dgenray()` uses `scale` $= 1/\lambda$.
+* All variables are assumed independent.
+
+## References
+
+Bhattacharyya, G. K. and Johnson, R. A. (1974). Estimation of reliability in
+a multicomponent stress-strength model. *Journal of the American Statistical
+Association*, 69, 966-970.
+
+Cheng, R. C. H. and Amin, N. A. K. (1983). Estimating parameters in
+continuous univariate distributions with a shifted origin. *Journal of the
+Royal Statistical Society B*, 45, 394-403.
+
+Kotz, S., Lumelskii, Y. and Pensky, M. (2003). *The Stress-Strength Model and
+Its Generalizations: Theory and Applications*. World Scientific, Singapore.
+
+Kundu, D. and Raqab, M. Z. (2005). Generalized Rayleigh distribution:
+different methods of estimations. *Computational Statistics and Data
+Analysis*, 49, 187-200.
+
+Topp, C. W. and Leone, F. C. (1955). A family of J-shaped frequency
+functions. *Journal of the American Statistical Association*, 50, 209-219.

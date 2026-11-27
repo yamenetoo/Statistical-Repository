@@ -19,6 +19,8 @@
 #' @param prior Log prior for \code{"bayes"}.
 #' @param seed Optional seed.
 #' @param cores Number of cores (forked processes; Linux and macOS only).
+#'   With \code{cores > 1} the results are not exactly reproducible from
+#'   \code{seed}; use \code{cores = 1} for reproducible studies.
 #' @param keep_raw Keep every replication in the result.
 #' @return An object of class \code{"ss_sim"} with \code{summary} (for R),
 #'   \code{parameters} (per-parameter bias and MSE), \code{true_R} and
@@ -31,7 +33,7 @@
 #' sim$summary
 #' \donttest{
 #' sim <- ss_simulate(X, Y, par_x = c(shape = 0.7), par_y = c(shape = 1, rate = 2),
-#'                    n = c(10, 25), MC = 50, methods = c("mle", "mps"), seed = 1)
+#'                    n = c(10, 25), MC = 20, methods = c("mle", "mps"), seed = 1)
 #' sim
 #' }
 #' @export

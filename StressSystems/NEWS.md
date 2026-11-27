@@ -11,3 +11,6 @@
 * Inference for R: delta-method, parametric bootstrap and posterior intervals
   (`ss_estimate_R()`).
 * Monte Carlo studies: `ss_simulate()` and `ss_simulate_grid()`.
+* Documentation: a getting-started vignette (`vignette("StressSystems")`)
+  and fuller help pages for the distribution functions, `ss_dist()`,
+  `ss_fit()` and `ss_simulate()`.
