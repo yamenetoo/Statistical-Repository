@@ -6,6 +6,8 @@
 ![version](https://img.shields.io/badge/version-0.1.0-blue)
 ![license](https://img.shields.io/badge/license-GPL--3-green)
 
+**Documentation:** [vignette (PDF)](docs/StressSystems-vignette.pdf) · [reference manual (PDF)](docs/StressSystems-manual.pdf)
+
 ---
 
 ## Contents
@@ -392,6 +394,11 @@ The complete Topp–Leone / generalized Rayleigh study is in
 ---
 
 ## Examples notebook
+
+PDF versions are in [`docs/`](docs/):
+
+- [Getting started with StressSystems (vignette, PDF)](docs/StressSystems-vignette.pdf)
+- [Reference manual (all help pages, PDF)](docs/StressSystems-manual.pdf)
 
 [`notebooks/StressSystems_examples.ipynb`](notebooks/StressSystems_examples.ipynb)
 walks through every feature. Open it in Colab with the badge at the top and
